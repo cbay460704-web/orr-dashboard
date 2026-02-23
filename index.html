@@ -569,14 +569,14 @@ async function fetchHoldings() {
 
       const yTicker = yahooTicker(rawTicker);
 
-      // For non-US tickers (JP, HK, EU): null out yTicker so we skip live fetch,
-      // and pre-seed the price cache with the TSE/local closing price from the holdings table
-      const isIntl = rawTicker.includes(' '); // "9435 JP", "BNP FP", etc.
+      // For non-US tickers: mark as intl, pre-seed with static price from holdings table,
+      // but keep yTicker so we can do a one-time fetch for prior-day % change
+      const isIntl = rawTicker.includes(' ');
       if (isIntl && staticPrice) {
         priceCache[rawTicker] = { price: staticPrice, change: null, isStatic: true };
       }
 
-      parsed.push({ ticker: rawTicker, yTicker: isIntl ? null : yTicker, name, weight, shares });
+      parsed.push({ ticker: rawTicker, yTicker: isIntl ? yTicker : yTicker, name, weight, shares, isIntl: isIntl || false });
     }
 
     // Find cash row
@@ -669,13 +669,19 @@ async function tryProxy(ticker, proxyFn, isWrapped) {
 }
 
 async function fetchQuote(yTicker) {
-  for (let i = 0; i < PROXIES.length; i++) {
-    try {
-      const result = await tryProxy(yTicker, PROXIES[i], i === 1);
-      if (result) return result;
-    } catch { /* try next */ }
+  // Race all proxies simultaneously — first valid response wins
+  const races = PROXIES.map((fn, i) =>
+    tryProxy(yTicker, fn, i === 1).catch(() => null)
+  );
+  try {
+    // Promise.any resolves with first non-null result
+    const result = await Promise.any(
+      races.map(p => p.then(r => { if (!r) throw new Error('no data'); return r; }))
+    );
+    return result;
+  } catch {
+    return null;
   }
-  return null;
 }
 
 // ── ORR ETF price fetch ────────────────────────────────────────────────────────
@@ -773,7 +779,8 @@ function safeId(ticker) {
 }
 
 function renderRow(holding, isShort) {
-  const cacheKey = holding.yTicker || holding.ticker;
+  // Intl tickers use raw ticker as cache key; US tickers use yTicker
+  const cacheKey = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
   const cached   = priceCache[cacheKey];
   const weight   = Math.abs(holding.weight);
   const change   = cached?.change ?? null;
@@ -785,18 +792,24 @@ function renderRow(holding, isShort) {
   const cc = changeClass(fundImpact);
   const bw = barWidth(change);
 
-  const displayTicker = holding.ticker.length > 10
+  const displayTicker = holding.ticker.includes(' ')
     ? holding.ticker.split(' ')[0]
     : holding.ticker;
 
-  // Price display
   let priceHtml, changeHtml;
   if (price) {
-    const currencySymbol = isStatic ? '' : '$'; // JP prices in ¥, shown without symbol for cleanliness
-    priceHtml = `${currencySymbol}${formatPrice(price)}`;
-    changeHtml = isStatic
-      ? `<span style="font-size:9px;color:var(--muted);font-weight:500">CLOSE</span>`
-      : formatChange(isShort && change !== null ? -change : change);
+    priceHtml = formatPrice(price);
+    if (isStatic && change === null) {
+      // Have static price but no change yet — show skeleton for change
+      changeHtml = `<span class="skeleton"></span>`;
+    } else if (isStatic) {
+      // Prior day change loaded — show it with a "P" (prev) indicator
+      const sign = (isShort ? -change : change) >= 0 ? '+' : '';
+      const displayChange = isShort ? -change : change;
+      changeHtml = `<span title="Prior day change">${sign}${displayChange.toFixed(2)}%</span>`;
+    } else {
+      changeHtml = formatChange(isShort && change !== null ? -change : change);
+    }
   } else if (canFetch) {
     priceHtml  = `<span class="skeleton"></span>`;
     changeHtml = `<span class="skeleton"></span>`;
@@ -810,28 +823,92 @@ function renderRow(holding, isShort) {
       <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
       <div>
         <div class="name">${holding.name}</div>
-        <div class="bar-track"><div class="bar-fill ${cc}" style="width:${bw}%"></div></div>
+        <div class="bar-track"><div class="bar-fill ${isStatic && change !== null ? cc : ''}" style="width:${isStatic && change !== null ? bw : 0}%"></div></div>
       </div>
       <div class="weight">${weight.toFixed(2)}%</div>
       <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
-      <div class="change ${isStatic ? 'flat' : cc} ${price ? '' : 'loading'}">${changeHtml}</div>
+      <div class="change ${isStatic && change === null ? 'loading' : cc} ${price ? '' : 'loading'}">${changeHtml}</div>
     </div>`;
 }
 
+// ── Debounced render scheduler ─────────────────────────────────────────────────
+let renderPending = false;
+function scheduleRender() {
+  if (renderPending) return;
+  renderPending = true;
+  const fn = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : requestAnimationFrame;
+  fn(() => { renderPending = false; renderAll(); });
+}
+
+// ── Initial full render (builds DOM structure once) ───────────────────────────
 function renderAll() {
   const longEl  = document.getElementById('long-holdings');
   const shortEl = document.getElementById('short-holdings');
 
-  longEl.innerHTML = `
-    <div class="cash-row">
-      <span class="cash-label">CASH &amp; OTHER</span>
-      <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
-    </div>`;
+  // Only do full innerHTML rebuild on first render (rows don't exist yet)
+  const isFirstRender = !document.getElementById(safeId(LONGS[0]?.ticker || '__none__'));
 
-  LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
-  shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
+  if (isFirstRender) {
+    longEl.innerHTML = `
+      <div class="cash-row">
+        <span class="cash-label">CASH &amp; OTHER</span>
+        <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
+      </div>`;
+    LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
+    shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
+  } else {
+    // In-place updates — only touch cells that may have changed
+    [...LONGS.map(h => [h, false]), ...SHORTS.map(h => [h, true])].forEach(([h, isShort]) => {
+      updateRowInPlace(h, isShort);
+    });
+  }
 
   updateSummary();
+}
+
+// ── In-place row update — only rewrites price + change cells ─────────────────
+function updateRowInPlace(holding, isShort) {
+  const row = document.getElementById(safeId(holding.ticker));
+  if (!row) return;
+
+  const cacheKey  = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
+  const cached    = priceCache[cacheKey];
+  const change    = cached?.change ?? null;
+  const price     = cached?.price  ?? null;
+  const isStatic  = cached?.isStatic ?? false;
+
+  const fundImpact = isShort ? (change !== null ? -change : null) : change;
+  const cc  = changeClass(fundImpact);
+  const bw  = barWidth(change);
+
+  // Price cell (index 3)
+  const priceCell  = row.children[3];
+  const changeCell = row.children[4];
+  const barFill    = row.querySelector('.bar-fill');
+
+  if (price) {
+    priceCell.textContent = formatPrice(price);
+    priceCell.className   = 'price';
+
+    if (isStatic && change === null) {
+      changeCell.innerHTML   = '<span class="skeleton"></span>';
+      changeCell.className   = 'change loading';
+    } else if (isStatic) {
+      const sign = (isShort ? -change : change) >= 0 ? '+' : '';
+      const displayChange = isShort ? -change : change;
+      changeCell.textContent = `${sign}${displayChange.toFixed(2)}%`;
+      changeCell.className   = `change ${cc}`;
+      changeCell.title       = 'Prior day change';
+    } else {
+      changeCell.textContent = formatChange(isShort && change !== null ? -change : change);
+      changeCell.className   = `change ${cc}`;
+    }
+
+    if (barFill) {
+      barFill.className = `bar-fill ${isStatic && change !== null ? cc : ''}`;
+      barFill.style.width = `${isStatic && change !== null ? bw : 0}%`;
+    }
+  }
 }
 
 function updateSummary() {
@@ -840,7 +917,7 @@ function updateSummary() {
   let winners = 0, losers = 0;
 
   LONGS.forEach(h => {
-    const key = h.yTicker || h.ticker;
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
     const c = priceCache[key]?.change;
     if (c !== null && c !== undefined) {
       longPnl += (h.weight / 100) * c;
@@ -850,7 +927,7 @@ function updateSummary() {
   });
 
   SHORTS.forEach(h => {
-    const key = h.yTicker || h.ticker;
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
     const c = priceCache[key]?.change;
     const absW = Math.abs(h.weight);
     if (c !== null && c !== undefined) {
@@ -861,7 +938,10 @@ function updateSummary() {
   });
 
   const allFetchable = [...LONGS, ...SHORTS].filter(h => h.yTicker);
-  const loadedCount  = allFetchable.filter(h => priceCache[h.yTicker] !== undefined).length;
+  const loadedCount  = allFetchable.filter(h => {
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    return priceCache[key] !== undefined;
+  }).length;
   const pending      = allFetchable.length - loadedCount;
   const net          = longPnl + shortPnl;
 
@@ -886,7 +966,7 @@ function updateSummary() {
   const allHoldings = [...LONGS, ...SHORTS];
   let topMover = null, topImpact = 0;
   allHoldings.forEach(h => {
-    const key = h.yTicker || h.ticker;
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
     const c = priceCache[key]?.change;
     if (c === null || c === undefined) return;
     const isShort = h.weight < 0;
@@ -924,18 +1004,45 @@ function updateSummary() {
     'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
-// ── Fetch price + flash ────────────────────────────────────────────────────────
 async function fetchTicker(holding) {
-  if (!holding.yTicker) return; // no Yahoo ticker available
+  if (!holding.yTicker || holding.isIntl) return;
   const prevCached = priceCache[holding.yTicker];
   const result     = await fetchQuote(holding.yTicker);
   if (result) {
     priceCache[holding.yTicker] = result;
-    const row = document.getElementById(safeId(holding.ticker));
-    if (row && prevCached) {
-      const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
-      if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+    // Flash animation on price change
+    if (prevCached) {
+      const row = document.getElementById(safeId(holding.ticker));
+      if (row) {
+        const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
+        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+      }
     }
+    scheduleRender();
+  }
+}
+
+// ── One-time fetch for intl tickers (prior day % change only) ─────────────────
+async function fetchIntlTickers() {
+  const intl = [...LONGS, ...SHORTS].filter(h => h.isIntl && h.yTicker);
+  const BATCH = 8;
+  for (let i = 0; i < intl.length; i += BATCH) {
+    const batch = intl.slice(i, i + BATCH);
+    await Promise.allSettled(batch.map(async h => {
+      try {
+        const result = await fetchQuote(h.yTicker);
+        if (result) {
+          const existing = priceCache[h.ticker];
+          priceCache[h.ticker] = {
+            price: existing?.price ?? result.price,
+            change: result.change,
+            isStatic: true,
+          };
+          scheduleRender();
+        }
+      } catch { /* silent */ }
+    }));
+    await new Promise(r => setTimeout(r, 300));
   }
 }
 
@@ -943,26 +1050,30 @@ async function fetchAll() {
   document.getElementById('pulse-dot').classList.remove('paused');
   document.getElementById('live-label').textContent = 'FETCHING';
 
-  const all   = [...LONGS, ...SHORTS].filter(h => h.yTicker);
-  const jobs  = [fetchORRPrice(), ...all.map(h => fetchTicker(h))];
-  let done    = 0;
+  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
+  let done   = 0;
+  const total = all.length + 1; // +1 for ORR
 
-  jobs.forEach(p => p.then(() => {
+  const onDone = () => {
     done++;
-    renderAll();
-    document.getElementById('live-label').textContent = `${done}/${jobs.length}`;
-  }));
+    document.getElementById('live-label').textContent = `${done}/${total}`;
+    scheduleRender();
+  };
+
+  const jobs = [
+    fetchORRPrice().then(onDone),
+    ...all.map(h => fetchTicker(h).then(onDone)),
+  ];
 
   await Promise.allSettled(jobs);
 
   document.getElementById('live-label').textContent = 'LIVE';
-  renderAll();
+  scheduleRender();
 
   clearTimeout(refreshTimer);
-  const et   = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  const mins = et.getHours() * 60 + et.getMinutes();
-  const d    = et.getDay();
-  const isOpen = d >= 1 && d <= 5 && mins >= 570 && mins < 960;
+  const et     = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const mins   = et.getHours() * 60 + et.getMinutes();
+  const isOpen = et.getDay() >= 1 && et.getDay() <= 5 && mins >= 570 && mins < 960;
   refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
 }
 
@@ -980,7 +1091,8 @@ async function fetchAll() {
   }
 
   renderAll(); // Show skeleton rows immediately
-  fetchAll();  // Then fetch all prices in parallel
+  fetchAll();  // Live US tickers — recurring
+  fetchIntlTickers(); // Intl prior-day % change — one time only
 })();
 </script>
 </body>
