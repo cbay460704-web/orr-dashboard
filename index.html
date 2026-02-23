@@ -557,6 +557,7 @@ async function fetchHoldings() {
       const rawTicker = cells[0];
       const name      = cells[1];
       const shares    = parseFloat(cells[3]?.replace(/,/g, '')) || 0;
+      const staticPrice = parseFloat(cells[4]?.replace(/,/g, '')) || null; // price from holdings table
       const weight    = parseFloat(cells[6]) || 0; // % of Net Assets
       const date      = cells[7] || '';
 
@@ -567,7 +568,15 @@ async function fetchHoldings() {
       if (!holdingsDate && date) holdingsDate = date;
 
       const yTicker = yahooTicker(rawTicker);
-      parsed.push({ ticker: rawTicker, yTicker, name, weight, shares });
+
+      // For non-US tickers (JP, HK, EU): null out yTicker so we skip live fetch,
+      // and pre-seed the price cache with the TSE/local closing price from the holdings table
+      const isIntl = rawTicker.includes(' '); // "9435 JP", "BNP FP", etc.
+      if (isIntl && staticPrice) {
+        priceCache[rawTicker] = { price: staticPrice, change: null, isStatic: true };
+      }
+
+      parsed.push({ ticker: rawTicker, yTicker: isIntl ? null : yTicker, name, weight, shares });
     }
 
     // Find cash row
@@ -769,37 +778,43 @@ function renderRow(holding, isShort) {
   const weight   = Math.abs(holding.weight);
   const change   = cached?.change ?? null;
   const price    = cached?.price  ?? null;
+  const isStatic = cached?.isStatic ?? false;
   const canFetch = !!holding.yTicker;
 
   const fundImpact = isShort ? (change !== null ? -change : null) : change;
   const cc = changeClass(fundImpact);
   const bw = barWidth(change);
 
-  // Show display ticker (trim exchange suffix for cleanliness)
   const displayTicker = holding.ticker.length > 10
     ? holding.ticker.split(' ')[0]
     : holding.ticker;
 
+  // Price display
+  let priceHtml, changeHtml;
+  if (price) {
+    const currencySymbol = isStatic ? '' : '$'; // JP prices in ¥, shown without symbol for cleanliness
+    priceHtml = `${currencySymbol}${formatPrice(price)}`;
+    changeHtml = isStatic
+      ? `<span style="font-size:9px;color:var(--muted);font-weight:500">CLOSE</span>`
+      : formatChange(isShort && change !== null ? -change : change);
+  } else if (canFetch) {
+    priceHtml  = `<span class="skeleton"></span>`;
+    changeHtml = `<span class="skeleton"></span>`;
+  } else {
+    priceHtml  = `<span style="color:var(--neutral);font-size:9px">—</span>`;
+    changeHtml = `—`;
+  }
+
   return `
     <div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(holding.ticker)}">
-      <div>
-        <div class="ticker" title="${holding.ticker}">${displayTicker}</div>
-      </div>
+      <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
       <div>
         <div class="name">${holding.name}</div>
-        <div class="bar-track">
-          <div class="bar-fill ${cc}" style="width:${bw}%"></div>
-        </div>
+        <div class="bar-track"><div class="bar-fill ${cc}" style="width:${bw}%"></div></div>
       </div>
       <div class="weight">${weight.toFixed(2)}%</div>
-      <div class="price ${price ? '' : 'loading'}">
-        ${price ? (price < 10000 ? '$' : '¥') + formatPrice(price) : canFetch ? '<span class="skeleton"></span>' : '<span style="color:var(--neutral);font-size:9px">INTL</span>'}
-      </div>
-      <div class="change ${cc} ${price ? '' : 'loading'}">
-        ${price
-          ? formatChange(isShort && change !== null ? -change : change)
-          : canFetch ? '<span class="skeleton"></span>' : '—'}
-      </div>
+      <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
+      <div class="change ${isStatic ? 'flat' : cc} ${price ? '' : 'loading'}">${changeHtml}</div>
     </div>`;
 }
 
