@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -30,380 +29,370 @@
     --header-text: #f8f9fa;
   }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Inter’, sans-serif;
-font-size: 13px;
-min-height: 100vh;
-overflow-x: hidden;
-}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 16px 28px;
-background: var(–header-bg);
-position: sticky;
-top: 0;
-z-index: 100;
-}
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    background: var(--header-bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-.logo {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 20px;
-font-weight: 600;
-letter-spacing: 2px;
-color: var(–header-text);
-display: flex;
-align-items: center;
-gap: 14px;
-}
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--header-text);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-.logo-tag {
-font-family: ‘Inter’, sans-serif;
-font-size: 11px;
-font-weight: 400;
-color: #868e96;
-letter-spacing: 1px;
-border-left: 1px solid #343a40;
-padding-left: 14px;
-}
+  .logo-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: #868e96;
+    letter-spacing: 1px;
+    border-left: 1px solid #343a40;
+    padding-left: 14px;
+  }
 
-.header-right {
-display: flex;
-align-items: center;
-gap: 20px;
-}
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 
-.orr-price {
-display: flex;
-align-items: center;
-gap: 10px;
-padding: 8px 16px;
-border: 1px solid #343a40;
-border-radius: 6px;
-background: #212529;
-}
+  .orr-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid #343a40;
+    border-radius: 6px;
+    background: #212529;
+  }
 
-.orr-label {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 12px;
-font-weight: 600;
-letter-spacing: 2px;
-color: #868e96;
-}
+  .orr-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #868e96;
+  }
 
-.orr-nav {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 18px;
-font-weight: 600;
-color: var(–header-text);
-}
+  .orr-nav {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--header-text);
+  }
 
-.orr-change-badge {
-font-size: 12px;
-font-weight: 600;
-padding: 3px 9px;
-border-radius: 4px;
-}
+  .orr-change-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
 
-.orr-change-badge.up   { color: #2f9e6e; background: #1a3d2e; }
-.orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
-.orr-change-badge.flat { color: #868e96; background: #2c2f33; }
+  .orr-change-badge.up   { color: #2f9e6e; background: #1a3d2e; }
+  .orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
+  .orr-change-badge.flat { color: #868e96; background: #2c2f33; }
 
-.live-indicator {
-display: flex;
-align-items: center;
-gap: 7px;
-font-size: 11px;
-font-weight: 500;
-color: #868e96;
-letter-spacing: 0.5px;
-}
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #868e96;
+    letter-spacing: 0.5px;
+  }
 
-.pulse {
-width: 7px;
-height: 7px;
-background: #2f9e6e;
-border-radius: 50%;
-animation: pulse 1.4s ease-in-out infinite;
-}
+  .pulse {
+    width: 7px;
+    height: 7px;
+    background: #2f9e6e;
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
 
-.pulse.paused { background: #f06b5d; animation: none; }
+  .pulse.paused { background: #f06b5d; animation: none; }
 
-@keyframes pulse {
-0%, 100% { opacity: 1; transform: scale(1); }
-50% { opacity: 0.4; transform: scale(0.8); }
-}
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
 
-#last-update {
-font-size: 11px;
-color: #868e96;
-}
+  #last-update {
+    font-size: 11px;
+    color: #868e96;
+  }
 
-.refresh-btn {
-background: #212529;
-border: 1px solid #343a40;
-color: #adb5bd;
-padding: 6px 14px;
-font-family: ‘Inter’, sans-serif;
-font-size: 11px;
-font-weight: 500;
-border-radius: 4px;
-cursor: pointer;
-transition: all 0.15s;
-}
+  .refresh-btn {
+    background: #212529;
+    border: 1px solid #343a40;
+    color: #adb5bd;
+    padding: 6px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
 
-.refresh-btn:hover { background: #343a40; color: #f8f9fa; }
+  .refresh-btn:hover { background: #343a40; color: #f8f9fa; }
 
-/* Summary bar */
-.summary-bar {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-border-bottom: 1px solid var(–border);
-background: var(–surface);
-}
+  /* Summary bar */
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
 
-.summary-card {
-padding: 14px 22px;
-border-right: 1px solid var(–border);
-display: flex;
-flex-direction: column;
-gap: 4px;
-}
+  .summary-card {
+    padding: 14px 22px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-.summary-card:last-child { border-right: none; }
+  .summary-card:last-child { border-right: none; }
 
-.summary-label {
-font-size: 10px;
-font-weight: 600;
-letter-spacing: 0.5px;
-color: var(–muted);
-text-transform: uppercase;
-}
+  .summary-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
 
-.summary-value {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 20px;
-font-weight: 600;
-letter-spacing: -0.5px;
-}
+  .summary-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
 
-.summary-value.long    { color: var(–long); }
-.summary-value.short   { color: var(–short); }
-.summary-value.neutral { color: var(–text); }
-.summary-value.cash    { color: var(–cash); }
+  .summary-value.long    { color: var(--long); }
+  .summary-value.short   { color: var(--short); }
+  .summary-value.neutral { color: var(--text); }
+  .summary-value.cash    { color: var(--cash); }
 
-/* Main grid */
-.main-content {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 0;
-min-height: calc(100vh - 140px);
-}
+  /* Main grid */
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: calc(100vh - 140px);
+  }
 
-.panel { border-right: 1px solid var(–border); }
-.panel:last-child { border-right: none; }
+  .panel { border-right: 1px solid var(--border); }
+  .panel:last-child { border-right: none; }
 
-.panel-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 12px 22px;
-border-bottom: 1px solid var(–border);
-position: sticky;
-top: 57px;
-background: var(–bg);
-z-index: 50;
-}
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 22px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 57px;
+    background: var(--bg);
+    z-index: 50;
+  }
 
-.panel-title {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 13px;
-font-weight: 600;
-letter-spacing: 1px;
-}
+  .panel-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
-.panel-title.long  { color: var(–long); }
-.panel-title.short { color: var(–short); }
+  .panel-title.long  { color: var(--long); }
+  .panel-title.short { color: var(--short); }
 
-.panel-stats {
-font-size: 11px;
-color: var(–muted);
-font-weight: 400;
-}
+  .panel-stats {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
 
-/* Holding rows */
-.holding-row {
-display: grid;
-grid-template-columns: 80px 1fr 72px 80px 70px;
-align-items: center;
-padding: 9px 22px;
-border-bottom: 1px solid var(–border);
-transition: background 0.1s;
-gap: 8px;
-}
+  /* Holding rows */
+  .holding-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 72px 80px 70px;
+    align-items: center;
+    padding: 9px 22px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    gap: 8px;
+  }
 
-.holding-row:hover { background: var(–surface); }
-.holding-row.long-row:hover  { background: var(–long-dim); }
-.holding-row.short-row:hover { background: var(–short-dim); }
+  .holding-row:hover { background: var(--surface); }
+  .holding-row.long-row:hover  { background: var(--long-dim); }
+  .holding-row.short-row:hover { background: var(--short-dim); }
 
-@keyframes flashUp {
-0%   { background: #c3f0d8; }
-100% { background: transparent; }
-}
+  @keyframes flashUp {
+    0%   { background: #c3f0d8; }
+    100% { background: transparent; }
+  }
 
-@keyframes flashDown {
-0%   { background: #fad5d1; }
-100% { background: transparent; }
-}
+  @keyframes flashDown {
+    0%   { background: #fad5d1; }
+    100% { background: transparent; }
+  }
 
-.holding-row.flash-up   { animation: flashUp   0.6s ease-out; }
-.holding-row.flash-down { animation: flashDown 0.6s ease-out; }
+  .holding-row.flash-up   { animation: flashUp   0.6s ease-out; }
+  .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
 
-.ticker {
-font-family: ‘IBM Plex Mono’, monospace;
-font-weight: 600;
-font-size: 12px;
-color: var(–text);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
+  .ticker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.name {
-font-size: 12px;
-font-weight: 400;
-color: var(–text2);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
+  .name {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.weight {
-font-size: 11px;
-font-weight: 500;
-color: var(–muted);
-text-align: right;
-font-family: ‘IBM Plex Mono’, monospace;
-}
+  .weight {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    text-align: right;
+    font-family: 'IBM Plex Mono', monospace;
+  }
 
-.price {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 12px;
-font-weight: 600;
-text-align: right;
-color: var(–text);
-}
+  .price {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    color: var(--text);
+  }
 
-.price.loading { color: var(–neutral); }
+  .price.loading { color: var(--neutral); }
 
-.change {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
-font-weight: 600;
-text-align: right;
-padding: 2px 6px;
-border-radius: 3px;
-}
+  .change {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
 
-.change.up   { color: var(–long);  background: var(–long-bg); }
-.change.down { color: var(–short); background: var(–short-bg); }
-.change.flat { color: var(–muted); }
-.change.loading { color: var(–neutral); }
+  .change.up   { color: var(--long);  background: var(--long-bg); }
+  .change.down { color: var(--short); background: var(--short-bg); }
+  .change.flat { color: var(--muted); }
+  .change.loading { color: var(--neutral); }
 
-/* Mini bar */
-.bar-track {
-height: 2px;
-background: var(–border);
-border-radius: 1px;
-margin-top: 4px;
-overflow: hidden;
-}
+  /* Mini bar */
+  .bar-track {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
 
-.bar-fill { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
-.bar-fill.up   { background: var(–long); }
-.bar-fill.down { background: var(–short); }
+  .bar-fill { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
+  .bar-fill.up   { background: var(--long); }
+  .bar-fill.down { background: var(--short); }
 
-/* Column headers */
-.col-header {
-display: grid;
-grid-template-columns: 80px 1fr 72px 80px 70px;
-padding: 7px 22px;
-gap: 8px;
-border-bottom: 1px solid var(–border);
-font-size: 10px;
-font-weight: 600;
-letter-spacing: 0.5px;
-color: var(–muted);
-text-transform: uppercase;
-background: var(–surface2);
-}
+  /* Column headers */
+  .col-header {
+    display: grid;
+    grid-template-columns: 80px 1fr 72px 80px 70px;
+    padding: 7px 22px;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: var(--surface2);
+  }
 
-.col-header span:not(:first-child) { text-align: right; }
+  .col-header span:not(:first-child) { text-align: right; }
 
-/* Cash row */
-.cash-row {
-padding: 9px 22px;
-border-bottom: 1px solid var(–border);
-display: flex;
-justify-content: space-between;
-align-items: center;
-background: var(–cash-bg);
-}
+  /* Cash row */
+  .cash-row {
+    padding: 9px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cash-bg);
+  }
 
-.cash-label  { color: var(–cash); font-weight: 600; font-size: 12px; font-family: ‘IBM Plex Mono’, monospace; }
-.cash-weight { color: var(–cash); font-size: 12px; font-weight: 600; font-family: ‘IBM Plex Mono’, monospace; }
+  .cash-label  { color: var(--cash); font-weight: 600; font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
+  .cash-weight { color: var(--cash); font-size: 12px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
 
-/* Loading skeleton */
-.skeleton {
-background: linear-gradient(90deg, var(–border) 25%, var(–surface2) 50%, var(–border) 75%);
-background-size: 200% 100%;
-animation: shimmer 1.5s infinite;
-border-radius: 3px;
-height: 11px;
-width: 54px;
-display: inline-block;
-vertical-align: middle;
-}
+  /* Loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 3px;
+    height: 11px;
+    width: 54px;
+    display: inline-block;
+    vertical-align: middle;
+  }
 
-@keyframes shimmer {
-0%   { background-position: 200% 0; }
-100% { background-position: -200% 0; }
-}
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
 
-footer {
-border-top: 1px solid var(–border);
-padding: 11px 28px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 10px;
-color: var(–muted);
-background: var(–surface);
-}
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 11px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface);
+  }
 
-.notice { font-style: italic; }
+  .notice { font-style: italic; }
 
-.sortable { cursor: pointer; user-select: none; }
-.sortable:hover { color: var(–text); }
-.sortable.active { color: var(–accent); }
-
-.name-spark { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
-.spark { line-height: 0; opacity: 0.85; }
-
-```
-.main-content { grid-template-columns: 1fr; }
-.panel { border-right: none; border-bottom: 1px solid var(--border); }
-```
-
-}
+  @media (max-width: 900px) {
+    .main-content { grid-template-columns: 1fr; }
+    .panel { border-right: none; border-bottom: 1px solid var(--border); }
+  }
 </style>
-
 </head>
 <body>
 
@@ -428,7 +417,6 @@ background: var(–surface);
 </header>
 
 <!-- Summary Bar -->
-
 <div class="summary-bar" id="summary-bar">
   <div class="summary-card">
     <span class="summary-label">Long Book P&L</span>
@@ -456,11 +444,9 @@ background: var(–surface);
   </div>
 </div>
 
-<div id="market-banner" class="market-banner">Showing last session close prices · Market closed</div>
 <div class="main-content">
 
   <!-- LONG BOOK -->
-
   <div class="panel">
     <div class="panel-header">
       <span class="panel-title long">▲ LONG BOOK</span>
@@ -468,16 +454,15 @@ background: var(–surface);
     </div>
     <div class="col-header">
       <span>Ticker</span>
-      <span data-sort="name">Name ↕</span>
-      <span data-sort="weight">Wt ↕</span>
+      <span>Name</span>
+      <span>Weight</span>
       <span>Price</span>
-      <span data-sort="change">Chg% ↕</span>
+      <span>Chg%</span>
     </div>
     <div id="long-holdings"></div>
   </div>
 
   <!-- SHORT BOOK -->
-
   <div class="panel">
     <div class="panel-header">
       <span class="panel-title short">▼ SHORT BOOK</span>
@@ -485,10 +470,10 @@ background: var(–surface);
     </div>
     <div class="col-header">
       <span>Ticker</span>
-      <span data-sort="name">Name ↕</span>
-      <span data-sort="weight">Wt ↕</span>
+      <span>Name</span>
+      <span>Weight</span>
       <span>Price</span>
-      <span data-sort="change">Chg% ↕</span>
+      <span>Chg%</span>
     </div>
     <div id="short-holdings"></div>
   </div>
@@ -612,7 +597,8 @@ async function fetchHoldings() {
     }
 
     return true;
-  } catch {
+  } catch(e) {
+    console.warn('Holdings fetch failed, using fallback:', e);
     return false;
   }
 }
@@ -660,361 +646,427 @@ function loadFallback() {
   CASH_WEIGHT = 21.15;
 }
 
+// ── Yahoo Finance price fetch ──────────────────────────────────────────────────
+const PROXIES = [
+  t => `https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`,
+  t => `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
+  t => `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
+];
 
-// ── Batch Yahoo quote fetch (1 request for ALL US tickers) ───────────────────
-async function fetchBatchQuotes(symbols) {
-  if (!symbols.length) return {};
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(','))}`;
-  const proxies = [
-    () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r=>r.json()).then(j=>JSON.parse(j.contents)),
-    () => fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r=>r.json()),
-  ];
-  for (const proxy of proxies) {
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 8000);
-      const data = await proxy();
-      clearTimeout(t);
-      const results = data?.quoteResponse?.result ?? [];
-      const map = {};
-      results.forEach(q => {
-        if (q?.regularMarketPrice) {
-          map[q.symbol] = {
-            price:  q.regularMarketPrice,
-            change: q.regularMarketChangePercent ?? 0,
-            prev:   q.regularMarketPreviousClose ?? null,
-          };
-        }
-      });
-      if (Object.keys(map).length) return map;
-    } catch {}
-  }
-  return {};
+async function tryProxy(ticker, proxyFn, isWrapped) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 5000);
+  const res   = await fetch(proxyFn(ticker), { signal: ctrl.signal });
+  clearTimeout(timer);
+  const raw  = await res.json();
+  const data = isWrapped ? JSON.parse(raw.contents) : raw;
+  const meta = data?.chart?.result?.[0]?.meta;
+  if (!meta) return null;
+  const price  = meta.regularMarketPrice;
+  const prev   = meta.chartPreviousClose || meta.previousClose;
+  const change = prev ? ((price - prev) / prev) * 100 : 0;
+  return { price, change, prev };
 }
 
-// ── Single ticker fetch (intl tickers) ───────────────────────────────────────
-async function fetchSingleQuote(yTicker) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=1d`;
-  const proxies = [
-    () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r=>r.json()).then(j=>JSON.parse(j.contents)),
-    () => fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r=>r.json()),
-  ];
-  for (const proxy of proxies) {
-    try {
+async function fetchQuote(yTicker) {
+  // Race all proxies simultaneously — first valid response wins
+  const races = PROXIES.map((fn, i) =>
+    tryProxy(yTicker, fn, i === 1).catch(() => null)
+  );
+  try {
+    // Promise.any resolves with first non-null result
+    const result = await Promise.any(
+      races.map(p => p.then(r => { if (!r) throw new Error('no data'); return r; }))
+    );
+    return result;
+  } catch {
+    return null;
+  }
+}
+
+// ── ORR ETF price fetch ────────────────────────────────────────────────────────
+async function fetchORRPrice() {
+  // Try multiple Yahoo endpoints — v8/chart, then v7/quote (better for thin ETFs)
+  const attempts = [
+    // v8 chart via allorigins
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/ORR?interval=1d&range=1d`;
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 6000);
-      const data = await proxy();
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
       clearTimeout(t);
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (!meta?.regularMarketPrice) continue;
+      const j = await res.json();
+      const d = JSON.parse(j.contents);
+      const meta = d?.chart?.result?.[0]?.meta;
+      if (!meta?.regularMarketPrice) return null;
       const price = meta.regularMarketPrice;
       const prev  = meta.chartPreviousClose || meta.previousClose;
       return { price, change: prev ? ((price - prev) / prev) * 100 : 0 };
-    } catch {}
-  }
-  return null;
-}
-
-// ── Sparkline fetch (5-day daily closes) ─────────────────────────────────────
-async function fetchSparkline(yTicker) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=5d`;
-  const proxies = [
-    () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r=>r.json()).then(j=>JSON.parse(j.contents)),
-    () => fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r=>r.json()),
+    },
+    // v7 quote via allorigins
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      const j = await res.json();
+      const d = JSON.parse(j.contents);
+      const q = d?.quoteResponse?.result?.[0];
+      if (!q?.regularMarketPrice) return null;
+      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+    },
+    // corsproxy fallback
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      const d = await res.json();
+      const q = d?.quoteResponse?.result?.[0];
+      if (!q?.regularMarketPrice) return null;
+      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+    },
   ];
-  for (const proxy of proxies) {
+
+  for (const attempt of attempts) {
     try {
-      const data   = await proxy();
-      const closes = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close?.filter(v => v != null);
-      if (closes?.length >= 2) return closes;
-    } catch {}
+      const result = await attempt();
+      if (!result) continue;
+      const { price, change } = result;
+      document.getElementById('orr-nav').textContent = '$' + price.toFixed(2);
+      const badge = document.getElementById('orr-change-badge');
+      const sign  = change >= 0 ? '+' : '';
+      badge.textContent = `${sign}${change.toFixed(2)}%`;
+      badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
+      return;
+    } catch { /* try next */ }
   }
-  return null;
+  // All failed — show N/A gracefully
+  document.getElementById('orr-nav').textContent = 'N/A';
+  document.getElementById('orr-change-badge').textContent = '—';
+  document.getElementById('orr-change-badge').className = 'orr-change-badge flat';
 }
 
-// ── LocalStorage cache (works when market is closed) ─────────────────────────
-const LS_PRICE = 'orr_prices_v4';
-const LS_SPARK = 'orr_sparks_v4';
 
-function saveCache() {
-  try { localStorage.setItem(LS_PRICE, JSON.stringify({ ts: Date.now(), data: priceCache })); } catch {}
-}
-function loadCache() {
-  try {
-    const raw = localStorage.getItem(LS_PRICE);
-    if (!raw) return false;
-    const { ts, data } = JSON.parse(raw);
-    if ((Date.now() - ts) > 64800000) return false; // 18h expiry
-    Object.assign(priceCache, data);
-    return true;
-  } catch { return false; }
-}
-function saveSparks(s) {
-  try { localStorage.setItem(LS_SPARK, JSON.stringify({ ts: Date.now(), data: s })); } catch {}
-}
-function loadSparks() {
-  try {
-    const raw = localStorage.getItem(LS_SPARK);
-    if (!raw) return null;
-    const { ts, data } = JSON.parse(raw);
-    return (Date.now() - ts) < 86400000 ? data : null;
-  } catch { return null; }
+function formatChange(c) {
+  if (c === null || c === undefined) return '—';
+  const sign = c >= 0 ? '+' : '';
+  return `${sign}${c.toFixed(2)}%`;
 }
 
-// ── Sparkline SVG renderer ────────────────────────────────────────────────────
-const sparkCache = {};
-
-function sparkSVG(closes, positive) {
-  if (!closes || closes.length < 2) return '';
-  const W = 64, H = 20, P = 2;
-  const mn = Math.min(...closes), mx = Math.max(...closes), rng = mx - mn || 1;
-  const pts = closes.map((v, i) => {
-    const x = P + (i / (closes.length - 1)) * (W - P * 2);
-    const y = H - P - ((v - mn) / rng) * (H - P * 2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const col = positive ? '#0a7c4e' : '#c0392b';
-  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+function changeClass(c) {
+  if (c === null) return 'flat';
+  if (c > 0.02)  return 'up';
+  if (c < -0.02) return 'down';
+  return 'flat';
 }
 
-// ── Sort ──────────────────────────────────────────────────────────────────────
-let sortCol = 'weight', sortDir = -1;
-
-function sortedArr(arr, isShort) {
-  return [...arr].sort((a, b) => {
-    if (sortCol === 'weight') return sortDir * (Math.abs(b.weight) - Math.abs(a.weight));
-    if (sortCol === 'name')   return sortDir * a.name.localeCompare(b.name);
-    if (sortCol === 'change') {
-      const getC = h => { const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker); const c = priceCache[k]?.change ?? -999; return isShort ? -c : c; };
-      return sortDir * (getC(b) - getC(a));
-    }
-    return 0;
-  });
+function barWidth(c) {
+  if (!c) return 0;
+  return Math.min(Math.abs(c) * 25, 100);
 }
 
-function setSort(col) {
-  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
-  document.querySelectorAll('.col-header .sortable').forEach(el => {
-    el.classList.toggle('active', el.dataset.col === sortCol);
-    el.textContent = el.dataset.label + (sortCol === el.dataset.col ? (sortDir === -1 ? ' ↓' : ' ↑') : ' ↕');
-  });
-  reorderRows();
-  updateSummary();
+function formatPrice(p) {
+  if (!p) return '—';
+  return p >= 100 ? p.toFixed(2) : p.toFixed(3);
 }
 
-function reorderRows() {
-  const longEl  = document.getElementById('long-holdings');
-  const shortEl = document.getElementById('short-holdings');
-  sortedArr(LONGS,  false).forEach(h => { const r = document.getElementById(safeId(h.ticker)); if (r) longEl.appendChild(r); });
-  sortedArr(SHORTS, true).forEach(h  => { const r = document.getElementById(safeId(h.ticker)); if (r) shortEl.appendChild(r); });
+// Safe ID for DOM (tickers like "9435 JP" need sanitizing)
+function safeId(ticker) {
+  return 'row-' + ticker.replace(/[^a-zA-Z0-9]/g, '_');
 }
 
-// ── Render helpers ────────────────────────────────────────────────────────────
-function fmtChg(c)  { if (c == null) return '—'; return (c >= 0 ? '+' : '') + c.toFixed(2) + '%'; }
-function chgCls(c)  { if (c == null) return 'flat'; if (c > 0.02) return 'up'; if (c < -0.02) return 'down'; return 'flat'; }
-function barW(c)    { return c ? Math.min(Math.abs(c) * 25, 100) : 0; }
-function fmtPx(p)   { if (!p) return '—'; return p >= 100 ? p.toFixed(2) : p.toFixed(3); }
-function safeId(t)  { return 'row-' + t.replace(/[^a-zA-Z0-9]/g, '_'); }
-
-function renderRow(h, isShort) {
-  const key      = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-  const cached   = priceCache[key];
-  const price    = cached?.price  ?? null;
+function renderRow(holding, isShort) {
+  // Intl tickers use raw ticker as cache key; US tickers use yTicker
+  const cacheKey = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
+  const cached   = priceCache[cacheKey];
+  const weight   = Math.abs(holding.weight);
   const change   = cached?.change ?? null;
+  const price    = cached?.price  ?? null;
   const isStatic = cached?.isStatic ?? false;
-  const canFetch = !!h.yTicker;
-  const fund     = isShort ? (change != null ? -change : null) : change;
-  const cc       = chgCls(fund);
-  const disp     = h.ticker.includes(' ') ? h.ticker.split(' ')[0] : h.ticker;
-  const spark    = sparkCache[key];
-  const weight   = Math.abs(h.weight);
+  const canFetch = !!holding.yTicker;
 
-  let pHtml, cHtml;
+  const fundImpact = isShort ? (change !== null ? -change : null) : change;
+  const cc = changeClass(fundImpact);
+  const bw = barWidth(change);
+
+  const displayTicker = holding.ticker.includes(' ')
+    ? holding.ticker.split(' ')[0]
+    : holding.ticker;
+
+  let priceHtml, changeHtml;
   if (price) {
-    pHtml = fmtPx(price);
-    if (isStatic && change == null)  { cHtml = '<span class="skeleton"></span>'; }
-    else if (isStatic) { const d = isShort ? -change : change; cHtml = `<span title="Prior session">${d >= 0 ? '+' : ''}${d.toFixed(2)}%</span>`; }
-    else { cHtml = fmtChg(isShort && change != null ? -change : change); }
+    priceHtml = formatPrice(price);
+    if (isStatic && change === null) {
+      // Have static price but no change yet — show skeleton for change
+      changeHtml = `<span class="skeleton"></span>`;
+    } else if (isStatic) {
+      // Prior day change loaded — show it with a "P" (prev) indicator
+      const sign = (isShort ? -change : change) >= 0 ? '+' : '';
+      const displayChange = isShort ? -change : change;
+      changeHtml = `<span title="Prior day change">${sign}${displayChange.toFixed(2)}%</span>`;
+    } else {
+      changeHtml = formatChange(isShort && change !== null ? -change : change);
+    }
   } else if (canFetch) {
-    pHtml = '<span class="skeleton"></span>';
-    cHtml = '<span class="skeleton"></span>';
+    priceHtml  = `<span class="skeleton"></span>`;
+    changeHtml = `<span class="skeleton"></span>`;
   } else {
-    pHtml = '<span style="color:var(--neutral);font-size:9px">—</span>';
-    cHtml = '—';
+    priceHtml  = `<span style="color:var(--neutral);font-size:9px">—</span>`;
+    changeHtml = `—`;
   }
 
-  const sparkHtml = spark
-    ? `<div class="spark">${sparkSVG(spark, (fund ?? 0) >= 0)}</div>`
-    : `<div class="bar-track"><div class="bar-fill ${cc}" style="width:${barW(change)}%"></div></div>`;
-
-  return `<div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(h.ticker)}">
-    <div><div class="ticker" title="${h.ticker}">${disp}</div></div>
-    <div><div class="name-spark"><div class="name">${h.name}</div>${sparkHtml}</div></div>
-    <div class="weight">${weight.toFixed(2)}%</div>
-    <div class="price ${price ? '' : 'loading'}">${pHtml}</div>
-    <div class="change ${isStatic && change == null ? 'loading' : cc} ${price ? '' : 'loading'}">${cHtml}</div>
-  </div>`;
+  return `
+    <div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(holding.ticker)}">
+      <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
+      <div>
+        <div class="name">${holding.name}</div>
+        <div class="bar-track"><div class="bar-fill ${isStatic && change !== null ? cc : ''}" style="width:${isStatic && change !== null ? bw : 0}%"></div></div>
+      </div>
+      <div class="weight">${weight.toFixed(2)}%</div>
+      <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
+      <div class="change ${isStatic && change === null ? 'loading' : cc} ${price ? '' : 'loading'}">${changeHtml}</div>
+    </div>`;
 }
 
-// ── Debounced render ──────────────────────────────────────────────────────────
+// ── Debounced render scheduler ─────────────────────────────────────────────────
 let renderPending = false;
 function scheduleRender() {
   if (renderPending) return;
   renderPending = true;
-  (typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : requestAnimationFrame)(() => {
-    renderPending = false;
-    renderAll();
-  });
+  const fn = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : requestAnimationFrame;
+  fn(() => { renderPending = false; renderAll(); });
 }
 
-// ── Full render (first load) / in-place update (subsequent) ──────────────────
+// ── Initial full render (builds DOM structure once) ───────────────────────────
 function renderAll() {
-  if (!LONGS.length) return;
   const longEl  = document.getElementById('long-holdings');
   const shortEl = document.getElementById('short-holdings');
-  const isFirst = !document.getElementById(safeId(LONGS[0].ticker));
 
-  if (isFirst) {
-    longEl.innerHTML = `<div class="cash-row"><span class="cash-label">CASH &amp; OTHER</span><span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span></div>`;
-    sortedArr(LONGS,  false).forEach(h => { longEl.innerHTML  += renderRow(h, false); });
-    shortEl.innerHTML = sortedArr(SHORTS, true).map(h => renderRow(h, true)).join('');
+  // Only do full innerHTML rebuild on first render (rows don't exist yet)
+  const isFirstRender = !document.getElementById(safeId(LONGS[0]?.ticker || '__none__'));
+
+  if (isFirstRender) {
+    longEl.innerHTML = `
+      <div class="cash-row">
+        <span class="cash-label">CASH &amp; OTHER</span>
+        <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
+      </div>`;
+    LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
+    shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
   } else {
-    [...LONGS.map(h => [h, false]), ...SHORTS.map(h => [h, true])].forEach(([h, s]) => patchRow(h, s));
+    // In-place updates — only touch cells that may have changed
+    [...LONGS.map(h => [h, false]), ...SHORTS.map(h => [h, true])].forEach(([h, isShort]) => {
+      updateRowInPlace(h, isShort);
+    });
   }
+
   updateSummary();
 }
 
-// ── In-place patch (only update price/change cells) ───────────────────────────
-function patchRow(h, isShort) {
-  const row = document.getElementById(safeId(h.ticker));
+// ── In-place row update — only rewrites price + change cells ─────────────────
+function updateRowInPlace(holding, isShort) {
+  const row = document.getElementById(safeId(holding.ticker));
   if (!row) return;
-  const key      = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-  const cached   = priceCache[key];
-  const price    = cached?.price  ?? null;
-  const change   = cached?.change ?? null;
-  const isStatic = cached?.isStatic ?? false;
-  const fund     = isShort ? (change != null ? -change : null) : change;
-  const cc       = chgCls(fund);
 
-  // Swap bar → sparkline if newly loaded
-  const spark    = sparkCache[key];
-  const nameCol  = row.children[1].firstChild;
-  if (spark && nameCol.querySelector('.bar-track')) {
-    const sd = document.createElement('div');
-    sd.className = 'spark';
-    sd.innerHTML = sparkSVG(spark, (fund ?? 0) >= 0);
-    nameCol.querySelector('.bar-track').replaceWith(sd);
-  } else if (!spark) {
-    const bf = nameCol.querySelector('.bar-fill');
-    if (bf) { bf.className = `bar-fill ${cc}`; bf.style.width = `${barW(change)}%`; }
-  }
+  const cacheKey  = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
+  const cached    = priceCache[cacheKey];
+  const change    = cached?.change ?? null;
+  const price     = cached?.price  ?? null;
+  const isStatic  = cached?.isStatic ?? false;
 
-  if (!price) return;
-  row.children[3].textContent = fmtPx(price);
-  row.children[3].className   = 'price';
-  const cc4 = row.children[4];
-  if (isStatic && change == null) {
-    cc4.innerHTML = '<span class="skeleton"></span>';
-    cc4.className = 'change loading';
-  } else if (isStatic) {
-    const d = isShort ? -change : change;
-    cc4.textContent = (d >= 0 ? '+' : '') + d.toFixed(2) + '%';
-    cc4.className   = `change ${cc}`;
-    cc4.title       = 'Prior session';
-  } else {
-    cc4.textContent = fmtChg(isShort && change != null ? -change : change);
-    cc4.className   = `change ${cc}`;
+  const fundImpact = isShort ? (change !== null ? -change : null) : change;
+  const cc  = changeClass(fundImpact);
+  const bw  = barWidth(change);
+
+  // Price cell (index 3)
+  const priceCell  = row.children[3];
+  const changeCell = row.children[4];
+  const barFill    = row.querySelector('.bar-fill');
+
+  if (price) {
+    priceCell.textContent = formatPrice(price);
+    priceCell.className   = 'price';
+
+    if (isStatic && change === null) {
+      changeCell.innerHTML   = '<span class="skeleton"></span>';
+      changeCell.className   = 'change loading';
+    } else if (isStatic) {
+      const sign = (isShort ? -change : change) >= 0 ? '+' : '';
+      const displayChange = isShort ? -change : change;
+      changeCell.textContent = `${sign}${displayChange.toFixed(2)}%`;
+      changeCell.className   = `change ${cc}`;
+      changeCell.title       = 'Prior day change';
+    } else {
+      changeCell.textContent = formatChange(isShort && change !== null ? -change : change);
+      changeCell.className   = `change ${cc}`;
+    }
+
+    if (barFill) {
+      barFill.className = `bar-fill ${isStatic && change !== null ? cc : ''}`;
+      barFill.style.width = `${isStatic && change !== null ? bw : 0}%`;
+    }
   }
 }
 
-// ── Summary bar ───────────────────────────────────────────────────────────────
 function updateSummary() {
-  let lp = 0, lw = 0, sp = 0, sw = 0, win = 0, lose = 0;
+  let longPnl = 0, longW = 0;
+  let shortPnl = 0, shortW = 0;
+  let winners = 0, losers = 0;
 
   LONGS.forEach(h => {
-    const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-    const c = priceCache[k]?.change;
-    if (c != null) { lp += (h.weight / 100) * c; lw += h.weight; if (c > 0.02) win++; else if (c < -0.02) lose++; }
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c = priceCache[key]?.change;
+    if (c !== null && c !== undefined) {
+      longPnl += (h.weight / 100) * c;
+      longW += h.weight;
+      if (c > 0.02) winners++; else if (c < -0.02) losers++;
+    }
   });
+
   SHORTS.forEach(h => {
-    const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-    const c = priceCache[k]?.change;
-    const aw = Math.abs(h.weight);
-    if (c != null) { sp += (aw / 100) * (-c); sw += aw; if (-c > 0.02) win++; else if (-c < -0.02) lose++; }
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c = priceCache[key]?.change;
+    const absW = Math.abs(h.weight);
+    if (c !== null && c !== undefined) {
+      shortPnl += (absW / 100) * (-c);
+      shortW += absW;
+      if (-c > 0.02) winners++; else if (-c < -0.02) losers++;
+    }
   });
 
-  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker);
-  const pend = all.length - all.filter(h => { const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker); return priceCache[k] != null; }).length;
-  const net  = lp + sp;
-  const fmt  = v => (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + 'bps';
-  const setEl = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; el.className = cls; } };
+  const allFetchable = [...LONGS, ...SHORTS].filter(h => h.yTicker);
+  const loadedCount  = allFetchable.filter(h => {
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    return priceCache[key] !== undefined;
+  }).length;
+  const pending      = allFetchable.length - loadedCount;
+  const net          = longPnl + shortPnl;
 
-  setEl('long-pnl',  lw ? fmt(lp) : '--', `summary-value ${lp >= 0 ? 'long' : 'short'}`);
-  setEl('short-pnl', sw ? fmt(sp) : '--', `summary-value ${sp >= 0 ? 'long' : 'short'}`);
-  setEl('net-pnl',   (lw && sw) ? fmt(net) : '--', `summary-value ${net >= 0 ? 'long' : 'short'}`);
-  document.getElementById('win-loss').textContent = pend > 0 ? `${win}W · ${lose}L · ${pend}?` : `${win}W · ${lose}L`;
+  const fmt = (v, digits=3) => {
+    const sign = v >= 0 ? '+' : '';
+    return `${sign}${(v * 100).toFixed(digits)}bps`;
+  };
 
-  // Top mover
-  let top = null, topI = 0;
-  [...LONGS, ...SHORTS].forEach(h => {
-    const k  = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-    const c  = priceCache[k]?.change;
-    if (c == null) return;
-    const fc = h.weight < 0 ? -c : c;
-    const imp = Math.abs(fc * (Math.abs(h.weight) / 100));
-    if (imp > topI) { topI = imp; top = { h, fc }; }
+  document.getElementById('long-pnl').textContent  = longW  ? fmt(longPnl)  : '--';
+  document.getElementById('short-pnl').textContent = shortW ? fmt(shortPnl) : '--';
+  document.getElementById('net-pnl').textContent   = (longW && shortW) ? fmt(net) : '--';
+
+  document.getElementById('long-pnl').className  = `summary-value ${longPnl  >= 0 ? 'long' : 'short'}`;
+  document.getElementById('short-pnl').className = `summary-value ${shortPnl >= 0 ? 'long' : 'short'}`;
+  document.getElementById('net-pnl').className   = `summary-value ${net      >= 0 ? 'long' : 'short'}`;
+
+  document.getElementById('win-loss').textContent = pending > 0
+    ? `${winners}W · ${losers}L · ${pending}?`
+    : `${winners}W · ${losers}L`;
+
+  // Top mover by absolute fund impact
+  const allHoldings = [...LONGS, ...SHORTS];
+  let topMover = null, topImpact = 0;
+  allHoldings.forEach(h => {
+    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c = priceCache[key]?.change;
+    if (c === null || c === undefined) return;
+    const isShort = h.weight < 0;
+    const fundChg = isShort ? -c : c;
+    const impact = Math.abs(fundChg * (Math.abs(h.weight) / 100));
+    if (impact > topImpact) { topImpact = impact; topMover = { h, fundChg }; }
   });
-  if (top) {
-    const d = top.h.ticker.includes(' ') ? top.h.ticker.split(' ')[0] : top.h.ticker;
-    setEl('top-mover', `${d} ${top.fc >= 0 ? '+' : ''}${top.fc.toFixed(1)}%`, `summary-value ${top.fc >= 0 ? 'long' : 'short'}`);
+  const topEl = document.getElementById('top-mover');
+  if (topMover) {
+    const sign = topMover.fundChg >= 0 ? '+' : '';
+    const displayTicker = topMover.h.ticker.includes(' ') ? topMover.h.ticker.split(' ')[0] : topMover.h.ticker;
+    topEl.textContent = `${displayTicker} ${sign}${topMover.fundChg.toFixed(1)}%`;
+    topEl.className = `summary-value ${topMover.fundChg >= 0 ? 'long' : 'short'}`;
   } else {
-    setEl('top-mover', '--', 'summary-value neutral');
+    topEl.textContent = '--';
+    topEl.className = 'summary-value neutral';
   }
+  // Net long exposure
+  const grossLong  = LONGS.reduce((a, h) => a + h.weight, 0);
+  const grossShort = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
+  const netExposure = grossLong - grossShort;
+  const netEl = document.getElementById('net-exposure');
+  netEl.textContent = (netExposure >= 0 ? '+' : '') + netExposure.toFixed(1) + '%';
+  netEl.className = `summary-value ${netExposure >= 0 ? 'long' : 'short'}`;
 
-  // Net exposure
-  const gl = LONGS.reduce((a, h) => a + h.weight, 0);
-  const gs = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
-  const ne = gl - gs;
-  setEl('net-exposure', (ne >= 0 ? '+' : '') + ne.toFixed(1) + '%', `summary-value ${ne >= 0 ? 'long' : 'short'}`);
+  const now = new Date();
+  const et  = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
-  const et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  document.getElementById('long-stats').textContent  = `${LONGS.length} positions · ${lw.toFixed(0)}% AUM`;
-  document.getElementById('short-stats').textContent = `${SHORTS.length} positions · ${SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0).toFixed(0)}% gross short`;
-  document.getElementById('last-update').textContent = 'Updated ' + et.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ET';
+  const longFetchable = LONGS.filter(h => h.yTicker).length;
+  const shortFetchable = SHORTS.filter(h => h.yTicker).length;
+  document.getElementById('long-stats').innerHTML  = `${LONGS.length} positions (${longFetchable} quoted) · ${longW.toFixed(0)}% AUM`;
+  document.getElementById('short-stats').innerHTML = `${SHORTS.length} positions · ${SHORTS.reduce((a,h)=>a+Math.abs(h.weight),0).toFixed(0)}% gross short`;
+
+  document.getElementById('last-update').textContent =
+    'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
-// ── Main fetch cycle (1 batch request for all US tickers) ─────────────────────
+async function fetchTicker(holding) {
+  if (!holding.yTicker || holding.isIntl) return;
+  const prevCached = priceCache[holding.yTicker];
+  const result     = await fetchQuote(holding.yTicker);
+  if (result) {
+    priceCache[holding.yTicker] = result;
+    // Flash animation on price change
+    if (prevCached) {
+      const row = document.getElementById(safeId(holding.ticker));
+      if (row) {
+        const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
+        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+      }
+    }
+    scheduleRender();
+  }
+}
+
+// ── One-time fetch for intl tickers (prior day % change only) ─────────────────
+async function fetchIntlTickers() {
+  const intl = [...LONGS, ...SHORTS].filter(h => h.isIntl && h.yTicker);
+  const BATCH = 8;
+  for (let i = 0; i < intl.length; i += BATCH) {
+    const batch = intl.slice(i, i + BATCH);
+    await Promise.allSettled(batch.map(async h => {
+      try {
+        const result = await fetchQuote(h.yTicker);
+        if (result) {
+          const existing = priceCache[h.ticker];
+          priceCache[h.ticker] = {
+            price: existing?.price ?? result.price,
+            change: result.change,
+            isStatic: true,
+          };
+          scheduleRender();
+        }
+      } catch { /* silent */ }
+    }));
+    await new Promise(r => setTimeout(r, 300));
+  }
+}
+
 async function fetchAll() {
   document.getElementById('pulse-dot').classList.remove('paused');
   document.getElementById('live-label').textContent = 'FETCHING';
 
-  const us  = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
-  const map = await fetchBatchQuotes([...us.map(h => h.yTicker), 'ORR']);
+  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
+  let done   = 0;
+  const total = all.length + 1; // +1 for ORR
 
-  us.forEach(h => {
-    const q = map[h.yTicker];
-    if (!q) return;
-    const prev = priceCache[h.yTicker];
-    priceCache[h.yTicker] = q;
-    if (prev?.price) {
-      const row = document.getElementById(safeId(h.ticker));
-      if (row) {
-        const dir = q.price > prev.price ? 'flash-up' : q.price < prev.price ? 'flash-down' : '';
-        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
-      }
-    }
-  });
+  const onDone = () => {
+    done++;
+    document.getElementById('live-label').textContent = `${done}/${total}`;
+    scheduleRender();
+  };
 
-  // ORR price
-  const oq = map['ORR'];
-  if (oq) {
-    document.getElementById('orr-nav').textContent = '$' + oq.price.toFixed(2);
-    const b = document.getElementById('orr-change-badge');
-    b.textContent = (oq.change >= 0 ? '+' : '') + oq.change.toFixed(2) + '%';
-    b.className   = 'orr-change-badge ' + (oq.change > 0.02 ? 'up' : oq.change < -0.02 ? 'down' : 'flat');
-  }
+  const jobs = [
+    fetchORRPrice().then(onDone),
+    ...all.map(h => fetchTicker(h).then(onDone)),
+  ];
 
-  saveCache();
+  await Promise.allSettled(jobs);
+
   document.getElementById('live-label').textContent = 'LIVE';
   scheduleRender();
 
@@ -1025,66 +1077,23 @@ async function fetchAll() {
   refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
 }
 
-// ── Intl tickers — one-time prior-session % change ───────────────────────────
-async function fetchIntlTickers() {
-  const intl  = [...LONGS, ...SHORTS].filter(h => h.isIntl && h.yTicker);
-  const BATCH = 8;
-  for (let i = 0; i < intl.length; i += BATCH) {
-    await Promise.allSettled(intl.slice(i, i + BATCH).map(async h => {
-      try {
-        const r = await fetchSingleQuote(h.yTicker);
-        if (r) {
-          priceCache[h.ticker] = { price: priceCache[h.ticker]?.price ?? r.price, change: r.change, isStatic: true };
-          scheduleRender();
-        }
-      } catch {}
-    }));
-    await new Promise(r => setTimeout(r, 300));
-  }
-  saveCache();
-}
-
-// ── Sparklines — background, cached 24h ──────────────────────────────────────
-async function fetchSparklines() {
-  const saved = loadSparks();
-  if (saved) { Object.assign(sparkCache, saved); scheduleRender(); return; }
-  const us    = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
-  const BATCH = 6;
-  for (let i = 0; i < us.length; i += BATCH) {
-    await Promise.allSettled(us.slice(i, i + BATCH).map(async h => {
-      try {
-        const c = await fetchSparkline(h.yTicker);
-        if (c) { sparkCache[h.yTicker] = c; scheduleRender(); }
-      } catch {}
-    }));
-    await new Promise(r => setTimeout(r, 250));
-  }
-  saveSparks(sparkCache);
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────────────────────────
 (async () => {
-  document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--muted);font-size:12px">Loading holdings from militiaetf.com...</div>';
-  document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--muted);font-size:12px">Loading holdings from militiaetf.com...</div>';
-
-  const hadCache = loadCache();
-  const savedSparks = loadSparks();
-  if (savedSparks) Object.assign(sparkCache, savedSparks);
+  // Show loading state
+  document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
+  document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
 
   const ok = await fetchHoldings();
   if (!ok) {
     loadFallback();
-    document.querySelector('footer span').textContent = '⚠ Fallback holdings · Prices: Yahoo Finance';
+    document.querySelector('footer span').textContent =
+      '⚠ FALLBACK DATA (militiaetf.com unreachable) · Prices: Yahoo Finance · Auto-refresh 60s';
   }
 
-  if (hadCache) document.getElementById('live-label').textContent = 'CACHED';
-  renderAll();
-
-  fetchAll();
-  fetchIntlTickers();
-  setTimeout(fetchSparklines, 1500);
+  renderAll(); // Show skeleton rows immediately
+  fetchAll();  // Live US tickers — recurring
+  fetchIntlTickers(); // Intl prior-day % change — one time only
 })();
 </script>
-
 </body>
 </html>
