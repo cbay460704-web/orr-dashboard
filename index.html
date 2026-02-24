@@ -1121,6 +1121,7 @@ async function fetchSparklines() {
   if (hadCache) { document.getElementById('live-label').textContent = 'CACHED'; document.getElementById('market-banner').classList.remove('hidden'); }
   renderAll();
 
+
   initSorting();
   fetchAll();
   fetchIntlTickers();
