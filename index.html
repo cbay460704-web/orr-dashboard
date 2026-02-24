@@ -481,7 +481,7 @@
 </div>
 
 <footer>
-  <span>DATA · Yahoo Finance via Cloudflare Worker · Auto-refresh every 60s during market hours</span>
+  <span>DATA · Yahoo Finance (15-min delay) · Auto-refresh every 60s during market hours</span>
   <span class="notice">For informational purposes only. Not investment advice.</span>
 </footer>
 
@@ -593,7 +593,7 @@ async function fetchHoldings() {
 
     if (holdingsDate) {
       document.querySelector('footer span').textContent =
-        `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance via Worker · Auto-refresh 60s`;
+        `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance (15-min delay) · Auto-refresh 60s`;
     }
 
     return true;
@@ -646,54 +646,94 @@ function loadFallback() {
   CASH_WEIGHT = 21.15;
 }
 
-// ── Yahoo Finance price fetch via Cloudflare Worker ────────────────────────────
-// Deploy the worker (cloudflare-worker.js) and paste your URL here:
-const WORKER_URL = 'https://bold-sunset-dcb1.cday46074.workers.dev/';
+// ── Yahoo Finance price fetch ──────────────────────────────────────────────────
+const PROXIES = [
+  t => `https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`,
+  t => `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
+  t => `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
+];
+
+async function tryProxy(ticker, proxyFn, isWrapped) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 5000);
+  const res   = await fetch(proxyFn(ticker), { signal: ctrl.signal });
+  clearTimeout(timer);
+  const raw  = await res.json();
+  const data = isWrapped ? JSON.parse(raw.contents) : raw;
+  const meta = data?.chart?.result?.[0]?.meta;
+  if (!meta) return null;
+  const price  = meta.regularMarketPrice;
+  const prev   = meta.chartPreviousClose || meta.previousClose;
+  const change = prev ? ((price - prev) / prev) * 100 : 0;
+  return { price, change, prev };
+}
 
 async function fetchQuote(yTicker) {
+  // Race all proxies simultaneously — first valid response wins
+  const races = PROXIES.map((fn, i) =>
+    tryProxy(yTicker, fn, i === 1).catch(() => null)
+  );
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    const res = await fetch(`${WORKER_URL}/quote?t=${encodeURIComponent(yTicker)}`, { signal: ctrl.signal });
-    clearTimeout(timer);
-    const data = await res.json();
-    if (data.error || !data.price) return null;
-    return { price: data.price, change: data.change, prev: data.prev };
+    // Promise.any resolves with first non-null result
+    const result = await Promise.any(
+      races.map(p => p.then(r => { if (!r) throw new Error('no data'); return r; }))
+    );
+    return result;
   } catch {
     return null;
   }
 }
 
-// Batch fetch — up to 20 tickers per call
-async function fetchQuotesBatch(yTickers) {
-  if (yTickers.length === 0) return {};
-  const results = {};
-  // Split into chunks of 20 (worker limit)
-  for (let i = 0; i < yTickers.length; i += 20) {
-    const batch = yTickers.slice(i, i + 20);
-    try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 15000);
-      const res = await fetch(`${WORKER_URL}/quotes?t=${batch.map(encodeURIComponent).join(',')}`, { signal: ctrl.signal });
-      clearTimeout(timer);
-      const data = await res.json();
-      if (data.quotes) {
-        for (const [ticker, q] of Object.entries(data.quotes)) {
-          if (q.price && !q.error) {
-            results[ticker] = { price: q.price, change: q.change, prev: q.prev };
-          }
-        }
-      }
-    } catch { /* continue to next batch */ }
-  }
-  return results;
-}
-
 // ── ORR ETF price fetch ────────────────────────────────────────────────────────
 async function fetchORRPrice() {
-  try {
-    const result = await fetchQuote('ORR');
-    if (result) {
+  // Try multiple Yahoo endpoints — v8/chart, then v7/quote (better for thin ETFs)
+  const attempts = [
+    // v8 chart via allorigins
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/ORR?interval=1d&range=1d`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      const j = await res.json();
+      const d = JSON.parse(j.contents);
+      const meta = d?.chart?.result?.[0]?.meta;
+      if (!meta?.regularMarketPrice) return null;
+      const price = meta.regularMarketPrice;
+      const prev  = meta.chartPreviousClose || meta.previousClose;
+      return { price, change: prev ? ((price - prev) / prev) * 100 : 0 };
+    },
+    // v7 quote via allorigins
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      const j = await res.json();
+      const d = JSON.parse(j.contents);
+      const q = d?.quoteResponse?.result?.[0];
+      if (!q?.regularMarketPrice) return null;
+      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+    },
+    // corsproxy fallback
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      const d = await res.json();
+      const q = d?.quoteResponse?.result?.[0];
+      if (!q?.regularMarketPrice) return null;
+      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+    },
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      const result = await attempt();
+      if (!result) continue;
       const { price, change } = result;
       document.getElementById('orr-nav').textContent = '$' + price.toFixed(2);
       const badge = document.getElementById('orr-change-badge');
@@ -701,8 +741,9 @@ async function fetchORRPrice() {
       badge.textContent = `${sign}${change.toFixed(2)}%`;
       badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
       return;
-    }
-  } catch { /* fall through */ }
+    } catch { /* try next */ }
+  }
+  // All failed — show N/A gracefully
   document.getElementById('orr-nav').textContent = 'N/A';
   document.getElementById('orr-change-badge').textContent = '—';
   document.getElementById('orr-change-badge').className = 'orr-change-badge flat';
@@ -782,7 +823,7 @@ function renderRow(holding, isShort) {
       <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
       <div>
         <div class="name">${holding.name}</div>
-        <div class="bar-track"><div class="bar-fill ${change !== null ? cc : ''}" style="width:${change !== null ? bw : 0}%"></div></div>
+        <div class="bar-track"><div class="bar-fill ${isStatic && change !== null ? cc : ''}" style="width:${isStatic && change !== null ? bw : 0}%"></div></div>
       </div>
       <div class="weight">${weight.toFixed(2)}%</div>
       <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
@@ -808,13 +849,12 @@ function renderAll() {
   const isFirstRender = !document.getElementById(safeId(LONGS[0]?.ticker || '__none__'));
 
   if (isFirstRender) {
-    let longHtml = LONGS.map(h => renderRow(h, false)).join('');
-    longHtml += `
+    longEl.innerHTML = `
       <div class="cash-row">
         <span class="cash-label">CASH &amp; OTHER</span>
         <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
       </div>`;
-    longEl.innerHTML = longHtml;
+    LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
     shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
   } else {
     // In-place updates — only touch cells that may have changed
@@ -865,8 +905,8 @@ function updateRowInPlace(holding, isShort) {
     }
 
     if (barFill) {
-      barFill.className = `bar-fill ${change !== null ? cc : ''}`;
-      barFill.style.width = `${change !== null ? bw : 0}%`;
+      barFill.className = `bar-fill ${isStatic && change !== null ? cc : ''}`;
+      barFill.style.width = `${isStatic && change !== null ? bw : 0}%`;
     }
   }
 }
@@ -964,54 +1004,68 @@ function updateSummary() {
     'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
+async function fetchTicker(holding) {
+  if (!holding.yTicker || holding.isIntl) return;
+  const prevCached = priceCache[holding.yTicker];
+  const result     = await fetchQuote(holding.yTicker);
+  if (result) {
+    priceCache[holding.yTicker] = result;
+    // Flash animation on price change
+    if (prevCached) {
+      const row = document.getElementById(safeId(holding.ticker));
+      if (row) {
+        const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
+        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+      }
+    }
+    scheduleRender();
+  }
+}
+
 // ── One-time fetch for intl tickers (prior day % change only) ─────────────────
 async function fetchIntlTickers() {
   const intl = [...LONGS, ...SHORTS].filter(h => h.isIntl && h.yTicker);
-  if (intl.length === 0) return;
-
-  const yTickerList = intl.map(h => h.yTicker);
-  const batchResults = await fetchQuotesBatch(yTickerList);
-
-  for (const h of intl) {
-    const result = batchResults[h.yTicker.toUpperCase()];
-    if (!result) continue;
-    const existing = priceCache[h.ticker];
-    priceCache[h.ticker] = {
-      price: existing?.price ?? result.price,
-      change: result.change,
-      isStatic: true,
-    };
+  const BATCH = 8;
+  for (let i = 0; i < intl.length; i += BATCH) {
+    const batch = intl.slice(i, i + BATCH);
+    await Promise.allSettled(batch.map(async h => {
+      try {
+        const result = await fetchQuote(h.yTicker);
+        if (result) {
+          const existing = priceCache[h.ticker];
+          priceCache[h.ticker] = {
+            price: existing?.price ?? result.price,
+            change: result.change,
+            isStatic: true,
+          };
+          scheduleRender();
+        }
+      } catch { /* silent */ }
+    }));
+    await new Promise(r => setTimeout(r, 300));
   }
-  scheduleRender();
 }
 
 async function fetchAll() {
   document.getElementById('pulse-dot').classList.remove('paused');
   document.getElementById('live-label').textContent = 'FETCHING';
 
-  // Fetch ORR NAV
-  await fetchORRPrice();
-  scheduleRender();
+  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
+  let done   = 0;
+  const total = all.length + 1; // +1 for ORR
 
-  // Batch fetch all US tickers
-  const usTickers = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
-  const yTickerList = usTickers.map(h => h.yTicker);
-  const batchResults = await fetchQuotesBatch(yTickerList);
+  const onDone = () => {
+    done++;
+    document.getElementById('live-label').textContent = `${done}/${total}`;
+    scheduleRender();
+  };
 
-  // Apply results to cache with flash animations
-  for (const h of usTickers) {
-    const result = batchResults[h.yTicker.toUpperCase()];
-    if (!result) continue;
-    const prevCached = priceCache[h.yTicker];
-    priceCache[h.yTicker] = result;
-    if (prevCached) {
-      const row = document.getElementById(safeId(h.ticker));
-      if (row) {
-        const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
-        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
-      }
-    }
-  }
+  const jobs = [
+    fetchORRPrice().then(onDone),
+    ...all.map(h => fetchTicker(h).then(onDone)),
+  ];
+
+  await Promise.allSettled(jobs);
 
   document.getElementById('live-label').textContent = 'LIVE';
   scheduleRender();
@@ -1033,7 +1087,7 @@ async function fetchAll() {
   if (!ok) {
     loadFallback();
     document.querySelector('footer span').textContent =
-      '⚠ FALLBACK DATA (militiaetf.com unreachable) · Prices: Yahoo Finance via Worker · Auto-refresh 60s';
+      '⚠ FALLBACK DATA (militiaetf.com unreachable) · Prices: Yahoo Finance · Auto-refresh 60s';
   }
 
   renderAll(); // Show skeleton rows immediately
