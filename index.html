@@ -509,10 +509,12 @@ const YAHOO_SUFFIX_MAP = {
 function yahooTicker(rawTicker) {
   // Already a clean US ticker (no spaces, no exchange suffix)
   if (!rawTicker.includes(' ')) return rawTicker;
-  // Format: "9435 JP" or "BNP FP"
+  // Format: "9435 JP" or "WALMEX* MM"
   const parts = rawTicker.trim().split(/\s+/);
   if (parts.length === 2) {
-    const [symbol, exchange] = parts;
+    let [symbol, exchange] = parts;
+    // Strip Bloomberg conventions: trailing * (most liquid class), /A /B share classes
+    symbol = symbol.replace(/\*$/, '');
     const suffix = YAHOO_SUFFIX_MAP[exchange];
     if (suffix) return symbol + suffix;
   }
@@ -520,233 +522,243 @@ function yahooTicker(rawTicker) {
 }
 
 // ── Parse militiaetf.com holdings table ───────────────────────────────────────
-async function fetchHoldings() {
-  document.getElementById('live-label').textContent = 'LOADING HOLDINGS';
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://militiaetf.com/')}`;
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10000);
-    const res  = await fetch(proxyUrl, { signal: ctrl.signal });
-    clearTimeout(timer);
-    const json = await res.json();
-    const html = json.contents;
-
-    // Parse HTML string into a DOM
-    const parser = new DOMParser();
-    const doc    = parser.parseFromString(html, 'text/html');
-
-    // Find the Fund Holdings table — look for table with "% of Net Assets" header
-    let holdingsTable = null;
-    for (const table of doc.querySelectorAll('table')) {
-      const headers = [...table.querySelectorAll('th')].map(th => th.textContent.trim());
-      if (headers.some(h => h.includes('Net Assets'))) {
-        holdingsTable = table;
-        break;
-      }
-    }
-
-    if (!holdingsTable) throw new Error('Holdings table not found');
-
-    const rows = [...holdingsTable.querySelectorAll('tbody tr')];
-    const parsed = [];
-
-    for (const row of rows) {
-      const cells = [...row.querySelectorAll('td')].map(td => td.textContent.trim());
-      if (cells.length < 7) continue;
-
-      const rawTicker = cells[0];
-      const name      = cells[1];
-      const shares    = parseFloat(cells[3]?.replace(/,/g, '')) || 0;
-      const staticPrice = parseFloat(cells[4]?.replace(/,/g, '')) || null; // price from holdings table
-      const weight    = parseFloat(cells[6]) || 0; // % of Net Assets
-      const date      = cells[7] || '';
-
-      // Skip cash, JPY, forwards
-      if (!rawTicker || rawTicker === 'Cash&Other' || rawTicker === 'JPY') continue;
-      if (name.includes('FWD') || name.includes('JAPANESE YEN')) continue;
-
-      if (!holdingsDate && date) holdingsDate = date;
-
-      const yTicker = yahooTicker(rawTicker);
-
-      // For non-US tickers: mark as intl, pre-seed with static price from holdings table,
-      // but keep yTicker so we can do a one-time fetch for prior-day % change
-      const isIntl = rawTicker.includes(' ');
-      if (isIntl && staticPrice) {
-        priceCache[rawTicker] = { price: staticPrice, change: null, isStatic: true };
-      }
-
-      parsed.push({ ticker: rawTicker, yTicker: isIntl ? yTicker : yTicker, name, weight, shares, isIntl: isIntl || false });
-    }
-
-    // Find cash row
-    for (const row of rows) {
-      const cells = [...row.querySelectorAll('td')].map(td => td.textContent.trim());
-      if (cells[0] === 'Cash&Other') {
-        CASH_WEIGHT = parseFloat(cells[6]) || 21.15;
-        break;
-      }
-    }
-
-    LONGS  = parsed.filter(h => h.weight > 0).sort((a, b) => b.weight - a.weight);
-    SHORTS = parsed.filter(h => h.weight < 0).sort((a, b) => a.weight - b.weight);
-
-    if (holdingsDate) {
-      document.querySelector('footer span').textContent =
-        `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance (15-min delay) · Auto-refresh 60s`;
-    }
-
-    return true;
-  } catch(e) {
-    console.warn('Holdings fetch failed, using fallback:', e);
-    return false;
-  }
-}
-
-// ── Fallback hardcoded holdings (used if site unreachable) ────────────────────
-function loadFallback() {
-  LONGS = [
-    { ticker:'TSM',  yTicker:'TSM',  name:'Taiwan Semiconductor',          weight:8.12  },
-    { ticker:'SFM',  yTicker:'SFM',  name:'Sprouts Farmers Market',        weight:7.47  },
-    { ticker:'ET',   yTicker:'ET',   name:'Energy Transfer LP',            weight:6.13  },
-    { ticker:'OMAB', yTicker:'OMAB', name:'Grupo Aeroportuario Centro N.', weight:5.23  },
-    { ticker:'PAC',  yTicker:'PAC',  name:'Grupo Aeroportuario Pacifico',  weight:5.15  },
-    { ticker:'GOOG', yTicker:'GOOG', name:'Alphabet Inc',                  weight:4.65  },
-    { ticker:'WES',  yTicker:'WES',  name:'Western Midstream Partners',    weight:4.18  },
-    { ticker:'AX',   yTicker:'AX',   name:'Axos Financial',                weight:3.99  },
-    { ticker:'AMZN', yTicker:'AMZN', name:'Amazon.com Inc',                weight:3.56  },
-    { ticker:'CSWC', yTicker:'CSWC', name:'Capital Southwest Corp',        weight:3.24  },
-    { ticker:'MPLX', yTicker:'MPLX', name:'MPLX LP',                       weight:2.91  },
-    { ticker:'CAAP', yTicker:'CAAP', name:'Corp America Airports',         weight:2.86  },
-    { ticker:'ASR',  yTicker:'ASR',  name:'Grupo Aeroportuario Sureste',   weight:2.00  },
-    { ticker:'TX',   yTicker:'TX',   name:'Ternium SA',                    weight:1.61  },
-    { ticker:'AGM',  yTicker:'AGM',  name:'Federal Agricultural Mortgage', weight:1.43  },
-    { ticker:'MEDP', yTicker:'MEDP', name:'Medpace Holdings',              weight:1.32  },
-    { ticker:'CCS',  yTicker:'CCS',  name:'Century Communities',           weight:1.21  },
-    { ticker:'MS',   yTicker:'MS',   name:'Morgan Stanley',                weight:1.02  },
-    { ticker:'PKBK', yTicker:'PKBK', name:'Parke Bancorp',                 weight:0.68  },
-  ];
-  SHORTS = [
-    { ticker:'QQQ',  yTicker:'QQQ',  name:'Invesco QQQ Trust',            weight:-20.19 },
-    { ticker:'IWM',  yTicker:'IWM',  name:'iShares Russell 2000 ETF',     weight:-20.07 },
-    { ticker:'SDIV', yTicker:'SDIV', name:'Global X SuperDividend ETF',   weight:-6.10  },
-    { ticker:'PSEC', yTicker:'PSEC', name:'Prospect Capital Corp',        weight:-1.63  },
-    { ticker:'RWAY', yTicker:'RWAY', name:'Runway Growth Finance',        weight:-1.52  },
-    { ticker:'OXLC', yTicker:'OXLC', name:'Oxford Lane Capital',          weight:-1.53  },
-    { ticker:'TPVG', yTicker:'TPVG', name:'TriplePoint Venture Growth',   weight:-1.41  },
-    { ticker:'SBUX', yTicker:'SBUX', name:'Starbucks Corp',               weight:-1.49  },
-    { ticker:'TCPC', yTicker:'TCPC', name:'BlackRock TCP Capital',        weight:-1.14  },
-    { ticker:'MSOS', yTicker:'MSOS', name:'AdvisorShares US Cannabis ETF',weight:-0.93  },
-    { ticker:'WFC',  yTicker:'WFC',  name:'Wells Fargo & Co',             weight:-0.99  },
-    { ticker:'DLR',  yTicker:'DLR',  name:'Digital Realty Trust',         weight:-1.01  },
-    { ticker:'CVNA', yTicker:'CVNA', name:'Carvana Co',                   weight:-1.05  },
-    { ticker:'BN',   yTicker:'BN',   name:'Brookfield Corp',              weight:-0.58  },
-    { ticker:'KMX',  yTicker:'KMX',  name:'CarMax Inc',                   weight:-0.41  },
-  ];
-  CASH_WEIGHT = 21.15;
-}
-
-// ── Yahoo Finance price fetch ──────────────────────────────────────────────────
-const PROXIES = [
-  t => `https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`,
-  t => `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
-  t => `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`)}`,
+// Tries multiple CORS proxies, caches successful parse in localStorage
+const HOLDINGS_PROXIES = [
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
 ];
 
-async function tryProxy(ticker, proxyFn, isWrapped) {
-  const ctrl  = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 5000);
-  const res   = await fetch(proxyFn(ticker), { signal: ctrl.signal });
-  clearTimeout(timer);
-  const raw  = await res.json();
-  const data = isWrapped ? JSON.parse(raw.contents) : raw;
-  const meta = data?.chart?.result?.[0]?.meta;
-  if (!meta) return null;
-  const price  = meta.regularMarketPrice;
-  const prev   = meta.chartPreviousClose || meta.previousClose;
-  const change = prev ? ((price - prev) / prev) * 100 : 0;
-  return { price, change, prev };
-}
-
-async function fetchQuote(yTicker) {
-  // Race all proxies simultaneously — first valid response wins
-  const races = PROXIES.map((fn, i) =>
-    tryProxy(yTicker, fn, i === 1).catch(() => null)
-  );
-  try {
-    // Promise.any resolves with first non-null result
-    const result = await Promise.any(
-      races.map(p => p.then(r => { if (!r) throw new Error('no data'); return r; }))
-    );
-    return result;
-  } catch {
-    return null;
+async function fetchHoldingsHTML() {
+  const target = 'https://militiaetf.com/';
+  for (let i = 0; i < HOLDINGS_PROXIES.length; i++) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 10000);
+      const res = await fetch(HOLDINGS_PROXIES[i](target), { signal: ctrl.signal });
+      clearTimeout(timer);
+      // allorigins wraps in JSON, others return raw HTML
+      const contentType = res.headers.get('content-type') || '';
+      let html;
+      if (contentType.includes('json')) {
+        const json = await res.json();
+        html = json.contents;
+      } else {
+        html = await res.text();
+      }
+      if (html && html.includes('<table')) return html;
+    } catch { /* try next proxy */ }
   }
+  return null;
 }
 
-// ── ORR ETF price fetch ────────────────────────────────────────────────────────
-async function fetchORRPrice() {
-  // Try multiple Yahoo endpoints — v8/chart, then v7/quote (better for thin ETFs)
+function parseHoldingsHTML(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  let holdingsTable = null;
+  for (const table of doc.querySelectorAll('table')) {
+    const headers = [...table.querySelectorAll('th')].map(th => th.textContent.trim());
+    if (headers.some(h => h.includes('Net Assets'))) {
+      holdingsTable = table;
+      break;
+    }
+  }
+  if (!holdingsTable) return null;
+
+  const rows = [...holdingsTable.querySelectorAll('tbody tr')];
+  const parsed = [];
+  let cashWeight = 0;
+  let date = '';
+
+  for (const row of rows) {
+    const cells = [...row.querySelectorAll('td')].map(td => td.textContent.trim());
+    if (cells.length < 7) continue;
+
+    const rawTicker = cells[0];
+    const name = cells[1];
+    const shares = parseFloat(cells[3]?.replace(/,/g, '')) || 0;
+    const staticPrice = parseFloat(cells[4]?.replace(/,/g, '')) || null;
+    const weight = parseFloat(cells[6]) || 0;
+    const rowDate = cells[7] || '';
+
+    if (rawTicker === 'Cash&Other') {
+      cashWeight = parseFloat(cells[6]) || 0;
+      continue;
+    }
+
+    if (!rawTicker || rawTicker === 'JPY') continue;
+    if (name.includes('FWD') || name.includes('JAPANESE YEN')) continue;
+
+    if (!date && rowDate) date = rowDate;
+
+    const yTicker = yahooTicker(rawTicker);
+    const isIntl = rawTicker.includes(' ');
+
+    parsed.push({ ticker: rawTicker, yTicker, name, weight, shares, isIntl, staticPrice });
+  }
+
+  return { holdings: parsed, cashWeight, date };
+}
+
+async function fetchHoldings() {
+  document.getElementById('live-label').textContent = 'LOADING HOLDINGS';
+
+  // Try live fetch from site
+  const html = await fetchHoldingsHTML();
+  let result = html ? parseHoldingsHTML(html) : null;
+
+  if (result && result.holdings.length > 0) {
+    // Cache to localStorage for offline fallback
+    try {
+      localStorage.setItem('orr-holdings-cache', JSON.stringify(result));
+      localStorage.setItem('orr-holdings-cache-ts', Date.now().toString());
+    } catch { /* storage full or unavailable */ }
+  } else {
+    // Try localStorage cache
+    try {
+      const cached = localStorage.getItem('orr-holdings-cache');
+      if (cached) {
+        result = JSON.parse(cached);
+        const ts = parseInt(localStorage.getItem('orr-holdings-cache-ts') || '0');
+        const age = Date.now() - ts;
+        const ageStr = age < 3600000 ? `${Math.round(age/60000)}m ago` :
+                       age < 86400000 ? `${Math.round(age/3600000)}h ago` :
+                       `${Math.round(age/86400000)}d ago`;
+        document.querySelector('footer span').textContent =
+          `⚠ CACHED DATA (site unreachable · cached ${ageStr}) · Prices: Yahoo Finance · Auto-refresh 60s`;
+      }
+    } catch { /* no cache available */ }
+  }
+
+  if (!result || result.holdings.length === 0) {
+    document.querySelector('footer span').textContent =
+      '⚠ Could not load holdings from militiaetf.com — please try refreshing';
+    return false;
+  }
+
+  // Populate state
+  holdingsDate = result.date;
+  CASH_WEIGHT = result.cashWeight;
+
+  for (const h of result.holdings) {
+    if (h.isIntl && h.staticPrice) {
+      priceCache[h.ticker] = { price: h.staticPrice, change: null, isStatic: true };
+    }
+  }
+
+  LONGS  = result.holdings.filter(h => h.weight > 0).sort((a, b) => b.weight - a.weight);
+  SHORTS = result.holdings.filter(h => h.weight < 0).sort((a, b) => a.weight - b.weight);
+
+  if (holdingsDate) {
+    document.querySelector('footer span').textContent =
+      `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance (15-min delay) · Auto-refresh 60s`;
+  }
+
+  return true;
+}
+
+// ── No hardcoded fallback — holdings always sourced from militiaetf.com ────────
+// If site is unreachable, localStorage cache is used instead (see fetchHoldings)
+
+// ── Yahoo Finance — BATCH quote fetch ──────────────────────────────────────────
+// One HTTP request for ALL tickers instead of 30+ individual calls.
+// /v7/finance/quote?symbols=A,B,C returns price + change for every symbol.
+
+async function fetchBatchQuotes(symbols) {
+  // Returns Map<symbol, {price, change}>
+  const results = new Map();
+  if (!symbols.length) return results;
+  const csv = symbols.join(',');
+
   const attempts = [
-    // v8 chart via allorigins
+    // allorigins proxy
     async () => {
-      const url = `https://query1.finance.yahoo.com/v8/finance/chart/ORR?interval=1d&range=1d`;
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 6000);
+      const t = setTimeout(() => ctrl.abort(), 10000);
       const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
       clearTimeout(t);
       const j = await res.json();
-      const d = JSON.parse(j.contents);
-      const meta = d?.chart?.result?.[0]?.meta;
-      if (!meta?.regularMarketPrice) return null;
-      const price = meta.regularMarketPrice;
-      const prev  = meta.chartPreviousClose || meta.previousClose;
-      return { price, change: prev ? ((price - prev) / prev) * 100 : 0 };
-    },
-    // v7 quote via allorigins
-    async () => {
-      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 6000);
-      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: ctrl.signal });
-      clearTimeout(t);
-      const j = await res.json();
-      const d = JSON.parse(j.contents);
-      const q = d?.quoteResponse?.result?.[0];
-      if (!q?.regularMarketPrice) return null;
-      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+      return JSON.parse(j.contents);
     },
     // corsproxy fallback
     async () => {
-      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=ORR`;
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 6000);
+      const t = setTimeout(() => ctrl.abort(), 10000);
       const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { signal: ctrl.signal });
       clearTimeout(t);
-      const d = await res.json();
-      const q = d?.quoteResponse?.result?.[0];
-      if (!q?.regularMarketPrice) return null;
-      return { price: q.regularMarketPrice, change: q.regularMarketChangePercent ?? 0 };
+      return await res.json();
+    },
+    // direct (works if no CORS issue, e.g. server-side)
+    async () => {
+      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}&corsDomain=finance.yahoo.com`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      return await res.json();
     },
   ];
 
   for (const attempt of attempts) {
     try {
-      const result = await attempt();
-      if (!result) continue;
-      const { price, change } = result;
-      document.getElementById('orr-nav').textContent = '$' + price.toFixed(2);
-      const badge = document.getElementById('orr-change-badge');
-      const sign  = change >= 0 ? '+' : '';
-      badge.textContent = `${sign}${change.toFixed(2)}%`;
-      badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
-      return;
+      const data = await attempt();
+      const quotes = data?.quoteResponse?.result;
+      if (!quotes?.length) continue;
+      for (const q of quotes) {
+        if (!q.regularMarketPrice) continue;
+        const price  = q.regularMarketPrice;
+        const prev   = q.regularMarketPreviousClose || q.previousClose;
+        const change = q.regularMarketChangePercent ?? (prev ? ((price - prev) / prev) * 100 : 0);
+        results.set(q.symbol, { price, change });
+      }
+      return results; // success — skip fallbacks
+    } catch { /* try next proxy */ }
+  }
+  return results;
+}
+
+// Single-ticker fallback via /v8/chart (used if batch misses some)
+async function fetchSingleQuote(yTicker, range = '1d') {
+  const urls = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=${range}`)}`,
+    `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=${range}`)}`,
+  ];
+  for (let i = 0; i < urls.length; i++) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(urls[i], { signal: ctrl.signal });
+      clearTimeout(timer);
+      const raw = await res.json();
+      const data = i === 0 ? JSON.parse(raw.contents) : raw;
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta) continue;
+      const price  = meta.regularMarketPrice;
+      const prev   = meta.chartPreviousClose || meta.previousClose;
+      const change = prev ? ((price - prev) / prev) * 100 : 0;
+      return { price, change };
     } catch { /* try next */ }
   }
-  // All failed — show N/A gracefully
-  document.getElementById('orr-nav').textContent = 'N/A';
-  document.getElementById('orr-change-badge').textContent = '—';
-  document.getElementById('orr-change-badge').className = 'orr-change-badge flat';
+  return null;
+}
+
+// ── ORR ETF price — included in the batch call now ────────────────────────────
+function updateORRDisplay(quote) {
+  if (!quote) {
+    document.getElementById('orr-nav').textContent = 'N/A';
+    document.getElementById('orr-change-badge').textContent = '—';
+    document.getElementById('orr-change-badge').className = 'orr-change-badge flat';
+    return;
+  }
+  const { price, change } = quote;
+  document.getElementById('orr-nav').textContent = '$' + price.toFixed(2);
+  const badge = document.getElementById('orr-change-badge');
+  const sign  = change >= 0 ? '+' : '';
+  badge.textContent = `${sign}${change.toFixed(2)}%`;
+  badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
 }
 
 
@@ -831,84 +843,20 @@ function renderRow(holding, isShort) {
     </div>`;
 }
 
-// ── Debounced render scheduler ─────────────────────────────────────────────────
-let renderPending = false;
-function scheduleRender() {
-  if (renderPending) return;
-  renderPending = true;
-  const fn = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : requestAnimationFrame;
-  fn(() => { renderPending = false; renderAll(); });
-}
-
-// ── Initial full render (builds DOM structure once) ───────────────────────────
 function renderAll() {
   const longEl  = document.getElementById('long-holdings');
   const shortEl = document.getElementById('short-holdings');
 
-  // Only do full innerHTML rebuild on first render (rows don't exist yet)
-  const isFirstRender = !document.getElementById(safeId(LONGS[0]?.ticker || '__none__'));
+  longEl.innerHTML = `
+    <div class="cash-row">
+      <span class="cash-label">CASH &amp; OTHER</span>
+      <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
+    </div>`;
 
-  if (isFirstRender) {
-    longEl.innerHTML = `
-      <div class="cash-row">
-        <span class="cash-label">CASH &amp; OTHER</span>
-        <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
-      </div>`;
-    LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
-    shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
-  } else {
-    // In-place updates — only touch cells that may have changed
-    [...LONGS.map(h => [h, false]), ...SHORTS.map(h => [h, true])].forEach(([h, isShort]) => {
-      updateRowInPlace(h, isShort);
-    });
-  }
+  LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
+  shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
 
   updateSummary();
-}
-
-// ── In-place row update — only rewrites price + change cells ─────────────────
-function updateRowInPlace(holding, isShort) {
-  const row = document.getElementById(safeId(holding.ticker));
-  if (!row) return;
-
-  const cacheKey  = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
-  const cached    = priceCache[cacheKey];
-  const change    = cached?.change ?? null;
-  const price     = cached?.price  ?? null;
-  const isStatic  = cached?.isStatic ?? false;
-
-  const fundImpact = isShort ? (change !== null ? -change : null) : change;
-  const cc  = changeClass(fundImpact);
-  const bw  = barWidth(change);
-
-  // Price cell (index 3)
-  const priceCell  = row.children[3];
-  const changeCell = row.children[4];
-  const barFill    = row.querySelector('.bar-fill');
-
-  if (price) {
-    priceCell.textContent = formatPrice(price);
-    priceCell.className   = 'price';
-
-    if (isStatic && change === null) {
-      changeCell.innerHTML   = '<span class="skeleton"></span>';
-      changeCell.className   = 'change loading';
-    } else if (isStatic) {
-      const sign = (isShort ? -change : change) >= 0 ? '+' : '';
-      const displayChange = isShort ? -change : change;
-      changeCell.textContent = `${sign}${displayChange.toFixed(2)}%`;
-      changeCell.className   = `change ${cc}`;
-      changeCell.title       = 'Prior day change';
-    } else {
-      changeCell.textContent = formatChange(isShort && change !== null ? -change : change);
-      changeCell.className   = `change ${cc}`;
-    }
-
-    if (barFill) {
-      barFill.className = `bar-fill ${isStatic && change !== null ? cc : ''}`;
-      barFill.style.width = `${isStatic && change !== null ? bw : 0}%`;
-    }
-  }
 }
 
 function updateSummary() {
@@ -939,7 +887,7 @@ function updateSummary() {
 
   const allFetchable = [...LONGS, ...SHORTS].filter(h => h.yTicker);
   const loadedCount  = allFetchable.filter(h => {
-    const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const key = h.isIntl ? h.ticker : h.yTicker;
     return priceCache[key] !== undefined;
   }).length;
   const pending      = allFetchable.length - loadedCount;
@@ -1004,76 +952,83 @@ function updateSummary() {
     'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
-async function fetchTicker(holding) {
-  if (!holding.yTicker || holding.isIntl) return;
-  const prevCached = priceCache[holding.yTicker];
-  const result     = await fetchQuote(holding.yTicker);
-  if (result) {
-    priceCache[holding.yTicker] = result;
-    // Flash animation on price change
-    if (prevCached) {
-      const row = document.getElementById(safeId(holding.ticker));
-      if (row) {
-        const dir = result.price > prevCached.price ? 'flash-up' : result.price < prevCached.price ? 'flash-down' : '';
-        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
-      }
-    }
-    scheduleRender();
-  }
-}
-
-// ── One-time fetch for intl tickers (prior day % change only) ─────────────────
-async function fetchIntlTickers() {
-  const intl = [...LONGS, ...SHORTS].filter(h => h.isIntl && h.yTicker);
-  const BATCH = 8;
-  for (let i = 0; i < intl.length; i += BATCH) {
-    const batch = intl.slice(i, i + BATCH);
-    await Promise.allSettled(batch.map(async h => {
-      try {
-        const result = await fetchQuote(h.yTicker);
-        if (result) {
-          const existing = priceCache[h.ticker];
-          priceCache[h.ticker] = {
-            price: existing?.price ?? result.price,
-            change: result.change,
-            isStatic: true,
-          };
-          scheduleRender();
-        }
-      } catch { /* silent */ }
-    }));
-    await new Promise(r => setTimeout(r, 300));
-  }
-}
-
+// ── Batch fetch: ALL tickers in 1-2 HTTP requests ─────────────────────────────
 async function fetchAll() {
   document.getElementById('pulse-dot').classList.remove('paused');
   document.getElementById('live-label').textContent = 'FETCHING';
 
-  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker && !h.isIntl);
-  let done   = 0;
-  const total = all.length + 1; // +1 for ORR
+  const allHoldings = [...LONGS, ...SHORTS];
 
-  const onDone = () => {
-    done++;
-    document.getElementById('live-label').textContent = `${done}/${total}`;
-    scheduleRender();
-  };
+  // Build symbol lists — US tickers + intl tickers + ORR, all in one batch
+  const usTickers   = allHoldings.filter(h => h.yTicker && !h.isIntl).map(h => h.yTicker);
+  const intlTickers = allHoldings.filter(h => h.yTicker && h.isIntl).map(h => h.yTicker);
+  const allSymbols  = ['ORR', ...usTickers, ...intlTickers];
 
-  const jobs = [
-    fetchORRPrice().then(onDone),
-    ...all.map(h => fetchTicker(h).then(onDone)),
-  ];
+  // Deduplicate
+  const uniqueSymbols = [...new Set(allSymbols)];
 
-  await Promise.allSettled(jobs);
+  document.getElementById('live-label').textContent = `0/${uniqueSymbols.length}`;
+
+  // ── Single batch request for everything ──
+  const batchResults = await fetchBatchQuotes(uniqueSymbols);
+
+  // ── Update ORR display ──
+  updateORRDisplay(batchResults.get('ORR') || null);
+
+  // ── Update US ticker cache with flash detection ──
+  for (const h of allHoldings.filter(h => h.yTicker && !h.isIntl)) {
+    const quote = batchResults.get(h.yTicker);
+    if (!quote) continue;
+    const prevCached = priceCache[h.yTicker];
+    priceCache[h.yTicker] = quote;
+    // Flash animation on price change
+    const row = document.getElementById(safeId(h.ticker));
+    if (row && prevCached) {
+      const dir = quote.price > prevCached.price ? 'flash-up' : quote.price < prevCached.price ? 'flash-down' : '';
+      if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+    }
+  }
+
+  // ── Update intl ticker cache ──
+  for (const h of allHoldings.filter(h => h.yTicker && h.isIntl)) {
+    const quote = batchResults.get(h.yTicker);
+    if (!quote) continue;
+    const existing = priceCache[h.ticker];
+    priceCache[h.ticker] = {
+      price: existing?.price ?? quote.price,
+      change: quote.change,
+      isStatic: true,
+    };
+  }
+
+  // ── Fallback: any symbols the batch missed, fetch individually ──
+  const missed = uniqueSymbols.filter(s => !batchResults.has(s) && s !== 'ORR');
+  if (missed.length > 0) {
+    document.getElementById('live-label').textContent = `FALLBACK ${missed.length}`;
+    await Promise.allSettled(missed.map(async sym => {
+      const h = allHoldings.find(h => h.yTicker === sym);
+      if (!h) return;
+      const range = h.isIntl ? '5d' : '1d';
+      const result = await fetchSingleQuote(sym, range);
+      if (!result) return;
+      if (h.isIntl) {
+        const existing = priceCache[h.ticker];
+        priceCache[h.ticker] = { price: existing?.price ?? result.price, change: result.change, isStatic: true };
+      } else {
+        priceCache[h.yTicker] = result;
+      }
+    }));
+  }
 
   document.getElementById('live-label').textContent = 'LIVE';
-  scheduleRender();
+  renderAll();
 
+  // Schedule next refresh
   clearTimeout(refreshTimer);
-  const et     = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  const mins   = et.getHours() * 60 + et.getMinutes();
-  const isOpen = et.getDay() >= 1 && et.getDay() <= 5 && mins >= 570 && mins < 960;
+  const et   = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const mins = et.getHours() * 60 + et.getMinutes();
+  const d    = et.getDay();
+  const isOpen = d >= 1 && d <= 5 && mins >= 570 && mins < 960;
   refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
 }
 
@@ -1085,14 +1040,17 @@ async function fetchAll() {
 
   const ok = await fetchHoldings();
   if (!ok) {
-    loadFallback();
-    document.querySelector('footer span').textContent =
-      '⚠ FALLBACK DATA (militiaetf.com unreachable) · Prices: Yahoo Finance · Auto-refresh 60s';
+    // fetchHoldings already tried localStorage cache and set footer message
+    // If still no data, show error state
+    if (LONGS.length === 0 && SHORTS.length === 0) {
+      document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+      document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+      return;
+    }
   }
 
   renderAll(); // Show skeleton rows immediately
-  fetchAll();  // Live US tickers — recurring
-  fetchIntlTickers(); // Intl prior-day % change — one time only
+  fetchAll();  // One batch call for everything — US, intl, and ORR
 })();
 </script>
 </body>
