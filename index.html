@@ -9,25 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #111827;
-    --surface: #1f2937;
-    --surface2: #374151;
-    --border: #4b5563;
-    --long: #4ade80;
-    --long-bg: rgba(74,222,128,0.15);
-    --long-dim: rgba(74,222,128,0.08);
-    --short: #f87171;
-    --short-bg: rgba(248,113,113,0.15);
-    --short-dim: rgba(248,113,113,0.08);
-    --neutral: #94a3b8;
-    --text: #f1f5f9;
-    --text2: #cbd5e1;
-    --muted: #94a3b8;
-    --accent: #60a5fa;
-    --cash: #fcd34d;
-    --cash-bg: rgba(251,191,36,0.15);
-    --header-bg: #0a0d14;
-    --header-text: #f8fafc;
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --surface2: #f1f3f5;
+    --border: #e0e4e8;
+    --long: #0a7c4e;
+    --long-bg: #e6f5ee;
+    --long-dim: rgba(10,124,78,0.07);
+    --short: #c0392b;
+    --short-bg: #fcecea;
+    --short-dim: rgba(192,57,43,0.06);
+    --neutral: #adb5bd;
+    --text: #1a1d23;
+    --text2: #495057;
+    --muted: #868e96;
+    --accent: #3b5bdb;
+    --cash: #c77a00;
+    --cash-bg: #fff3cd;
+    --header-bg: #1a1d23;
+    --header-text: #f8f9fa;
   }
 
 - { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,9 +111,9 @@ padding: 3px 9px;
 border-radius: 4px;
 }
 
-.orr-change-badge.up   { color: #4ade80; background: rgba(74,222,128,0.2); }
-.orr-change-badge.down { color: #f87171; background: rgba(248,113,113,0.2); }
-.orr-change-badge.flat { color: #94a3b8; background: #334155; }
+.orr-change-badge.up   { color: #2f9e6e; background: #1a3d2e; }
+.orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
+.orr-change-badge.flat { color: #868e96; background: #2c2f33; }
 
 .live-indicator {
 display: flex;
@@ -240,7 +240,7 @@ font-weight: 400;
 /* Holding rows */
 .holding-row {
 display: grid;
-grid-template-columns: 78px 1fr 68px 78px 68px 72px;
+grid-template-columns: 80px 1fr 72px 80px 70px;
 align-items: center;
 padding: 9px 22px;
 border-bottom: 1px solid var(–border);
@@ -252,8 +252,15 @@ gap: 8px;
 .holding-row.long-row:hover  { background: var(–long-dim); }
 .holding-row.short-row:hover { background: var(–short-dim); }
 
-@keyframes flashUp   { 0% { background: #052e16; } 100% { background: transparent; } }
-@keyframes flashDown { 0% { background: #450a0a; } 100% { background: transparent; } }
+@keyframes flashUp {
+0%   { background: #c3f0d8; }
+100% { background: transparent; }
+}
+
+@keyframes flashDown {
+0%   { background: #fad5d1; }
+100% { background: transparent; }
+}
 
 .holding-row.flash-up   { animation: flashUp   0.6s ease-out; }
 .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
@@ -304,9 +311,9 @@ padding: 2px 6px;
 border-radius: 3px;
 }
 
-.change.up,  .pnl.up   { color: var(–long);  background: var(–long-bg); }
-.change.down, .pnl.down { color: var(–short); background: var(–short-bg); }
-.change.flat, .pnl.flat { color: var(–muted); }
+.change.up   { color: var(–long);  background: var(–long-bg); }
+.change.down { color: var(–short); background: var(–short-bg); }
+.change.flat { color: var(–muted); }
 .change.loading { color: var(–neutral); }
 
 /* Mini bar */
@@ -325,7 +332,7 @@ overflow: hidden;
 /* Column headers */
 .col-header {
 display: grid;
-grid-template-columns: 78px 1fr 68px 78px 68px 72px;
+grid-template-columns: 80px 1fr 72px 80px 70px;
 padding: 7px 22px;
 gap: 8px;
 border-bottom: 1px solid var(–border);
@@ -382,16 +389,7 @@ background: var(–surface);
 
 .notice { font-style: italic; }
 
-.sr-only { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
-.change.loading, .pnl.loading { opacity: 0.7; }
 .sortable { cursor: pointer; user-select: none; }
-.pnl { font-family: ‘IBM Plex Mono’, monospace; font-size: 11px; font-weight: 600; text-align: right; padding: 2px 7px; border-radius: 3px; }
-.hidden { display: none !important; }
-.filter-bar { padding: 10px 22px; background: var(–bg); border-bottom: 1px solid var(–border); }
-#global-filter { width: 100%; padding: 9px 14px; background: var(–surface); border: 1px solid var(–border); border-radius: 6px; color: var(–text); font-size: 13px; font-family: ‘Inter’, sans-serif; outline: none; }
-#global-filter:focus { border-color: var(–accent); }
-#global-filter::placeholder { color: var(–muted); }
-.market-banner { background: var(–surface); color: var(–muted); padding: 8px 28px; font-size: 11.5px; text-align: center; border-bottom: 1px solid var(–border); font-weight: 500; }
 .sortable:hover { color: var(–text); }
 .sortable.active { color: var(–accent); }
 
@@ -456,14 +454,9 @@ background: var(–surface);
     <span class="summary-label">Net Long Exposure</span>
     <span class="summary-value neutral" id="net-exposure">--</span>
   </div>
-  <div class="summary-card">
-    <span class="summary-label">Gross Exposure</span>
-    <span class="summary-value neutral" id="gross-exposure">--</span>
-  </div>
 </div>
 
-<div id="market-banner" class="market-banner hidden">Showing last session close prices · Market closed</div>
-<div class="filter-bar"><label for="global-filter" class="sr-only">Filter holdings</label><input type="text" id="global-filter" placeholder="🔍  Filter tickers or names..." autocomplete="off"></div>
+<div id="market-banner" class="market-banner">Showing last session close prices · Market closed</div>
 <div class="main-content">
 
   <!-- LONG BOOK -->
@@ -479,7 +472,6 @@ background: var(–surface);
       <span data-sort="weight">Wt ↕</span>
       <span>Price</span>
       <span data-sort="change">Chg% ↕</span>
-      <span data-sort="pnl" class="sortable">Contrib ↕</span>
     </div>
     <div id="long-holdings"></div>
   </div>
@@ -497,7 +489,6 @@ background: var(–surface);
       <span data-sort="weight">Wt ↕</span>
       <span>Price</span>
       <span data-sort="change">Chg% ↕</span>
-      <span data-sort="pnl" class="sortable">Contrib ↕</span>
     </div>
     <div id="short-holdings"></div>
   </div>
@@ -790,20 +781,12 @@ function sparkSVG(closes, positive) {
 let sortCol = 'weight', sortDir = -1;
 
 function sortedArr(arr, isShort) {
-  const getKey     = h => h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-  const getFundChg = h => { const c = priceCache[getKey(h)]?.change; return c == null ? null : (isShort ? -c : c); };
-  const getPnlBps  = h => { const fc = getFundChg(h); return fc == null ? null : h.weight * fc; };
-
   return [...arr].sort((a, b) => {
     if (sortCol === 'weight') return sortDir * (Math.abs(b.weight) - Math.abs(a.weight));
     if (sortCol === 'name')   return sortDir * a.name.localeCompare(b.name);
-    if (sortCol === 'change' || sortCol === 'pnl') {
-      const aV = sortCol === 'change' ? getFundChg(a) : getPnlBps(a);
-      const bV = sortCol === 'change' ? getFundChg(b) : getPnlBps(b);
-      if (aV == null && bV == null) return 0;
-      if (aV == null) return 1;
-      if (bV == null) return -1;
-      return sortDir * (bV - aV);
+    if (sortCol === 'change') {
+      const getC = h => { const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker); const c = priceCache[k]?.change ?? -999; return isShort ? -c : c; };
+      return sortDir * (getC(b) - getC(a));
     }
     return 0;
   });
@@ -811,13 +794,12 @@ function sortedArr(arr, isShort) {
 
 function setSort(col) {
   if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
-  document.querySelectorAll('.col-header span[data-sort]').forEach(el => {
-    el.classList.toggle('active', el.dataset.sort === sortCol);
-    const base = el.textContent.replace(/ [↑↓↕]$/, '');
-    el.textContent = base + (el.dataset.sort === sortCol ? (sortDir === -1 ? ' ↓' : ' ↑') : ' ↕');
+  document.querySelectorAll('.col-header .sortable').forEach(el => {
+    el.classList.toggle('active', el.dataset.col === sortCol);
+    el.textContent = el.dataset.label + (sortCol === el.dataset.col ? (sortDir === -1 ? ' ↓' : ' ↑') : ' ↕');
   });
   reorderRows();
-  applyFilter();
+  updateSummary();
 }
 
 function reorderRows() {
@@ -827,32 +809,9 @@ function reorderRows() {
   sortedArr(SHORTS, true).forEach(h  => { const r = document.getElementById(safeId(h.ticker)); if (r) shortEl.appendChild(r); });
 }
 
-function initSorting() {
-  document.querySelectorAll('.col-header span[data-sort]').forEach(span => {
-    span.addEventListener('click', () => setSort(span.dataset.sort));
-  });
-}
-
-let currentFilter = '';
-function matchesFilter(h) {
-  const t = (currentFilter || '').trim().toLowerCase();
-  if (!t) return true;
-  return (h.ticker + ' ' + h.name).toLowerCase().includes(t);
-}
-function applyFilter() {
-  [...LONGS, ...SHORTS].forEach(h => {
-    const row = document.getElementById(safeId(h.ticker));
-    if (!row) return;
-    row.classList.toggle('hidden', !matchesFilter(h));
-  });
-  updateSummary();
-}
-
 // ── Render helpers ────────────────────────────────────────────────────────────
 function fmtChg(c)  { if (c == null) return '—'; return (c >= 0 ? '+' : '') + c.toFixed(2) + '%'; }
 function chgCls(c)  { if (c == null) return 'flat'; if (c > 0.02) return 'up'; if (c < -0.02) return 'down'; return 'flat'; }
-function fmtPnl(bps) { if (bps == null) return '—'; return (bps >= 0 ? '+' : '') + bps.toFixed(0) + 'bps'; }
-function pnlCls(bps) { if (bps == null) return 'flat'; return bps > 0 ? 'up' : bps < 0 ? 'down' : 'flat'; }
 function barW(c)    { return c ? Math.min(Math.abs(c) * 25, 100) : 0; }
 function fmtPx(p)   { if (!p) return '—'; return p >= 100 ? p.toFixed(2) : p.toFixed(3); }
 function safeId(t)  { return 'row-' + t.replace(/[^a-zA-Z0-9]/g, '_'); }
@@ -861,27 +820,39 @@ function renderRow(h, isShort) {
   const key      = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
   const cached   = priceCache[key];
   const price    = cached?.price  ?? null;
-  const chg      = cached?.change ?? null;
-  const fundChg  = chg == null ? null : (isShort ? -chg : chg);
-  const pnlBps   = fundChg == null ? null : (h.weight * fundChg);
+  const change   = cached?.change ?? null;
+  const isStatic = cached?.isStatic ?? false;
+  const canFetch = !!h.yTicker;
+  const fund     = isShort ? (change != null ? -change : null) : change;
+  const cc       = chgCls(fund);
   const disp     = h.ticker.includes(' ') ? h.ticker.split(' ')[0] : h.ticker;
   const spark    = sparkCache[key];
+  const weight   = Math.abs(h.weight);
+
+  let pHtml, cHtml;
+  if (price) {
+    pHtml = fmtPx(price);
+    if (isStatic && change == null)  { cHtml = '<span class="skeleton"></span>'; }
+    else if (isStatic) { const d = isShort ? -change : change; cHtml = `<span title="Prior session">${d >= 0 ? '+' : ''}${d.toFixed(2)}%</span>`; }
+    else { cHtml = fmtChg(isShort && change != null ? -change : change); }
+  } else if (canFetch) {
+    pHtml = '<span class="skeleton"></span>';
+    cHtml = '<span class="skeleton"></span>';
+  } else {
+    pHtml = '<span style="color:var(--neutral);font-size:9px">—</span>';
+    cHtml = '—';
+  }
 
   const sparkHtml = spark
-    ? `<div class="spark">${sparkSVG(spark, (fundChg ?? 0) >= 0)}</div>`
-    : `<div class="bar-track"><div class="bar-fill ${chgCls(fundChg)}" style="width:${chg ? Math.min(Math.abs(chg)*25,100) : 0}%"></div></div>`;
-
-  const priceHtml   = price ? price.toFixed(price >= 100 ? 2 : 3) : '<span class="skeleton"></span>';
-  const changeClass = fundChg == null ? 'flat loading' : chgCls(fundChg);
-  const pnlClass    = pnlBps  == null ? 'flat loading' : pnlCls(pnlBps);
+    ? `<div class="spark">${sparkSVG(spark, (fund ?? 0) >= 0)}</div>`
+    : `<div class="bar-track"><div class="bar-fill ${cc}" style="width:${barW(change)}%"></div></div>`;
 
   return `<div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(h.ticker)}">
-    <div><div class="ticker">${disp}</div></div>
+    <div><div class="ticker" title="${h.ticker}">${disp}</div></div>
     <div><div class="name-spark"><div class="name">${h.name}</div>${sparkHtml}</div></div>
-    <div class="weight">${Math.abs(h.weight).toFixed(2)}%</div>
-    <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
-    <div class="change ${changeClass}">${fmtChg(fundChg)}</div>
-    <div class="pnl ${pnlClass}">${fmtPnl(pnlBps)}</div>
+    <div class="weight">${weight.toFixed(2)}%</div>
+    <div class="price ${price ? '' : 'loading'}">${pHtml}</div>
+    <div class="change ${isStatic && change == null ? 'loading' : cc} ${price ? '' : 'loading'}">${cHtml}</div>
   </div>`;
 }
 
@@ -913,93 +884,83 @@ function renderAll() {
   updateSummary();
 }
 
-// ── In-place patch (selector-safe, no child-index assumptions) ───────────────
+// ── In-place patch (only update price/change cells) ───────────────────────────
 function patchRow(h, isShort) {
   const row = document.getElementById(safeId(h.ticker));
   if (!row) return;
-
-  const key     = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-  const cached  = priceCache[key];
-  const price   = cached?.price  ?? null;
-  const chg     = cached?.change ?? null;
-  const fundChg = chg == null ? null : (isShort ? -chg : chg);
-  const pnlBps  = fundChg == null ? null : (h.weight * fundChg);
-
-  // Keep filter visibility in sync
-  row.classList.toggle('hidden', !matchesFilter(h));
+  const key      = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+  const cached   = priceCache[key];
+  const price    = cached?.price  ?? null;
+  const change   = cached?.change ?? null;
+  const isStatic = cached?.isStatic ?? false;
+  const fund     = isShort ? (change != null ? -change : null) : change;
+  const cc       = chgCls(fund);
 
   // Swap bar → sparkline if newly loaded
-  const spark     = sparkCache[key];
-  const nameSpark = row.querySelector('.name-spark');
-  if (nameSpark && spark && !nameSpark.querySelector('.spark')) {
-    const existingBar = nameSpark.querySelector('.bar-track');
+  const spark    = sparkCache[key];
+  const nameCol  = row.children[1].firstChild;
+  if (spark && nameCol.querySelector('.bar-track')) {
     const sd = document.createElement('div');
     sd.className = 'spark';
-    sd.innerHTML = sparkSVG(spark, (fundChg ?? 0) >= 0);
-    if (existingBar) existingBar.replaceWith(sd); else nameSpark.appendChild(sd);
-  } else if (nameSpark && !spark) {
-    const bf = nameSpark.querySelector('.bar-fill');
-    if (bf) { bf.className = `bar-fill ${chgCls(fundChg)}`; bf.style.width = `${chg ? Math.min(Math.abs(chg)*25,100) : 0}%`; }
+    sd.innerHTML = sparkSVG(spark, (fund ?? 0) >= 0);
+    nameCol.querySelector('.bar-track').replaceWith(sd);
+  } else if (!spark) {
+    const bf = nameCol.querySelector('.bar-fill');
+    if (bf) { bf.className = `bar-fill ${cc}`; bf.style.width = `${barW(change)}%`; }
   }
 
-  // Price
-  const priceEl = row.querySelector('.price');
-  if (priceEl) {
-    priceEl.classList.toggle('loading', !price);
-    priceEl.innerHTML = price ? price.toFixed(price >= 100 ? 2 : 3) : '<span class="skeleton"></span>';
-  }
-
-  // Change
-  const chgEl = row.querySelector('.change');
-  if (chgEl) {
-    chgEl.className   = `change ${fundChg == null ? 'flat loading' : chgCls(fundChg)}`;
-    chgEl.textContent = fmtChg(fundChg);
-  }
-
-  // PnL
-  const pnlEl = row.querySelector('.pnl');
-  if (pnlEl) {
-    pnlEl.className   = `pnl ${pnlBps == null ? 'flat loading' : pnlCls(pnlBps)}`;
-    pnlEl.textContent = fmtPnl(pnlBps);
+  if (!price) return;
+  row.children[3].textContent = fmtPx(price);
+  row.children[3].className   = 'price';
+  const cc4 = row.children[4];
+  if (isStatic && change == null) {
+    cc4.innerHTML = '<span class="skeleton"></span>';
+    cc4.className = 'change loading';
+  } else if (isStatic) {
+    const d = isShort ? -change : change;
+    cc4.textContent = (d >= 0 ? '+' : '') + d.toFixed(2) + '%';
+    cc4.className   = `change ${cc}`;
+    cc4.title       = 'Prior session';
+  } else {
+    cc4.textContent = fmtChg(isShort && change != null ? -change : change);
+    cc4.className   = `change ${cc}`;
   }
 }
 
 // ── Summary bar ───────────────────────────────────────────────────────────────
 function updateSummary() {
-  // Use filtered holdings so summary matches what's visible
-  const longs  = LONGS.filter(matchesFilter);
-  const shorts = SHORTS.filter(matchesFilter);
-
-  const setEl = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; el.className = cls; } };
-  const getKey = h => h.isIntl ? h.ticker : (h.yTicker || h.ticker);
-
   let lp = 0, lw = 0, sp = 0, sw = 0, win = 0, lose = 0;
-  longs.forEach(h => {
-    const c = priceCache[getKey(h)]?.change;
+
+  LONGS.forEach(h => {
+    const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c = priceCache[k]?.change;
     if (c != null) { lp += (h.weight / 100) * c; lw += h.weight; if (c > 0.02) win++; else if (c < -0.02) lose++; }
   });
-  shorts.forEach(h => {
-    const c = priceCache[getKey(h)]?.change;
+  SHORTS.forEach(h => {
+    const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c = priceCache[k]?.change;
     const aw = Math.abs(h.weight);
     if (c != null) { sp += (aw / 100) * (-c); sw += aw; if (-c > 0.02) win++; else if (-c < -0.02) lose++; }
   });
 
-  const allVisible = [...longs, ...shorts].filter(h => h.yTicker);
-  const pend = allVisible.length - allVisible.filter(h => priceCache[getKey(h)] != null).length;
+  const all  = [...LONGS, ...SHORTS].filter(h => h.yTicker);
+  const pend = all.length - all.filter(h => { const k = h.isIntl ? h.ticker : (h.yTicker || h.ticker); return priceCache[k] != null; }).length;
   const net  = lp + sp;
   const fmt  = v => (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + 'bps';
+  const setEl = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; el.className = cls; } };
 
   setEl('long-pnl',  lw ? fmt(lp) : '--', `summary-value ${lp >= 0 ? 'long' : 'short'}`);
   setEl('short-pnl', sw ? fmt(sp) : '--', `summary-value ${sp >= 0 ? 'long' : 'short'}`);
   setEl('net-pnl',   (lw && sw) ? fmt(net) : '--', `summary-value ${net >= 0 ? 'long' : 'short'}`);
   document.getElementById('win-loss').textContent = pend > 0 ? `${win}W · ${lose}L · ${pend}?` : `${win}W · ${lose}L`;
 
-  // Top mover (from filtered set)
+  // Top mover
   let top = null, topI = 0;
-  [...longs, ...shorts].forEach(h => {
-    const c = priceCache[getKey(h)]?.change;
+  [...LONGS, ...SHORTS].forEach(h => {
+    const k  = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+    const c  = priceCache[k]?.change;
     if (c == null) return;
-    const fc  = h.weight < 0 ? -c : c;
+    const fc = h.weight < 0 ? -c : c;
     const imp = Math.abs(fc * (Math.abs(h.weight) / 100));
     if (imp > topI) { topI = imp; top = { h, fc }; }
   });
@@ -1010,16 +971,15 @@ function updateSummary() {
     setEl('top-mover', '--', 'summary-value neutral');
   }
 
-  // Exposure (always full portfolio, not filtered)
+  // Net exposure
   const gl = LONGS.reduce((a, h) => a + h.weight, 0);
   const gs = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
   const ne = gl - gs;
-  setEl('net-exposure',   (ne >= 0 ? '+' : '') + ne.toFixed(1) + '%', `summary-value ${ne >= 0 ? 'long' : 'short'}`);
-  setEl('gross-exposure', (gl + gs).toFixed(1) + '%', 'summary-value neutral');
+  setEl('net-exposure', (ne >= 0 ? '+' : '') + ne.toFixed(1) + '%', `summary-value ${ne >= 0 ? 'long' : 'short'}`);
 
   const et = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  document.getElementById('long-stats').textContent  = `${longs.length}${longs.length < LONGS.length ? '/' + LONGS.length : ''} positions · ${lw.toFixed(0)}% AUM`;
-  document.getElementById('short-stats').textContent = `${shorts.length}${shorts.length < SHORTS.length ? '/' + SHORTS.length : ''} positions · ${shorts.reduce((a,h) => a + Math.abs(h.weight), 0).toFixed(0)}% gross short`;
+  document.getElementById('long-stats').textContent  = `${LONGS.length} positions · ${lw.toFixed(0)}% AUM`;
+  document.getElementById('short-stats').textContent = `${SHORTS.length} positions · ${SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0).toFixed(0)}% gross short`;
   document.getElementById('last-update').textContent = 'Updated ' + et.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ET';
 }
 
@@ -1056,7 +1016,6 @@ async function fetchAll() {
 
   saveCache();
   document.getElementById('live-label').textContent = 'LIVE';
-  document.getElementById('market-banner').classList.add('hidden');
   scheduleRender();
 
   clearTimeout(refreshTimer);
@@ -1118,19 +1077,12 @@ async function fetchSparklines() {
     document.querySelector('footer span').textContent = '⚠ Fallback holdings · Prices: Yahoo Finance';
   }
 
-  if (hadCache) { document.getElementById('live-label').textContent = 'CACHED'; document.getElementById('market-banner').classList.remove('hidden'); }
+  if (hadCache) document.getElementById('live-label').textContent = 'CACHED';
   renderAll();
 
-
-  initSorting();
   fetchAll();
   fetchIntlTickers();
   setTimeout(fetchSparklines, 1500);
-
-  document.getElementById('global-filter').addEventListener('input', e => {
-    currentFilter = e.target.value;
-    applyFilter();
-  });
 })();
 </script>
 
