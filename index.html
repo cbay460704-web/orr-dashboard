@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -29,370 +30,385 @@
     --header-text: #f8f9fa;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘Inter’, sans-serif;
+font-size: 13px;
+min-height: 100vh;
+overflow-x: hidden;
+}
 
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 28px;
-    background: var(--header-bg);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 16px 28px;
+background: var(–header-bg);
+position: sticky;
+top: 0;
+z-index: 100;
+}
 
-  .logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    color: var(--header-text);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+.logo {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 20px;
+font-weight: 600;
+letter-spacing: 2px;
+color: var(–header-text);
+display: flex;
+align-items: center;
+gap: 14px;
+}
 
-  .logo-tag {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    color: #868e96;
-    letter-spacing: 1px;
-    border-left: 1px solid #343a40;
-    padding-left: 14px;
-  }
+.logo-tag {
+font-family: ‘Inter’, sans-serif;
+font-size: 11px;
+font-weight: 400;
+color: #868e96;
+letter-spacing: 1px;
+border-left: 1px solid #343a40;
+padding-left: 14px;
+}
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
+.header-right {
+display: flex;
+align-items: center;
+gap: 20px;
+}
 
-  .orr-price {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    border: 1px solid #343a40;
-    border-radius: 6px;
-    background: #212529;
-  }
+.orr-price {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 8px 16px;
+border: 1px solid #343a40;
+border-radius: 6px;
+background: #212529;
+}
 
-  .orr-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    color: #868e96;
-  }
+.orr-label {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 2px;
+color: #868e96;
+}
 
-  .orr-nav {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--header-text);
-  }
+.orr-nav {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 18px;
+font-weight: 600;
+color: var(–header-text);
+}
 
-  .orr-change-badge {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 4px;
-  }
+.orr-change-badge {
+font-size: 12px;
+font-weight: 600;
+padding: 3px 9px;
+border-radius: 4px;
+}
 
-  .orr-change-badge.up   { color: #2f9e6e; background: #1a3d2e; }
-  .orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
-  .orr-change-badge.flat { color: #868e96; background: #2c2f33; }
+.orr-change-badge.up   { color: #2f9e6e; background: #1a3d2e; }
+.orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
+.orr-change-badge.flat { color: #868e96; background: #2c2f33; }
 
-  .live-indicator {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #868e96;
-    letter-spacing: 0.5px;
-  }
+.live-indicator {
+display: flex;
+align-items: center;
+gap: 7px;
+font-size: 11px;
+font-weight: 500;
+color: #868e96;
+letter-spacing: 0.5px;
+}
 
-  .pulse {
-    width: 7px;
-    height: 7px;
-    background: #2f9e6e;
-    border-radius: 50%;
-    animation: pulse 1.4s ease-in-out infinite;
-  }
+.pulse {
+width: 7px;
+height: 7px;
+background: #2f9e6e;
+border-radius: 50%;
+animation: pulse 1.4s ease-in-out infinite;
+}
 
-  .pulse.paused { background: #f06b5d; animation: none; }
+.pulse.paused { background: #f06b5d; animation: none; }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.8); }
+}
 
-  #last-update {
-    font-size: 11px;
-    color: #868e96;
-  }
+#last-update {
+font-size: 11px;
+color: #868e96;
+}
 
-  .refresh-btn {
-    background: #212529;
-    border: 1px solid #343a40;
-    color: #adb5bd;
-    padding: 6px 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+.refresh-btn {
+background: #212529;
+border: 1px solid #343a40;
+color: #adb5bd;
+padding: 6px 14px;
+font-family: ‘Inter’, sans-serif;
+font-size: 11px;
+font-weight: 500;
+border-radius: 4px;
+cursor: pointer;
+transition: all 0.15s;
+}
 
-  .refresh-btn:hover { background: #343a40; color: #f8f9fa; }
+.refresh-btn:hover { background: #343a40; color: #f8f9fa; }
 
-  /* Summary bar */
-  .summary-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
+/* Summary bar */
+.summary-bar {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+border-bottom: 1px solid var(–border);
+background: var(–surface);
+}
 
-  .summary-card {
-    padding: 14px 22px;
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+.summary-card {
+padding: 14px 22px;
+border-right: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
 
-  .summary-card:last-child { border-right: none; }
+.summary-card:last-child { border-right: none; }
 
-  .summary-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
+.summary-label {
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.5px;
+color: var(–muted);
+text-transform: uppercase;
+}
 
-  .summary-value {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-  }
+.summary-value {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 20px;
+font-weight: 600;
+letter-spacing: -0.5px;
+}
 
-  .summary-value.long    { color: var(--long); }
-  .summary-value.short   { color: var(--short); }
-  .summary-value.neutral { color: var(--text); }
-  .summary-value.cash    { color: var(--cash); }
+.summary-value.long    { color: var(–long); }
+.summary-value.short   { color: var(–short); }
+.summary-value.neutral { color: var(–text); }
+.summary-value.cash    { color: var(–cash); }
 
-  /* Main grid */
-  .main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    min-height: calc(100vh - 140px);
-  }
+/* Main grid */
+.main-content {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0;
+min-height: calc(100vh - 140px);
+}
 
-  .panel { border-right: 1px solid var(--border); }
-  .panel:last-child { border-right: none; }
+.panel { border-right: 1px solid var(–border); }
+.panel:last-child { border-right: none; }
 
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 22px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 57px;
-    background: var(--bg);
-    z-index: 50;
-  }
+.panel-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 12px 22px;
+border-bottom: 1px solid var(–border);
+position: sticky;
+top: 57px;
+background: var(–bg);
+z-index: 50;
+}
 
-  .panel-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
+.panel-title {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 13px;
+font-weight: 600;
+letter-spacing: 1px;
+}
 
-  .panel-title.long  { color: var(--long); }
-  .panel-title.short { color: var(--short); }
+.panel-title.long  { color: var(–long); }
+.panel-title.short { color: var(–short); }
 
-  .panel-stats {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 400;
-  }
+.panel-stats {
+font-size: 11px;
+color: var(–muted);
+font-weight: 400;
+}
 
-  /* Holding rows */
-  .holding-row {
-    display: grid;
-    grid-template-columns: 80px 1fr 72px 80px 70px;
-    align-items: center;
-    padding: 9px 22px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-    gap: 8px;
-  }
+/* Holding rows */
+.holding-row {
+display: grid;
+grid-template-columns: 80px 1fr 72px 80px 70px 70px;
+align-items: center;
+padding: 9px 22px;
+border-bottom: 1px solid var(–border);
+transition: background 0.1s;
+gap: 8px;
+}
 
-  .holding-row:hover { background: var(--surface); }
-  .holding-row.long-row:hover  { background: var(--long-dim); }
-  .holding-row.short-row:hover { background: var(--short-dim); }
+.holding-row:hover { background: var(–surface); }
+.holding-row.long-row:hover  { background: var(–long-dim); }
+.holding-row.short-row:hover { background: var(–short-dim); }
 
-  @keyframes flashUp {
-    0%   { background: #c3f0d8; }
-    100% { background: transparent; }
-  }
+@keyframes flashUp {
+0%   { background: #c3f0d8; }
+100% { background: transparent; }
+}
 
-  @keyframes flashDown {
-    0%   { background: #fad5d1; }
-    100% { background: transparent; }
-  }
+@keyframes flashDown {
+0%   { background: #fad5d1; }
+100% { background: transparent; }
+}
 
-  .holding-row.flash-up   { animation: flashUp   0.6s ease-out; }
-  .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
+.holding-row.flash-up   { animation: flashUp   0.6s ease-out; }
+.holding-row.flash-down { animation: flashDown 0.6s ease-out; }
 
-  .ticker {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    font-size: 12px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.ticker {
+font-family: ‘IBM Plex Mono’, monospace;
+font-weight: 600;
+font-size: 12px;
+color: var(–text);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
 
-  .name {
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--text2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.name {
+font-size: 12px;
+font-weight: 400;
+color: var(–text2);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
 
-  .weight {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    text-align: right;
-    font-family: 'IBM Plex Mono', monospace;
-  }
+.weight {
+font-size: 11px;
+font-weight: 500;
+color: var(–muted);
+text-align: right;
+font-family: ‘IBM Plex Mono’, monospace;
+}
 
-  .price {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: right;
-    color: var(--text);
-  }
+.price {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 12px;
+font-weight: 600;
+text-align: right;
+color: var(–text);
+}
 
-  .price.loading { color: var(--neutral); }
+.price.loading { color: var(–neutral); }
 
-  .change {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    text-align: right;
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
+.change {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 11px;
+font-weight: 600;
+text-align: right;
+padding: 2px 6px;
+border-radius: 3px;
+}
 
-  .change.up   { color: var(--long);  background: var(--long-bg); }
-  .change.down { color: var(--short); background: var(--short-bg); }
-  .change.flat { color: var(--muted); }
-  .change.loading { color: var(--neutral); }
+.change.up   { color: var(–long);  background: var(–long-bg); }
+.change.down { color: var(–short); background: var(–short-bg); }
+.change.flat { color: var(–muted); }
+.change.loading { color: var(–neutral); }
 
-  /* Mini bar */
-  .bar-track {
-    height: 2px;
-    background: var(--border);
-    border-radius: 1px;
-    margin-top: 4px;
-    overflow: hidden;
-  }
+.ytd {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 11px;
+font-weight: 600;
+text-align: right;
+padding: 2px 6px;
+border-radius: 3px;
+}
 
-  .bar-fill { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
-  .bar-fill.up   { background: var(--long); }
-  .bar-fill.down { background: var(--short); }
+.ytd.up   { color: var(–long);  background: var(–long-bg); }
+.ytd.down { color: var(–short); background: var(–short-bg); }
+.ytd.flat { color: var(–muted); }
+.ytd.loading { color: var(–neutral); }
 
-  /* Column headers */
-  .col-header {
-    display: grid;
-    grid-template-columns: 80px 1fr 72px 80px 70px;
-    padding: 7px 22px;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    background: var(--surface2);
-  }
+/* Mini bar */
+.bar-track {
+height: 2px;
+background: var(–border);
+border-radius: 1px;
+margin-top: 4px;
+overflow: hidden;
+}
 
-  .col-header span:not(:first-child) { text-align: right; }
+.bar-fill { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
+.bar-fill.up   { background: var(–long); }
+.bar-fill.down { background: var(–short); }
 
-  /* Cash row */
-  .cash-row {
-    padding: 9px 22px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--cash-bg);
-  }
+/* Column headers */
+.col-header {
+display: grid;
+grid-template-columns: 80px 1fr 72px 80px 70px 70px;
+padding: 7px 22px;
+gap: 8px;
+border-bottom: 1px solid var(–border);
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.5px;
+color: var(–muted);
+text-transform: uppercase;
+background: var(–surface2);
+}
 
-  .cash-label  { color: var(--cash); font-weight: 600; font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
-  .cash-weight { color: var(--cash); font-size: 12px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
+.col-header span:not(:first-child) { text-align: right; }
 
-  /* Loading skeleton */
-  .skeleton {
-    background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 3px;
-    height: 11px;
-    width: 54px;
-    display: inline-block;
-    vertical-align: middle;
-  }
+/* Cash row */
+.cash-row {
+padding: 9px 22px;
+border-bottom: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: var(–cash-bg);
+}
 
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+.cash-label  { color: var(–cash); font-weight: 600; font-size: 12px; font-family: ‘IBM Plex Mono’, monospace; }
+.cash-weight { color: var(–cash); font-size: 12px; font-weight: 600; font-family: ‘IBM Plex Mono’, monospace; }
 
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 11px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10px;
-    color: var(--muted);
-    background: var(--surface);
-  }
+/* Loading skeleton */
+.skeleton {
+background: linear-gradient(90deg, var(–border) 25%, var(–surface2) 50%, var(–border) 75%);
+background-size: 200% 100%;
+animation: shimmer 1.5s infinite;
+border-radius: 3px;
+height: 11px;
+width: 54px;
+display: inline-block;
+vertical-align: middle;
+}
 
-  .notice { font-style: italic; }
+@keyframes shimmer {
+0%   { background-position: 200% 0; }
+100% { background-position: -200% 0; }
+}
 
-  @media (max-width: 900px) {
-    .main-content { grid-template-columns: 1fr; }
-    .panel { border-right: none; border-bottom: 1px solid var(--border); }
-  }
+footer {
+border-top: 1px solid var(–border);
+padding: 11px 28px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 10px;
+color: var(–muted);
+background: var(–surface);
+}
+
+.notice { font-style: italic; }
+
+@media (max-width: 900px) {
+.main-content { grid-template-columns: 1fr; }
+.panel { border-right: none; border-bottom: 1px solid var(–border); }
+}
 </style>
+
 </head>
 <body>
 
@@ -417,6 +433,7 @@
 </header>
 
 <!-- Summary Bar -->
+
 <div class="summary-bar" id="summary-bar">
   <div class="summary-card">
     <span class="summary-label">Long Book P&L</span>
@@ -447,6 +464,7 @@
 <div class="main-content">
 
   <!-- LONG BOOK -->
+
   <div class="panel">
     <div class="panel-header">
       <span class="panel-title long">▲ LONG BOOK</span>
@@ -458,11 +476,13 @@
       <span>Weight</span>
       <span>Price</span>
       <span>Chg%</span>
+      <span>YTD%</span>
     </div>
     <div id="long-holdings"></div>
   </div>
 
   <!-- SHORT BOOK -->
+
   <div class="panel">
     <div class="panel-header">
       <span class="panel-title short">▼ SHORT BOOK</span>
@@ -474,6 +494,7 @@
       <span>Weight</span>
       <span>Price</span>
       <span>Chg%</span>
+      <span>YTD%</span>
     </div>
     <div id="short-holdings"></div>
   </div>
@@ -492,7 +513,20 @@ let SHORTS = [];
 let CASH_WEIGHT = 0;
 let holdingsDate = '';
 const priceCache = {};
+const ytdCache   = {}; // symbol → { ytdChange: number }
 let refreshTimer = null;
+
+// Pre-load YTD cache from sessionStorage (instant, no network)
+const YTD_CACHE_VERSION = 'v3';
+try {
+  const ver = sessionStorage.getItem('orr-ytd-version');
+  if (ver === YTD_CACHE_VERSION) {
+    const cached = sessionStorage.getItem('orr-ytd-cache');
+    if (cached) Object.assign(ytdCache, JSON.parse(cached));
+  } else {
+    sessionStorage.removeItem('orr-ytd-cache');
+  }
+} catch { /* no cache */ }
 
 // ── Tickers that can be fetched on Yahoo Finance (US-listed or ADR) ────────────
 // Non-US exchange tickers (JP, HK, SM, MM, SW, FP) need Yahoo suffixes
@@ -721,6 +755,7 @@ async function fetchBatchQuotes(symbols) {
 }
 
 // Single-ticker fallback via /v8/chart (used if batch misses some)
+// For range=5d: computes daily change from the last two candle closes (reliable)
 async function fetchSingleQuote(yTicker, range = '1d') {
   const urls = [
     `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=${range}`)}`,
@@ -729,16 +764,35 @@ async function fetchSingleQuote(yTicker, range = '1d') {
   for (let i = 0; i < urls.length; i++) {
     try {
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const timer = setTimeout(() => ctrl.abort(), 6000);
       const res = await fetch(urls[i], { signal: ctrl.signal });
       clearTimeout(timer);
       const raw = await res.json();
       const data = i === 0 ? JSON.parse(raw.contents) : raw;
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (!meta) continue;
-      const price  = meta.regularMarketPrice;
-      const prev   = meta.chartPreviousClose || meta.previousClose;
-      const change = prev ? ((price - prev) / prev) * 100 : 0;
+      const result = data?.chart?.result?.[0];
+      if (!result?.meta) continue;
+
+      const price = result.meta.regularMarketPrice;
+      if (!price) continue;
+
+      let change = 0;
+
+      // For multi-day ranges: use actual candle closes for accurate daily change
+      const closes = result.indicators?.quote?.[0]?.close;
+      if (closes && closes.length >= 2) {
+        const validCloses = closes.filter(c => c !== null && c !== undefined);
+        if (validCloses.length >= 2) {
+          // Last close = most recent trading day, second-to-last = previous day
+          const prevClose = validCloses[validCloses.length - 2];
+          const lastClose = validCloses[validCloses.length - 1];
+          change = ((lastClose - prevClose) / prevClose) * 100;
+        }
+      } else {
+        // Fallback to meta for range=1d
+        const prev = result.meta.chartPreviousClose || result.meta.previousClose;
+        if (prev) change = ((price - prev) / prev) * 100;
+      }
+
       return { price, change };
     } catch { /* try next */ }
   }
@@ -759,6 +813,80 @@ function updateORRDisplay(quote) {
   const sign  = change >= 0 ? '+' : '';
   badge.textContent = `${sign}${change.toFixed(2)}%`;
   badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
+}
+
+// ── YTD performance via /v8/finance/spark (batch) ─────────────────────────────
+// Returns year-start close and current close so we can compute YTD%
+async function fetchYTDData(symbols) {
+  if (!symbols.length) return;
+
+  // ── Check sessionStorage cache first ──
+  try {
+    if (sessionStorage.getItem('orr-ytd-version') === YTD_CACHE_VERSION) {
+      const cached = sessionStorage.getItem('orr-ytd-cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        Object.assign(ytdCache, parsed);
+        const missing = symbols.filter(s => !ytdCache[s]);
+        if (missing.length === 0) return;
+        symbols = missing;
+      }
+    }
+  } catch { /* no cache */ }
+
+  // ── Strategy: fetch year-end close explicitly ──
+  // Use period1/period2 to get the last ~10 trading days of previous year
+  // Then take the LAST close in that range = year-end closing price
+  // Compare to current regularMarketPrice from priceCache
+  const now = new Date();
+  const year = now.getFullYear();
+  const dec20 = Math.floor(new Date(year - 1, 11, 20).getTime() / 1000); // Dec 20 prev year
+  const jan3  = Math.floor(new Date(year, 0, 3).getTime() / 1000);       // Jan 3 current year
+
+  const BATCH = 10;
+  for (let i = 0; i < symbols.length; i += BATCH) {
+    const batch = symbols.slice(i, i + BATCH);
+    await Promise.allSettled(batch.map(async sym => {
+      const chartUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&period1=${dec20}&period2=${jan3}`;
+      const urls = [
+        `https://api.allorigins.win/get?url=${encodeURIComponent(chartUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(chartUrl)}`,
+      ];
+      for (let p = 0; p < urls.length; p++) {
+        try {
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 6000);
+          const res = await fetch(urls[p], { signal: ctrl.signal });
+          clearTimeout(timer);
+          const raw = await res.json();
+          const data = p === 0 ? JSON.parse(raw.contents) : raw;
+          const result = data?.chart?.result?.[0];
+          if (!result) continue;
+
+          // Get the last valid close = year-end price
+          const closes = result.indicators?.quote?.[0]?.close;
+          if (!closes?.length) continue;
+          const validCloses = closes.filter(c => c !== null && c !== undefined);
+          if (!validCloses.length) continue;
+          const yearEndClose = validCloses[validCloses.length - 1];
+
+          // Current price from meta (always up to date)
+          const current = result.meta?.regularMarketPrice;
+          if (!current || !yearEndClose || yearEndClose <= 0) continue;
+
+          ytdCache[sym] = { ytdChange: ((current - yearEndClose) / yearEndClose) * 100 };
+          break; // success, skip fallback proxy
+        } catch { /* try next proxy */ }
+      }
+    }));
+    renderAll();
+  }
+
+  // ── Cache to sessionStorage ──
+  try {
+    sessionStorage.setItem('orr-ytd-cache', JSON.stringify(ytdCache));
+    sessionStorage.setItem('orr-ytd-version', YTD_CACHE_VERSION);
+  } catch { /* storage full */ }
 }
 
 
@@ -830,6 +958,21 @@ function renderRow(holding, isShort) {
     changeHtml = `—`;
   }
 
+  // YTD lookup
+  const ytdKey = holding.yTicker || null;
+  const ytdData = ytdKey ? ytdCache[ytdKey] : null;
+  let ytdHtml;
+  if (ytdData) {
+    const ytdVal = isShort ? -ytdData.ytdChange : ytdData.ytdChange;
+    const ytdSign = ytdVal >= 0 ? '+' : '';
+    const ytdCc = changeClass(ytdVal);
+    ytdHtml = `<div class="ytd ${ytdCc}">${ytdSign}${ytdVal.toFixed(1)}%</div>`;
+  } else if (canFetch) {
+    ytdHtml = `<div class="ytd loading"><span class="skeleton"></span></div>`;
+  } else {
+    ytdHtml = `<div class="ytd flat">—</div>`;
+  }
+
   return `
     <div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(holding.ticker)}">
       <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
@@ -840,6 +983,7 @@ function renderRow(holding, isShort) {
       <div class="weight">${weight.toFixed(2)}%</div>
       <div class="price ${price ? '' : 'loading'}">${priceHtml}</div>
       <div class="change ${isStatic && change === null ? 'loading' : cc} ${price ? '' : 'loading'}">${changeHtml}</div>
+      ${ytdHtml}
     </div>`;
 }
 
@@ -959,18 +1103,35 @@ async function fetchAll() {
 
   const allHoldings = [...LONGS, ...SHORTS];
 
-  // Build symbol lists — US tickers + intl tickers + ORR, all in one batch
+  // Build symbol lists — US tickers + ORR in batch, intl separately via chart
   const usTickers   = allHoldings.filter(h => h.yTicker && !h.isIntl).map(h => h.yTicker);
-  const intlTickers = allHoldings.filter(h => h.yTicker && h.isIntl).map(h => h.yTicker);
-  const allSymbols  = ['ORR', ...usTickers, ...intlTickers];
+  const intlHoldings = allHoldings.filter(h => h.yTicker && h.isIntl);
+  const batchSymbols = [...new Set(['ORR', ...usTickers])];
 
-  // Deduplicate
-  const uniqueSymbols = [...new Set(allSymbols)];
+  document.getElementById('live-label').textContent = `0/${batchSymbols.length + intlHoldings.length}`;
 
-  document.getElementById('live-label').textContent = `0/${uniqueSymbols.length}`;
+  // ── US batch + intl chart calls in parallel ──
+  const [batchResults] = await Promise.all([
+    fetchBatchQuotes(batchSymbols),
+    // Intl tickers: individual chart calls with range=5d (always returns last session)
+    Promise.allSettled(intlHoldings.map(async h => {
+      const result = await fetchSingleQuote(h.yTicker, '5d');
+      if (result) {
+        const existing = priceCache[h.ticker];
+        priceCache[h.ticker] = {
+          price: result.price,
+          change: result.change,
+          isStatic: true,
+        };
+      }
+    })),
+  ]);
 
-  // ── Single batch request for everything ──
-  const batchResults = await fetchBatchQuotes(uniqueSymbols);
+  // ── Fire YTD in background (non-blocking) ──
+  const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
+  if (Object.keys(ytdCache).length < allYtdSymbols.length) {
+    fetchYTDData(allYtdSymbols).then(() => renderAll());
+  }
 
   // ── Update ORR display ──
   updateORRDisplay(batchResults.get('ORR') || null);
@@ -989,34 +1150,13 @@ async function fetchAll() {
     }
   }
 
-  // ── Update intl ticker cache ──
-  for (const h of allHoldings.filter(h => h.yTicker && h.isIntl)) {
-    const quote = batchResults.get(h.yTicker);
-    if (!quote) continue;
-    const existing = priceCache[h.ticker];
-    priceCache[h.ticker] = {
-      price: existing?.price ?? quote.price,
-      change: quote.change,
-      isStatic: true,
-    };
-  }
-
-  // ── Fallback: any symbols the batch missed, fetch individually ──
-  const missed = uniqueSymbols.filter(s => !batchResults.has(s) && s !== 'ORR');
+  // ── Fallback: any US symbols the batch missed ──
+  const missed = usTickers.filter(s => !batchResults.has(s));
   if (missed.length > 0) {
     document.getElementById('live-label').textContent = `FALLBACK ${missed.length}`;
     await Promise.allSettled(missed.map(async sym => {
-      const h = allHoldings.find(h => h.yTicker === sym);
-      if (!h) return;
-      const range = h.isIntl ? '5d' : '1d';
-      const result = await fetchSingleQuote(sym, range);
-      if (!result) return;
-      if (h.isIntl) {
-        const existing = priceCache[h.ticker];
-        priceCache[h.ticker] = { price: existing?.price ?? result.price, change: result.change, isStatic: true };
-      } else {
-        priceCache[h.yTicker] = result;
-      }
+      const result = await fetchSingleQuote(sym, '1d');
+      if (result) priceCache[sym] = result;
     }));
   }
 
@@ -1053,5 +1193,6 @@ async function fetchAll() {
   fetchAll();  // One batch call for everything — US, intl, and ORR
 })();
 </script>
+
 </body>
 </html>
