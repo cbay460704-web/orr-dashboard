@@ -30,12 +30,12 @@
     --header-text: #f8f9fa;
   }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Inter’, sans-serif;
+background: var(--bg);
+color: var(--text);
+font-family: 'Inter', sans-serif;
 font-size: 13px;
 min-height: 100vh;
 overflow-x: hidden;
@@ -46,25 +46,25 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 padding: 16px 28px;
-background: var(–header-bg);
+background: var(--header-bg);
 position: sticky;
 top: 0;
 z-index: 100;
 }
 
 .logo {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 20px;
 font-weight: 600;
 letter-spacing: 2px;
-color: var(–header-text);
+color: var(--header-text);
 display: flex;
 align-items: center;
 gap: 14px;
 }
 
 .logo-tag {
-font-family: ‘Inter’, sans-serif;
+font-family: 'Inter', sans-serif;
 font-size: 11px;
 font-weight: 400;
 color: #868e96;
@@ -90,7 +90,7 @@ background: #212529;
 }
 
 .orr-label {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 12px;
 font-weight: 600;
 letter-spacing: 2px;
@@ -98,10 +98,10 @@ color: #868e96;
 }
 
 .orr-nav {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 18px;
 font-weight: 600;
-color: var(–header-text);
+color: var(--header-text);
 }
 
 .orr-change-badge {
@@ -150,7 +150,7 @@ background: #212529;
 border: 1px solid #343a40;
 color: #adb5bd;
 padding: 6px 14px;
-font-family: ‘Inter’, sans-serif;
+font-family: 'Inter', sans-serif;
 font-size: 11px;
 font-weight: 500;
 border-radius: 4px;
@@ -164,13 +164,13 @@ transition: all 0.15s;
 .summary-bar {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-border-bottom: 1px solid var(–border);
-background: var(–surface);
+border-bottom: 1px solid var(--border);
+background: var(--surface);
 }
 
 .summary-card {
 padding: 14px 22px;
-border-right: 1px solid var(–border);
+border-right: 1px solid var(--border);
 display: flex;
 flex-direction: column;
 gap: 4px;
@@ -182,21 +182,21 @@ gap: 4px;
 font-size: 10px;
 font-weight: 600;
 letter-spacing: 0.5px;
-color: var(–muted);
+color: var(--muted);
 text-transform: uppercase;
 }
 
 .summary-value {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 20px;
 font-weight: 600;
 letter-spacing: -0.5px;
 }
 
-.summary-value.long    { color: var(–long); }
-.summary-value.short   { color: var(–short); }
-.summary-value.neutral { color: var(–text); }
-.summary-value.cash    { color: var(–cash); }
+.summary-value.long    { color: var(--long); }
+.summary-value.short   { color: var(--short); }
+.summary-value.neutral { color: var(--text); }
+.summary-value.cash    { color: var(--cash); }
 
 /* Main grid */
 .main-content {
@@ -206,7 +206,7 @@ gap: 0;
 min-height: calc(100vh - 140px);
 }
 
-.panel { border-right: 1px solid var(–border); }
+.panel { border-right: 1px solid var(--border); }
 .panel:last-child { border-right: none; }
 
 .panel-header {
@@ -214,26 +214,26 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 padding: 12px 22px;
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid var(--border);
 position: sticky;
 top: 57px;
-background: var(–bg);
+background: var(--bg);
 z-index: 50;
 }
 
 .panel-title {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 13px;
 font-weight: 600;
 letter-spacing: 1px;
 }
 
-.panel-title.long  { color: var(–long); }
-.panel-title.short { color: var(–short); }
+.panel-title.long  { color: var(--long); }
+.panel-title.short { color: var(--short); }
 
 .panel-stats {
 font-size: 11px;
-color: var(–muted);
+color: var(--muted);
 font-weight: 400;
 }
 
@@ -243,14 +243,14 @@ display: grid;
 grid-template-columns: 80px 1fr 72px 80px 70px 70px;
 align-items: center;
 padding: 9px 22px;
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid var(--border);
 transition: background 0.1s;
 gap: 8px;
 }
 
-.holding-row:hover { background: var(–surface); }
-.holding-row.long-row:hover  { background: var(–long-dim); }
-.holding-row.short-row:hover { background: var(–short-dim); }
+.holding-row:hover { background: var(--surface); }
+.holding-row.long-row:hover  { background: var(--long-dim); }
+.holding-row.short-row:hover { background: var(--short-dim); }
 
 @keyframes flashUp {
 0%   { background: #c3f0d8; }
@@ -266,10 +266,10 @@ gap: 8px;
 .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
 
 .ticker {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-weight: 600;
 font-size: 12px;
-color: var(–text);
+color: var(--text);
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
@@ -278,7 +278,7 @@ text-overflow: ellipsis;
 .name {
 font-size: 12px;
 font-weight: 400;
-color: var(–text2);
+color: var(--text2);
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
@@ -287,23 +287,23 @@ text-overflow: ellipsis;
 .weight {
 font-size: 11px;
 font-weight: 500;
-color: var(–muted);
+color: var(--muted);
 text-align: right;
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 }
 
 .price {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 12px;
 font-weight: 600;
 text-align: right;
-color: var(–text);
+color: var(--text);
 }
 
-.price.loading { color: var(–neutral); }
+.price.loading { color: var(--neutral); }
 
 .change {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 11px;
 font-weight: 600;
 text-align: right;
@@ -311,13 +311,13 @@ padding: 2px 6px;
 border-radius: 3px;
 }
 
-.change.up   { color: var(–long);  background: var(–long-bg); }
-.change.down { color: var(–short); background: var(–short-bg); }
-.change.flat { color: var(–muted); }
-.change.loading { color: var(–neutral); }
+.change.up   { color: var(--long);  background: var(--long-bg); }
+.change.down { color: var(--short); background: var(--short-bg); }
+.change.flat { color: var(--muted); }
+.change.loading { color: var(--neutral); }
 
 .ytd {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: 'IBM Plex Mono', monospace;
 font-size: 11px;
 font-weight: 600;
 text-align: right;
@@ -325,23 +325,23 @@ padding: 2px 6px;
 border-radius: 3px;
 }
 
-.ytd.up   { color: var(–long);  background: var(–long-bg); }
-.ytd.down { color: var(–short); background: var(–short-bg); }
-.ytd.flat { color: var(–muted); }
-.ytd.loading { color: var(–neutral); }
+.ytd.up   { color: var(--long);  background: var(--long-bg); }
+.ytd.down { color: var(--short); background: var(--short-bg); }
+.ytd.flat { color: var(--muted); }
+.ytd.loading { color: var(--neutral); }
 
 /* Mini bar */
 .bar-track {
 height: 2px;
-background: var(–border);
+background: var(--border);
 border-radius: 1px;
 margin-top: 4px;
 overflow: hidden;
 }
 
 .bar-fill { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
-.bar-fill.up   { background: var(–long); }
-.bar-fill.down { background: var(–short); }
+.bar-fill.up   { background: var(--long); }
+.bar-fill.down { background: var(--short); }
 
 /* Column headers */
 .col-header {
@@ -349,13 +349,13 @@ display: grid;
 grid-template-columns: 80px 1fr 72px 80px 70px 70px;
 padding: 7px 22px;
 gap: 8px;
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid var(--border);
 font-size: 10px;
 font-weight: 600;
 letter-spacing: 0.5px;
-color: var(–muted);
+color: var(--muted);
 text-transform: uppercase;
-background: var(–surface2);
+background: var(--surface2);
 }
 
 .col-header span:not(:first-child) { text-align: right; }
@@ -363,19 +363,19 @@ background: var(–surface2);
 /* Cash row */
 .cash-row {
 padding: 9px 22px;
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid var(--border);
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: var(–cash-bg);
+background: var(--cash-bg);
 }
 
-.cash-label  { color: var(–cash); font-weight: 600; font-size: 12px; font-family: ‘IBM Plex Mono’, monospace; }
-.cash-weight { color: var(–cash); font-size: 12px; font-weight: 600; font-family: ‘IBM Plex Mono’, monospace; }
+.cash-label  { color: var(--cash); font-weight: 600; font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
+.cash-weight { color: var(--cash); font-size: 12px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
 
 /* Loading skeleton */
 .skeleton {
-background: linear-gradient(90deg, var(–border) 25%, var(–surface2) 50%, var(–border) 75%);
+background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
 background-size: 200% 100%;
 animation: shimmer 1.5s infinite;
 border-radius: 3px;
@@ -391,21 +391,21 @@ vertical-align: middle;
 }
 
 footer {
-border-top: 1px solid var(–border);
+border-top: 1px solid var(--border);
 padding: 11px 28px;
 display: flex;
 justify-content: space-between;
 align-items: center;
 font-size: 10px;
-color: var(–muted);
-background: var(–surface);
+color: var(--muted);
+background: var(--surface);
 }
 
 .notice { font-style: italic; }
 
 @media (max-width: 900px) {
 .main-content { grid-template-columns: 1fr; }
-.panel { border-right: none; border-bottom: 1px solid var(–border); }
+.panel { border-right: none; border-bottom: 1px solid var(--border); }
 }
 </style>
 
@@ -744,8 +744,14 @@ async function fetchBatchQuotes(symbols) {
       for (const q of quotes) {
         if (!q.regularMarketPrice) continue;
         const price  = q.regularMarketPrice;
-        const prev   = q.regularMarketPreviousClose || q.previousClose;
-        const change = q.regularMarketChangePercent ?? (prev ? ((price - prev) / prev) * 100 : 0);
+        const prev   = q.regularMarketPreviousClose || q.previousClose || q.regularMarketOpen;
+        // Prefer Yahoo's own change%, but fall back to manual calc if it's 0/null and we have a prev close
+        // This ensures colors work outside market hours when regularMarketChangePercent may be stale/0
+        let change = q.regularMarketChangePercent;
+        if ((change === null || change === undefined || change === 0) && prev && prev !== price) {
+          change = ((price - prev) / prev) * 100;
+        }
+        change = change ?? 0;
         results.set(q.symbol, { price, change });
       }
       return results; // success — skip fallbacks
