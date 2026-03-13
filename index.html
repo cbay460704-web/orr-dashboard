@@ -529,34 +529,28 @@ try {
 } catch { /* no cache */ }
 
 // ── Tickers that can be fetched on Yahoo Finance (US-listed or ADR) ────────────
-// Non-US exchange tickers (JP, HK, SM, MM, SW, FP) need Yahoo suffixes
-// Map known ones; anything else marked as non-fetchable
 const YAHOO_SUFFIX_MAP = {
-  'JP': '.T',   // Tokyo Stock Exchange
-  'HK': '.HK',  // Hong Kong
-  'SM': '.MC',  // Madrid
-  'MM': '.MX',  // Mexico City
-  'SW': '.SW',  // Switzerland
-  'FP': '.PA',  // Paris
+  'JP': '.T',
+  'HK': '.HK',
+  'SM': '.MC',
+  'MM': '.MX',
+  'SW': '.SW',
+  'FP': '.PA',
 };
 
 function yahooTicker(rawTicker) {
-  // Already a clean US ticker (no spaces, no exchange suffix)
   if (!rawTicker.includes(' ')) return rawTicker;
-  // Format: "9435 JP" or "WALMEX* MM"
   const parts = rawTicker.trim().split(/\s+/);
   if (parts.length === 2) {
     let [symbol, exchange] = parts;
-    // Strip Bloomberg conventions: trailing * (most liquid class), /A /B share classes
     symbol = symbol.replace(/\*$/, '');
     const suffix = YAHOO_SUFFIX_MAP[exchange];
     if (suffix) return symbol + suffix;
   }
-  return null; // can't fetch
+  return null;
 }
 
 // ── Parse militiaetf.com holdings table ───────────────────────────────────────
-// Tries multiple CORS proxies, caches successful parse in localStorage
 const HOLDINGS_PROXIES = [
   url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
   url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
@@ -571,7 +565,6 @@ async function fetchHoldingsHTML() {
       const timer = setTimeout(() => ctrl.abort(), 10000);
       const res = await fetch(HOLDINGS_PROXIES[i](target), { signal: ctrl.signal });
       clearTimeout(timer);
-      // allorigins wraps in JSON, others return raw HTML
       const contentType = res.headers.get('content-type') || '';
       let html;
       if (contentType.includes('json')) {
@@ -638,18 +631,15 @@ function parseHoldingsHTML(html) {
 async function fetchHoldings() {
   document.getElementById('live-label').textContent = 'LOADING HOLDINGS';
 
-  // Try live fetch from site
   const html = await fetchHoldingsHTML();
   let result = html ? parseHoldingsHTML(html) : null;
 
   if (result && result.holdings.length > 0) {
-    // Cache to localStorage for offline fallback
     try {
       localStorage.setItem('orr-holdings-cache', JSON.stringify(result));
       localStorage.setItem('orr-holdings-cache-ts', Date.now().toString());
     } catch { /* storage full or unavailable */ }
   } else {
-    // Try localStorage cache
     try {
       const cached = localStorage.getItem('orr-holdings-cache');
       if (cached) {
@@ -671,7 +661,6 @@ async function fetchHoldings() {
     return false;
   }
 
-  // Populate state
   holdingsDate = result.date;
   CASH_WEIGHT = result.cashWeight;
 
@@ -692,21 +681,13 @@ async function fetchHoldings() {
   return true;
 }
 
-// ── No hardcoded fallback — holdings always sourced from militiaetf.com ────────
-// If site is unreachable, localStorage cache is used instead (see fetchHoldings)
-
 // ── Yahoo Finance — BATCH quote fetch ──────────────────────────────────────────
-// One HTTP request for ALL tickers instead of 30+ individual calls.
-// /v7/finance/quote?symbols=A,B,C returns price + change for every symbol.
-
 async function fetchBatchQuotes(symbols) {
-  // Returns Map<symbol, {price, change}>
   const results = new Map();
   if (!symbols.length) return results;
   const csv = symbols.join(',');
 
   const attempts = [
-    // allorigins proxy
     async () => {
       const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
       const ctrl = new AbortController();
@@ -716,7 +697,6 @@ async function fetchBatchQuotes(symbols) {
       const j = await res.json();
       return JSON.parse(j.contents);
     },
-    // corsproxy fallback
     async () => {
       const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
       const ctrl = new AbortController();
@@ -725,7 +705,6 @@ async function fetchBatchQuotes(symbols) {
       clearTimeout(t);
       return await res.json();
     },
-    // direct (works if no CORS issue, e.g. server-side)
     async () => {
       const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}&corsDomain=finance.yahoo.com`;
       const ctrl = new AbortController();
@@ -745,8 +724,6 @@ async function fetchBatchQuotes(symbols) {
         if (!q.regularMarketPrice) continue;
         const price  = q.regularMarketPrice;
         const prev   = q.regularMarketPreviousClose || q.previousClose || q.regularMarketOpen;
-        // Prefer Yahoo's own change%, but fall back to manual calc if it's 0/null and we have a prev close
-        // This ensures colors work outside market hours when regularMarketChangePercent may be stale/0
         let change = q.regularMarketChangePercent;
         if ((change === null || change === undefined || change === 0) && prev && prev !== price) {
           change = ((price - prev) / prev) * 100;
@@ -754,14 +731,13 @@ async function fetchBatchQuotes(symbols) {
         change = change ?? 0;
         results.set(q.symbol, { price, change });
       }
-      return results; // success — skip fallbacks
+      return results;
     } catch { /* try next proxy */ }
   }
   return results;
 }
 
-// Single-ticker fallback via /v8/chart (used if batch misses some)
-// For range=5d: computes daily change from the last two candle closes (reliable)
+// Single-ticker fallback via /v8/chart
 async function fetchSingleQuote(yTicker, range = '1d') {
   const urls = [
     `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=${range}`)}`,
@@ -783,18 +759,15 @@ async function fetchSingleQuote(yTicker, range = '1d') {
 
       let change = 0;
 
-      // For multi-day ranges: use actual candle closes for accurate daily change
       const closes = result.indicators?.quote?.[0]?.close;
       if (closes && closes.length >= 2) {
         const validCloses = closes.filter(c => c !== null && c !== undefined);
         if (validCloses.length >= 2) {
-          // Last close = most recent trading day, second-to-last = previous day
           const prevClose = validCloses[validCloses.length - 2];
           const lastClose = validCloses[validCloses.length - 1];
           change = ((lastClose - prevClose) / prevClose) * 100;
         }
       } else {
-        // Fallback to meta for range=1d
         const prev = result.meta.chartPreviousClose || result.meta.previousClose;
         if (prev) change = ((price - prev) / prev) * 100;
       }
@@ -805,7 +778,7 @@ async function fetchSingleQuote(yTicker, range = '1d') {
   return null;
 }
 
-// ── ORR ETF price — included in the batch call now ────────────────────────────
+// ── ORR ETF price display ─────────────────────────────────────────────────────
 function updateORRDisplay(quote) {
   if (!quote) {
     document.getElementById('orr-nav').textContent = 'N/A';
@@ -821,12 +794,10 @@ function updateORRDisplay(quote) {
   badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
 }
 
-// ── YTD performance via /v8/finance/spark (batch) ─────────────────────────────
-// Returns year-start close and current close so we can compute YTD%
+// ── YTD performance ───────────────────────────────────────────────────────────
 async function fetchYTDData(symbols) {
   if (!symbols.length) return;
 
-  // ── Check sessionStorage cache first ──
   try {
     if (sessionStorage.getItem('orr-ytd-version') === YTD_CACHE_VERSION) {
       const cached = sessionStorage.getItem('orr-ytd-cache');
@@ -840,14 +811,10 @@ async function fetchYTDData(symbols) {
     }
   } catch { /* no cache */ }
 
-  // ── Strategy: fetch year-end close explicitly ──
-  // Use period1/period2 to get the last ~10 trading days of previous year
-  // Then take the LAST close in that range = year-end closing price
-  // Compare to current regularMarketPrice from priceCache
   const now = new Date();
   const year = now.getFullYear();
-  const dec20 = Math.floor(new Date(year - 1, 11, 20).getTime() / 1000); // Dec 20 prev year
-  const jan3  = Math.floor(new Date(year, 0, 3).getTime() / 1000);       // Jan 3 current year
+  const dec20 = Math.floor(new Date(year - 1, 11, 20).getTime() / 1000);
+  const jan3  = Math.floor(new Date(year, 0, 3).getTime() / 1000);
 
   const BATCH = 10;
   for (let i = 0; i < symbols.length; i += BATCH) {
@@ -869,26 +836,23 @@ async function fetchYTDData(symbols) {
           const result = data?.chart?.result?.[0];
           if (!result) continue;
 
-          // Get the last valid close = year-end price
           const closes = result.indicators?.quote?.[0]?.close;
           if (!closes?.length) continue;
           const validCloses = closes.filter(c => c !== null && c !== undefined);
           if (!validCloses.length) continue;
           const yearEndClose = validCloses[validCloses.length - 1];
 
-          // Current price from meta (always up to date)
           const current = result.meta?.regularMarketPrice;
           if (!current || !yearEndClose || yearEndClose <= 0) continue;
 
           ytdCache[sym] = { ytdChange: ((current - yearEndClose) / yearEndClose) * 100 };
-          break; // success, skip fallback proxy
+          break;
         } catch { /* try next proxy */ }
       }
     }));
     renderAll();
   }
 
-  // ── Cache to sessionStorage ──
   try {
     sessionStorage.setItem('orr-ytd-cache', JSON.stringify(ytdCache));
     sessionStorage.setItem('orr-ytd-version', YTD_CACHE_VERSION);
@@ -919,13 +883,11 @@ function formatPrice(p) {
   return p >= 100 ? p.toFixed(2) : p.toFixed(3);
 }
 
-// Safe ID for DOM (tickers like "9435 JP" need sanitizing)
 function safeId(ticker) {
   return 'row-' + ticker.replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 function renderRow(holding, isShort) {
-  // Intl tickers use raw ticker as cache key; US tickers use yTicker
   const cacheKey = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
   const cached   = priceCache[cacheKey];
   const weight   = Math.abs(holding.weight);
@@ -946,10 +908,8 @@ function renderRow(holding, isShort) {
   if (price) {
     priceHtml = formatPrice(price);
     if (isStatic && change === null) {
-      // Have static price but no change yet — show skeleton for change
       changeHtml = `<span class="skeleton"></span>`;
     } else if (isStatic) {
-      // Prior day change loaded — show it with a "P" (prev) indicator
       const sign = (isShort ? -change : change) >= 0 ? '+' : '';
       const displayChange = isShort ? -change : change;
       changeHtml = `<span title="Prior day change">${sign}${displayChange.toFixed(2)}%</span>`;
@@ -964,7 +924,6 @@ function renderRow(holding, isShort) {
     changeHtml = `—`;
   }
 
-  // YTD lookup
   const ytdKey = holding.yTicker || null;
   const ytdData = ytdKey ? ytdCache[ytdKey] : null;
   let ytdHtml;
@@ -1060,7 +1019,6 @@ function updateSummary() {
     ? `${winners}W · ${losers}L · ${pending}?`
     : `${winners}W · ${losers}L`;
 
-  // Top mover by absolute fund impact
   const allHoldings = [...LONGS, ...SHORTS];
   let topMover = null, topImpact = 0;
   allHoldings.forEach(h => {
@@ -1082,7 +1040,7 @@ function updateSummary() {
     topEl.textContent = '--';
     topEl.className = 'summary-value neutral';
   }
-  // Net long exposure
+
   const grossLong  = LONGS.reduce((a, h) => a + h.weight, 0);
   const grossShort = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
   const netExposure = grossLong - grossShort;
@@ -1102,74 +1060,8 @@ function updateSummary() {
     'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
-// ── Batch fetch: ALL tickers in 1-2 HTTP requests ─────────────────────────────
-async function fetchAll() {
-  document.getElementById('pulse-dot').classList.remove('paused');
-  document.getElementById('live-label').textContent = 'FETCHING';
-
-  const allHoldings = [...LONGS, ...SHORTS];
-
-  // Build symbol lists — US tickers + ORR in batch, intl separately via chart
-  const usTickers   = allHoldings.filter(h => h.yTicker && !h.isIntl).map(h => h.yTicker);
-  const intlHoldings = allHoldings.filter(h => h.yTicker && h.isIntl);
-  const batchSymbols = [...new Set(['ORR', ...usTickers])];
-
-  document.getElementById('live-label').textContent = `0/${batchSymbols.length + intlHoldings.length}`;
-
-  // ── US batch + intl chart calls in parallel ──
-  const [batchResults] = await Promise.all([
-    fetchBatchQuotes(batchSymbols),
-    // Intl tickers: individual chart calls with range=5d (always returns last session)
-    Promise.allSettled(intlHoldings.map(async h => {
-      const result = await fetchSingleQuote(h.yTicker, '5d');
-      if (result) {
-        const existing = priceCache[h.ticker];
-        priceCache[h.ticker] = {
-          price: result.price,
-          change: result.change,
-          isStatic: true,
-        };
-      }
-    })),
-  ]);
-
-  // ── Fire YTD in background (non-blocking) ──
-  const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
-  if (Object.keys(ytdCache).length < allYtdSymbols.length) {
-    fetchYTDData(allYtdSymbols).then(() => renderAll());
-  }
-
-  // ── Update ORR display ──
-  updateORRDisplay(batchResults.get('ORR') || null);
-
-  // ── Update US ticker cache with flash detection ──
-  for (const h of allHoldings.filter(h => h.yTicker && !h.isIntl)) {
-    const quote = batchResults.get(h.yTicker);
-    if (!quote) continue;
-    const prevCached = priceCache[h.yTicker];
-    priceCache[h.yTicker] = quote;
-    // Flash animation on price change
-    const row = document.getElementById(safeId(h.ticker));
-    if (row && prevCached) {
-      const dir = quote.price > prevCached.price ? 'flash-up' : quote.price < prevCached.price ? 'flash-down' : '';
-      if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
-    }
-  }
-
-  // ── Fallback: any US symbols the batch missed ──
-  const missed = usTickers.filter(s => !batchResults.has(s));
-  if (missed.length > 0) {
-    document.getElementById('live-label').textContent = `FALLBACK ${missed.length}`;
-    await Promise.allSettled(missed.map(async sym => {
-      const result = await fetchSingleQuote(sym, '1d');
-      if (result) priceCache[sym] = result;
-    }));
-  }
-
-  document.getElementById('live-label').textContent = 'LIVE';
-  renderAll();
-
-  // Schedule next refresh
+// ── Helper: always schedule next refresh, even on error ───────────────────────
+function scheduleNextRefresh() {
   clearTimeout(refreshTimer);
   const et   = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   const mins = et.getHours() * 60 + et.getMinutes();
@@ -1178,25 +1070,114 @@ async function fetchAll() {
   refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
 }
 
+// ── Batch fetch: ALL tickers in 1-2 HTTP requests ─────────────────────────────
+async function fetchAll() {
+  // Always clear any pending timer first to avoid stacking
+  clearTimeout(refreshTimer);
+
+  try {
+    document.getElementById('pulse-dot').classList.remove('paused');
+    document.getElementById('live-label').textContent = 'FETCHING';
+
+    const allHoldings = [...LONGS, ...SHORTS];
+
+    const usTickers   = allHoldings.filter(h => h.yTicker && !h.isIntl).map(h => h.yTicker);
+    const intlHoldings = allHoldings.filter(h => h.yTicker && h.isIntl);
+    const batchSymbols = [...new Set(['ORR', ...usTickers])];
+
+    document.getElementById('live-label').textContent = `0/${batchSymbols.length + intlHoldings.length}`;
+
+    // ── US batch + intl chart calls in parallel ──
+    const [batchResults] = await Promise.all([
+      fetchBatchQuotes(batchSymbols),
+      Promise.allSettled(intlHoldings.map(async h => {
+        try {
+          const result = await fetchSingleQuote(h.yTicker, '5d');
+          if (result) {
+            priceCache[h.ticker] = {
+              price: result.price,
+              change: result.change,
+              isStatic: true,
+            };
+          }
+        } catch { /* individual intl ticker failure is fine */ }
+      })),
+    ]);
+
+    // ── Fire YTD in background (non-blocking) ──
+    const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
+    if (Object.keys(ytdCache).length < allYtdSymbols.length) {
+      fetchYTDData(allYtdSymbols).then(() => renderAll()).catch(() => {});
+    }
+
+    // ── Update ORR display ──
+    updateORRDisplay(batchResults.get('ORR') || null);
+
+    // ── Update US ticker cache with flash detection ──
+    for (const h of allHoldings.filter(h => h.yTicker && !h.isIntl)) {
+      const quote = batchResults.get(h.yTicker);
+      if (!quote) continue;
+      const prevCached = priceCache[h.yTicker];
+      priceCache[h.yTicker] = quote;
+      const row = document.getElementById(safeId(h.ticker));
+      if (row && prevCached) {
+        const dir = quote.price > prevCached.price ? 'flash-up' : quote.price < prevCached.price ? 'flash-down' : '';
+        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+      }
+    }
+
+    // ── Fallback: any US symbols the batch missed ──
+    const missed = usTickers.filter(s => !batchResults.has(s));
+    if (missed.length > 0) {
+      document.getElementById('live-label').textContent = `FALLBACK ${missed.length}`;
+      await Promise.allSettled(missed.map(async sym => {
+        try {
+          const result = await fetchSingleQuote(sym, '1d');
+          if (result) priceCache[sym] = result;
+        } catch { /* individual fallback failure is fine */ }
+      }));
+    }
+
+    document.getElementById('live-label').textContent = 'LIVE';
+    renderAll();
+
+  } catch (err) {
+    // Catch-all: log the error but never let it kill the refresh loop
+    console.error('[ORR] fetchAll error:', err);
+    document.getElementById('live-label').textContent = 'RETRY';
+    document.getElementById('pulse-dot').classList.add('paused');
+    // Still render whatever we have cached
+    try { renderAll(); } catch { /* render failed too, nothing to do */ }
+  } finally {
+    // ALWAYS schedule next refresh — this is the critical fix
+    scheduleNextRefresh();
+  }
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────────
 (async () => {
-  // Show loading state
   document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
   document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
 
-  const ok = await fetchHoldings();
-  if (!ok) {
-    // fetchHoldings already tried localStorage cache and set footer message
-    // If still no data, show error state
-    if (LONGS.length === 0 && SHORTS.length === 0) {
-      document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
-      document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
-      return;
+  try {
+    const ok = await fetchHoldings();
+    if (!ok) {
+      if (LONGS.length === 0 && SHORTS.length === 0) {
+        document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+        document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+        // Even on holdings failure, retry after 60s in case site comes back
+        scheduleNextRefresh();
+        return;
+      }
     }
-  }
 
-  renderAll(); // Show skeleton rows immediately
-  fetchAll();  // One batch call for everything — US, intl, and ORR
+    renderAll();
+    fetchAll();
+  } catch (err) {
+    console.error('[ORR] Init error:', err);
+    // Schedule retry even if init fails
+    scheduleNextRefresh();
+  }
 })();
 </script>
 
