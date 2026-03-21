@@ -455,6 +455,7 @@
     </div>
     <span id="last-update">--</span>
     <button class="debug-toggle" id="debug-toggle">DBG</button>
+    <button class="refresh-btn" id="download-btn">↓ CSV</button>
     <button class="refresh-btn" id="refresh-btn">↻ REFRESH</button>
   </div>
 </header>
@@ -1298,6 +1299,56 @@
   document.getElementById("refresh-btn").addEventListener("click", () => {
     dbg("Manual refresh triggered");
     fetchAll();
+  });
+
+  document.getElementById("download-btn").addEventListener("click", () => {
+    const rows = [["Side","Ticker","Yahoo Ticker","Name","Weight%","Price","Chg%","YTD%"]];
+    const fmt = v => (v === null || v === undefined) ? "" : v.toFixed(4);
+
+    for (const h of LONGS) {
+      const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+      const c = priceCache[key];
+      const ytd = h.yTicker ? ytdCache[h.yTicker] : null;
+      rows.push([
+        "LONG",
+        h.ticker,
+        h.yTicker || "",
+        `"${h.name}"`,
+        h.weight.toFixed(4),
+        c?.price ? c.price.toFixed(4) : "",
+        c?.change != null ? c.change.toFixed(4) : "",
+        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : ""
+      ]);
+    }
+
+    rows.push(["CASH","Cash&Other","","Cash & Other",CASH_WEIGHT.toFixed(4),"","",""]);
+
+    for (const h of SHORTS) {
+      const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+      const c = priceCache[key];
+      const ytd = h.yTicker ? ytdCache[h.yTicker] : null;
+      rows.push([
+        "SHORT",
+        h.ticker,
+        h.yTicker || "",
+        `"${h.name}"`,
+        h.weight.toFixed(4),
+        c?.price ? c.price.toFixed(4) : "",
+        c?.change != null ? c.change.toFixed(4) : "",
+        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : ""
+      ]);
+    }
+
+    const csv = rows.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `ORR_holdings_${date}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    dbg("CSV downloaded", "success");
   });
 
   init();
