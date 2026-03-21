@@ -32,11 +32,7 @@
     --header-text: #f8f9fa;
   }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: var(--bg);
@@ -117,18 +113,9 @@
     border-radius: 4px;
   }
 
-  .orr-change-badge.up {
-    color: #2f9e6e;
-    background: #1a3d2e;
-  }
-  .orr-change-badge.down {
-    color: #f06b5d;
-    background: #3d1a1a;
-  }
-  .orr-change-badge.flat {
-    color: #868e96;
-    background: #2c2f33;
-  }
+  .orr-change-badge.up { color: #2f9e6e; background: #1a3d2e; }
+  .orr-change-badge.down { color: #f06b5d; background: #3d1a1a; }
+  .orr-change-badge.flat { color: #868e96; background: #2c2f33; }
 
   .live-indicator {
     display: flex;
@@ -141,34 +128,21 @@
   }
 
   .pulse {
-    width: 7px;
-    height: 7px;
+    width: 7px; height: 7px;
     background: #2f9e6e;
     border-radius: 50%;
     animation: pulse 1.4s ease-in-out infinite;
   }
 
-  .pulse.paused {
-    background: #f06b5d;
-    animation: none;
-  }
+  .pulse.paused { background: #f06b5d; animation: none; }
+  .pulse.error { background: #f06b5d; animation: none; }
 
   @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.4;
-      transform: scale(0.8);
-    }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
   }
 
-  #last-update {
-    font-size: 11px;
-    color: #868e96;
-  }
+  #last-update { font-size: 11px; color: #868e96; }
 
   .refresh-btn {
     background: #212529;
@@ -183,10 +157,61 @@
     transition: all 0.15s;
   }
 
-  .refresh-btn:hover {
-    background: #343a40;
-    color: #f8f9fa;
+  .refresh-btn:hover { background: #343a40; color: #f8f9fa; }
+
+  /* Error banner */
+  .error-banner {
+    display: none;
+    padding: 10px 28px;
+    background: #fff3cd;
+    border-bottom: 1px solid #e0c36a;
+    font-size: 12px;
+    color: #856404;
+    align-items: center;
+    gap: 8px;
   }
+  .error-banner.visible { display: flex; }
+  .error-banner .dismiss {
+    margin-left: auto;
+    cursor: pointer;
+    font-weight: 600;
+    color: #856404;
+    background: none;
+    border: none;
+    font-size: 14px;
+  }
+
+  /* Debug console */
+  .debug-toggle {
+    background: #212529;
+    border: 1px solid #343a40;
+    color: #868e96;
+    padding: 6px 10px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .debug-toggle:hover { background: #343a40; color: #f8f9fa; }
+
+  .debug-panel {
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #1a1d23;
+    border-bottom: 1px solid #343a40;
+    padding: 10px 28px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #adb5bd;
+  }
+  .debug-panel.visible { display: block; }
+  .debug-panel .log-line { padding: 2px 0; border-bottom: 1px solid #2c2f33; }
+  .debug-panel .log-line.error { color: #f06b5d; }
+  .debug-panel .log-line.success { color: #2f9e6e; }
+  .debug-panel .log-line.warn { color: #e8a838; }
 
   /* Summary bar */
   .summary-bar {
@@ -204,9 +229,7 @@
     gap: 4px;
   }
 
-  .summary-card:last-child {
-    border-right: none;
-  }
+  .summary-card:last-child { border-right: none; }
 
   .summary-label {
     font-size: 10px;
@@ -223,18 +246,10 @@
     letter-spacing: -0.5px;
   }
 
-  .summary-value.long {
-    color: var(--long);
-  }
-  .summary-value.short {
-    color: var(--short);
-  }
-  .summary-value.neutral {
-    color: var(--text);
-  }
-  .summary-value.cash {
-    color: var(--cash);
-  }
+  .summary-value.long { color: var(--long); }
+  .summary-value.short { color: var(--short); }
+  .summary-value.neutral { color: var(--text); }
+  .summary-value.cash { color: var(--cash); }
 
   /* Main grid */
   .main-content {
@@ -244,12 +259,8 @@
     min-height: calc(100vh - 140px);
   }
 
-  .panel {
-    border-right: 1px solid var(--border);
-  }
-  .panel:last-child {
-    border-right: none;
-  }
+  .panel { border-right: 1px solid var(--border); }
+  .panel:last-child { border-right: none; }
 
   .panel-header {
     display: flex;
@@ -270,12 +281,8 @@
     letter-spacing: 1px;
   }
 
-  .panel-title.long {
-    color: var(--long);
-  }
-  .panel-title.short {
-    color: var(--short);
-  }
+  .panel-title.long { color: var(--long); }
+  .panel-title.short { color: var(--short); }
 
   .panel-stats {
     font-size: 11px;
@@ -294,170 +301,92 @@
     gap: 8px;
   }
 
-  .holding-row:hover {
-    background: var(--surface);
-  }
-  .holding-row.long-row:hover {
-    background: var(--long-dim);
-  }
-  .holding-row.short-row:hover {
-    background: var(--short-dim);
-  }
+  .holding-row:hover { background: var(--surface); }
+  .holding-row.long-row:hover { background: var(--long-dim); }
+  .holding-row.short-row:hover { background: var(--short-dim); }
 
-  @keyframes flashUp {
-    0% {
-      background: #c3f0d8;
-    }
-    100% {
-      background: transparent;
-    }
-  }
+  @keyframes flashUp { 0% { background: #c3f0d8; } 100% { background: transparent; } }
+  @keyframes flashDown { 0% { background: #fad5d1; } 100% { background: transparent; } }
 
-  @keyframes flashDown {
-    0% {
-      background: #fad5d1;
-    }
-    100% {
-      background: transparent;
-    }
-  }
-
-  .holding-row.flash-up {
-    animation: flashUp 0.6s ease-out;
-  }
-  .holding-row.flash-down {
-    animation: flashDown 0.6s ease-out;
-  }
+  .holding-row.flash-up { animation: flashUp 0.6s ease-out; }
+  .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
 
   .ticker {
     font-family: "IBM Plex Mono", monospace;
-    font-weight: 600;
-    font-size: 12px;
+    font-weight: 600; font-size: 12px;
     color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .name {
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 12px; font-weight: 400;
     color: var(--text2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .weight {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    text-align: right;
+    font-size: 11px; font-weight: 500;
+    color: var(--muted); text-align: right;
     font-family: "IBM Plex Mono", monospace;
   }
 
   .price {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: right;
-    color: var(--text);
+    font-size: 12px; font-weight: 600;
+    text-align: right; color: var(--text);
   }
 
-  .price.loading {
-    color: var(--neutral);
-  }
+  .price.loading { color: var(--neutral); }
 
   .change {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 11px; font-weight: 600;
     text-align: right;
-    padding: 2px 6px;
-    border-radius: 3px;
+    padding: 2px 6px; border-radius: 3px;
     transition: background-color 0.15s ease, color 0.15s ease;
   }
 
-  .change.up {
-    color: var(--long);
-    background: var(--long-bg);
-  }
-  .change.down {
-    color: var(--short);
-    background: var(--short-bg);
-  }
-  .change.flat {
-    color: var(--muted);
-  }
-  .change.loading {
-    color: var(--neutral);
-  }
+  .change.up { color: var(--long); background: var(--long-bg); }
+  .change.down { color: var(--short); background: var(--short-bg); }
+  .change.flat { color: var(--muted); }
+  .change.loading { color: var(--neutral); }
 
   .ytd {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 11px; font-weight: 600;
     text-align: right;
-    padding: 2px 6px;
-    border-radius: 3px;
+    padding: 2px 6px; border-radius: 3px;
   }
 
-  .ytd.up {
-    color: var(--long);
-    background: var(--long-bg);
-  }
-  .ytd.down {
-    color: var(--short);
-    background: var(--short-bg);
-  }
-  .ytd.flat {
-    color: var(--muted);
-  }
-  .ytd.loading {
-    color: var(--neutral);
-  }
+  .ytd.up { color: var(--long); background: var(--long-bg); }
+  .ytd.down { color: var(--short); background: var(--short-bg); }
+  .ytd.flat { color: var(--muted); }
+  .ytd.loading { color: var(--neutral); }
 
-  /* Mini bar */
   .bar-track {
-    height: 2px;
-    background: var(--border);
-    border-radius: 1px;
-    margin-top: 4px;
-    overflow: hidden;
+    height: 2px; background: var(--border);
+    border-radius: 1px; margin-top: 4px; overflow: hidden;
   }
 
   .bar-fill {
-    height: 100%;
-    border-radius: 1px;
+    height: 100%; border-radius: 1px;
     transition: width 0.4s ease;
   }
-  .bar-fill.up {
-    background: var(--long);
-  }
-  .bar-fill.down {
-    background: var(--short);
-  }
+  .bar-fill.up { background: var(--long); }
+  .bar-fill.down { background: var(--short); }
 
-  /* Column headers */
   .col-header {
     display: grid;
     grid-template-columns: 80px 1fr 72px 80px 70px 70px;
-    padding: 7px 22px;
-    gap: 8px;
+    padding: 7px 22px; gap: 8px;
     border-bottom: 1px solid var(--border);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    background: var(--surface2);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.5px; color: var(--muted);
+    text-transform: uppercase; background: var(--surface2);
   }
 
-  .col-header span:not(:first-child) {
-    text-align: right;
-  }
+  .col-header span:not(:first-child) { text-align: right; }
 
-  /* Cash row */
   .cash-row {
     padding: 9px 22px;
     border-bottom: 1px solid var(--border);
@@ -468,42 +397,25 @@
   }
 
   .cash-label {
-    color: var(--cash);
-    font-weight: 600;
-    font-size: 12px;
-    font-family: "IBM Plex Mono", monospace;
+    color: var(--cash); font-weight: 600;
+    font-size: 12px; font-family: "IBM Plex Mono", monospace;
   }
   .cash-weight {
-    color: var(--cash);
-    font-size: 12px;
-    font-weight: 600;
-    font-family: "IBM Plex Mono", monospace;
+    color: var(--cash); font-size: 12px;
+    font-weight: 600; font-family: "IBM Plex Mono", monospace;
   }
 
-  /* Loading skeleton */
   .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--border) 25%,
-      var(--surface2) 50%,
-      var(--border) 75%
-    );
+    background: linear-gradient(90deg, var(--border) 25%, var(--surface2) 50%, var(--border) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: 3px;
-    height: 11px;
-    width: 54px;
-    display: inline-block;
-    vertical-align: middle;
+    border-radius: 3px; height: 11px; width: 54px;
+    display: inline-block; vertical-align: middle;
   }
 
   @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
   footer {
@@ -517,18 +429,11 @@
     background: var(--surface);
   }
 
-  .notice {
-    font-style: italic;
-  }
+  .notice { font-style: italic; }
 
   @media (max-width: 900px) {
-    .main-content {
-      grid-template-columns: 1fr;
-    }
-    .panel {
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-    }
+    .main-content { grid-template-columns: 1fr; }
+    .panel { border-right: none; border-bottom: 1px solid var(--border); }
   }
 </style>
 </head>
@@ -549,9 +454,17 @@
       <span id="live-label">LIVE</span>
     </div>
     <span id="last-update">--</span>
+    <button class="debug-toggle" id="debug-toggle">DBG</button>
     <button class="refresh-btn" id="refresh-btn">↻ REFRESH</button>
   </div>
 </header>
+
+<div class="error-banner" id="error-banner">
+  <span id="error-msg"></span>
+  <button class="dismiss" id="error-dismiss">✕</button>
+</div>
+
+<div class="debug-panel" id="debug-panel"></div>
 
 <div class="summary-bar" id="summary-bar">
   <div class="summary-card">
@@ -587,12 +500,7 @@
       <div class="panel-stats" id="long-stats">Loading...</div>
     </div>
     <div class="col-header">
-      <span>Ticker</span>
-      <span>Name</span>
-      <span>Weight</span>
-      <span>Price</span>
-      <span>Chg%</span>
-      <span>YTD%</span>
+      <span>Ticker</span><span>Name</span><span>Weight</span><span>Price</span><span>Chg%</span><span>YTD%</span>
     </div>
     <div id="long-holdings"></div>
   </div>
@@ -603,12 +511,7 @@
       <div class="panel-stats" id="short-stats">Loading...</div>
     </div>
     <div class="col-header">
-      <span>Ticker</span>
-      <span>Name</span>
-      <span>Weight</span>
-      <span>Price</span>
-      <span>Chg%</span>
-      <span>YTD%</span>
+      <span>Ticker</span><span>Name</span><span>Weight</span><span>Price</span><span>Chg%</span><span>YTD%</span>
     </div>
     <div id="short-holdings"></div>
   </div>
@@ -622,30 +525,155 @@
 </footer>
 
 <script type="module">
-  // ----------------- CONFIG / CONSTANTS ----------------------------------
-  const FETCH_TIMEOUT_MS = 10000;
-  const CHART_TIMEOUT_MS = 6000;
+  // ===================== CONFIG =====================
+  const FETCH_TIMEOUT_MS = 12000;
+  const CHART_TIMEOUT_MS = 8000;
   const BATCH_SIZE_YTD = 10;
   const BAR_WIDTH_FACTOR = 25;
   const CHANGE_THRESHOLD = 0.02;
-  const YTD_CACHE_VERSION = "v3";
+  const YTD_CACHE_VERSION = "v4";
 
   const YAHOO_SUFFIX_MAP = {
-    JP: ".T",
-    HK: ".HK",
-    SM: ".MC",
-    MM: ".MX",
-    SW: ".SW",
-    FP: ".PA"
+    JP: ".T", HK: ".HK", SM: ".MC", MM: ".MX", SW: ".SW", FP: ".PA"
   };
 
-  const HOLDINGS_PROXIES = [
-    url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+  // ===================== DEBUG LOGGER =====================
+  const debugPanel = document.getElementById("debug-panel");
+  const debugToggle = document.getElementById("debug-toggle");
+  const errorBanner = document.getElementById("error-banner");
+  const errorMsg = document.getElementById("error-msg");
+  const errorDismiss = document.getElementById("error-dismiss");
+
+  let debugVisible = false;
+  debugToggle.addEventListener("click", () => {
+    debugVisible = !debugVisible;
+    debugPanel.classList.toggle("visible", debugVisible);
+  });
+  errorDismiss.addEventListener("click", () => {
+    errorBanner.classList.remove("visible");
+  });
+
+  function dbg(msg, level = "info") {
+    const ts = new Date().toLocaleTimeString("en-US", { hour12: false });
+    const line = document.createElement("div");
+    line.className = "log-line " + level;
+    line.textContent = `[${ts}] ${msg}`;
+    debugPanel.prepend(line);
+    // keep max 100 lines
+    while (debugPanel.children.length > 100) debugPanel.lastChild.remove();
+
+    if (level === "error") console.error(`[ORR] ${msg}`);
+    else if (level === "warn") console.warn(`[ORR] ${msg}`);
+    else console.log(`[ORR] ${msg}`);
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorBanner.classList.add("visible");
+  }
+
+  // ===================== PROXY LAYER =====================
+  // Primary: your own Cloudflare Worker (reliable, fast, free tier = 100k req/day)
+  // Fallback: free CORS proxies (unreliable, but better than nothing)
+  //
+  // >>> PASTE YOUR WORKER URL HERE <<<
+  const WORKER_URL = "https://bold-sunset-dcb1.cday46074.workers.dev"; // e.g. "https://orr-proxy.YOUR-SUBDOMAIN.workers.dev"
+
+  const FREE_PROXIES = [
+    {
+      name: "allorigins",
+      wrap: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+      parse: async res => { const j = await res.json(); if (!j.contents) throw new Error("empty"); return j.contents; }
+    },
+    {
+      name: "corsproxy.io",
+      wrap: url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+      parse: async res => res.text()
+    },
+    {
+      name: "corsproxy.org",
+      wrap: url => `https://corsproxy.org/?url=${encodeURIComponent(url)}`,
+      parse: async res => res.text()
+    },
+    {
+      name: "thingproxy",
+      wrap: url => `https://thingproxy.freeboard.io/fetch/${url}`,
+      parse: async res => res.text()
+    }
   ];
 
-  // ----------------- STATE -----------------------------------------------
+  async function fetchWithTimeout(url, ms = FETCH_TIMEOUT_MS, options = {}) {
+    const ctrl = new AbortController();
+    const id = setTimeout(() => ctrl.abort(), ms);
+    try {
+      const res = await fetch(url, { ...options, signal: ctrl.signal });
+      clearTimeout(id);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  async function proxiedFetch(targetUrl, timeout = FETCH_TIMEOUT_MS) {
+    const errors = [];
+
+    // 1. Try Cloudflare Worker (primary — fast and reliable)
+    if (WORKER_URL) {
+      try {
+        const workerReq = `${WORKER_URL}/?url=${encodeURIComponent(targetUrl)}`;
+        dbg(`Worker fetch: ${targetUrl.substring(0, 80)}...`);
+        const res = await fetchWithTimeout(workerReq, timeout);
+        const text = await res.text();
+        if (text && text.length > 50) {
+          dbg(`Worker OK (${text.length} bytes)`, "success");
+          return text;
+        }
+        errors.push("worker: empty response");
+      } catch (e) {
+        errors.push(`worker: ${e.message}`);
+        dbg(`Worker failed: ${e.message}`, "warn");
+      }
+    } else {
+      dbg("No WORKER_URL configured — using free proxies (unreliable)", "warn");
+    }
+
+    // 2. Fallback to free CORS proxies
+    for (const proxy of FREE_PROXIES) {
+      try {
+        dbg(`Trying proxy: ${proxy.name}`);
+        const res = await fetchWithTimeout(proxy.wrap(targetUrl), timeout);
+        const text = await proxy.parse(res);
+        if (text && text.length > 50) {
+          dbg(`${proxy.name} OK (${text.length} bytes)`, "success");
+          return text;
+        }
+        errors.push(`${proxy.name}: empty response`);
+      } catch (e) {
+        errors.push(`${proxy.name}: ${e.message}`);
+        dbg(`${proxy.name} failed: ${e.message}`, "warn");
+      }
+    }
+
+    dbg(`ALL proxies failed for ${targetUrl.substring(0, 60)}`, "error");
+    throw new Error(`All proxies failed: ${errors.join("; ")}`);
+  }
+
+  async function proxiedFetchJSON(targetUrl, timeout = FETCH_TIMEOUT_MS) {
+    const text = await proxiedFetch(targetUrl, timeout);
+    try {
+      return JSON.parse(text);
+    } catch {
+      try {
+        const outer = JSON.parse(text);
+        if (outer.contents) return JSON.parse(outer.contents);
+      } catch { /* fall through */ }
+      throw new Error("Failed to parse JSON from response");
+    }
+  }
+
+  // ===================== STATE =====================
   let LONGS = [];
   let SHORTS = [];
   let CASH_WEIGHT = 0;
@@ -654,7 +682,6 @@
   const ytdCache = {};
   let refreshTimer = null;
 
-  // Restore YTD cache
   try {
     const ver = sessionStorage.getItem("orr-ytd-version");
     if (ver === YTD_CACHE_VERSION) {
@@ -663,11 +690,9 @@
     } else {
       sessionStorage.removeItem("orr-ytd-cache");
     }
-  } catch {
-    /* ignore */
-  }
+  } catch { /* ignore */ }
 
-  // ----------------- HELPERS ---------------------------------------------
+  // ===================== HELPERS =====================
   function yahooTicker(rawTicker) {
     if (!rawTicker.includes(" ")) return rawTicker;
     const parts = rawTicker.trim().split(/\s+/);
@@ -680,27 +705,13 @@
     return null;
   }
 
-  async function fetchWithTimeout(url, ms = FETCH_TIMEOUT_MS, options = {}) {
-    const ctrl = new AbortController();
-    const id = setTimeout(() => ctrl.abort(), ms);
-    try {
-      const res = await fetch(url, { ...options, signal: ctrl.signal });
-      clearTimeout(id);
-      return res;
-    } catch (e) {
-      clearTimeout(id);
-      throw e;
-    }
-  }
-
   function safeId(ticker) {
     return "row-" + ticker.replace(/[^a-zA-Z0-9]/g, "_");
   }
 
   function formatChange(c) {
     if (c === null || c === undefined) return "—";
-    const sign = c >= 0 ? "+" : "";
-    return `${sign}${c.toFixed(2)}%`;
+    return `${c >= 0 ? "+" : ""}${c.toFixed(2)}%`;
   }
 
   function changeClass(c) {
@@ -720,42 +731,22 @@
     return p >= 100 ? p.toFixed(2) : p.toFixed(3);
   }
 
-  // ----------------- HOLDINGS FETCH / PARSE ------------------------------
-  async function fetchHoldingsHTML() {
-    const target = "https://militiaetf.com/";
-    for (const proxy of HOLDINGS_PROXIES) {
-      try {
-        const res = await fetchWithTimeout(proxy(target), FETCH_TIMEOUT_MS);
-        const contentType = res.headers.get("content-type") || "";
-        let html;
-        if (contentType.includes("json")) {
-          const json = await res.json();
-          html = json.contents;
-        } else {
-          html = await res.text();
-        }
-        if (html && html.includes("<table")) return html;
-      } catch {
-        /* try next */
-      }
-    }
-    return null;
-  }
-
+  // ===================== HOLDINGS FETCH =====================
   function parseHoldingsHTML(html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
     let holdingsTable = null;
     for (const table of doc.querySelectorAll("table")) {
-      const headers = [...table.querySelectorAll("th")].map(th =>
-        th.textContent.trim()
-      );
+      const headers = [...table.querySelectorAll("th")].map(th => th.textContent.trim());
       if (headers.some(h => h.includes("Net Assets"))) {
         holdingsTable = table;
         break;
       }
     }
-    if (!holdingsTable) return null;
+    if (!holdingsTable) {
+      dbg("No holdings table found in HTML", "error");
+      return null;
+    }
 
     const rows = [...holdingsTable.querySelectorAll("tbody tr")];
     const parsed = [];
@@ -763,9 +754,7 @@
     let date = "";
 
     for (const row of rows) {
-      const cells = [...row.querySelectorAll("td")].map(td =>
-        td.textContent.trim()
-      );
+      const cells = [...row.querySelectorAll("td")].map(td => td.textContent.trim());
       if (cells.length < 7) continue;
 
       const rawTicker = cells[0];
@@ -779,26 +768,17 @@
         cashWeight = parseFloat(cells[6]) || 0;
         continue;
       }
-
       if (!rawTicker || rawTicker === "JPY") continue;
       if (name.includes("FWD") || name.includes("JAPANESE YEN")) continue;
-
       if (!date && rowDate) date = rowDate;
 
       const yTicker = yahooTicker(rawTicker);
       const isIntl = rawTicker.includes(" ");
 
-      parsed.push({
-        ticker: rawTicker,
-        yTicker,
-        name,
-        weight,
-        shares,
-        isIntl,
-        staticPrice
-      });
+      parsed.push({ ticker: rawTicker, yTicker, name, weight, shares, isIntl, staticPrice });
     }
 
+    dbg(`Parsed ${parsed.length} holdings, cash=${cashWeight.toFixed(2)}%`, "success");
     return { holdings: parsed, cashWeight, date };
   }
 
@@ -809,71 +789,57 @@
 
     let result = null;
     try {
-      const html = await fetchHoldingsHTML();
-      result = html ? parseHoldingsHTML(html) : null;
-    } catch {
-      result = null;
+      const html = await proxiedFetch("https://militiaetf.com/", FETCH_TIMEOUT_MS);
+      if (html && html.includes("<table")) {
+        result = parseHoldingsHTML(html);
+      } else {
+        dbg("Holdings HTML missing <table>", "error");
+      }
+    } catch (e) {
+      dbg(`Holdings fetch failed: ${e.message}`, "error");
     }
 
     if (result && result.holdings.length > 0) {
       try {
         localStorage.setItem("orr-holdings-cache", JSON.stringify(result));
-        localStorage.setItem(
-          "orr-holdings-cache-ts",
-          Date.now().toString()
-        );
-      } catch {
-        /* ignore */
-      }
+        localStorage.setItem("orr-holdings-cache-ts", Date.now().toString());
+      } catch { /* ignore */ }
     } else {
+      // Try cache
       try {
         const cached = localStorage.getItem("orr-holdings-cache");
         if (cached) {
           result = JSON.parse(cached);
-          const ts = parseInt(
-            localStorage.getItem("orr-holdings-cache-ts") || "0",
-            10
-          );
+          const ts = parseInt(localStorage.getItem("orr-holdings-cache-ts") || "0", 10);
           const age = Date.now() - ts;
-          const ageStr =
-            age < 3600000
-              ? `${Math.round(age / 60000)}m ago`
-              : age < 86400000
-              ? `${Math.round(age / 3600000)}h ago`
-              : `${Math.round(age / 86400000)}d ago`;
-          footerMsg.textContent = `⚠ CACHED DATA (site unreachable · cached ${ageStr}) · Prices: Yahoo Finance · Auto-refresh 60s`;
+          const ageStr = age < 3600000 ? `${Math.round(age / 60000)}m ago`
+                       : age < 86400000 ? `${Math.round(age / 3600000)}h ago`
+                       : `${Math.round(age / 86400000)}d ago`;
+          const msg = `Using cached holdings (${ageStr}) — militiaetf.com unreachable`;
+          showError(msg);
+          footerMsg.textContent = `⚠ CACHED DATA (${ageStr}) · Prices: Yahoo Finance · Auto-refresh 60s`;
+          dbg(msg, "warn");
         }
-      } catch {
-        /* ignore */
-      }
+      } catch { /* ignore */ }
     }
 
     if (!result || result.holdings.length === 0) {
-      footerMsg.textContent =
-        "⚠ Could not load holdings from militiaetf.com — please try refreshing";
+      footerMsg.textContent = "⚠ Could not load holdings — please try refreshing";
+      showError("Could not load holdings from militiaetf.com and no cache available. Click REFRESH to retry.");
       return false;
     }
 
     holdingsDate = result.date;
     CASH_WEIGHT = result.cashWeight;
 
-    // seed static price cache for intl tickers
     for (const h of result.holdings) {
       if (h.isIntl && h.staticPrice) {
-        priceCache[h.ticker] = {
-          price: h.staticPrice,
-          change: null,
-          isStatic: true
-        };
+        priceCache[h.ticker] = { price: h.staticPrice, change: null, isStatic: true };
       }
     }
 
-    LONGS = result.holdings
-      .filter(h => h.weight > 0)
-      .sort((a, b) => b.weight - a.weight);
-    SHORTS = result.holdings
-      .filter(h => h.weight < 0)
-      .sort((a, b) => a.weight - b.weight);
+    LONGS = result.holdings.filter(h => h.weight > 0).sort((a, b) => b.weight - a.weight);
+    SHORTS = result.holdings.filter(h => h.weight < 0).sort((a, b) => a.weight - b.weight);
 
     if (holdingsDate) {
       footerMsg.textContent = `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance (15-min delay) · Auto-refresh 60s`;
@@ -883,111 +849,99 @@
     return true;
   }
 
-  // ----------------- YAHOO QUOTES ----------------------------------------
-  async function fetchBatchQuotes(symbols) {
+  // ===================== YAHOO QUOTES =====================
+  // Primary: v8 chart endpoint (more reliable than v7 quote)
+  // We fetch 2d range so we can compute change from prior close
+
+  async function fetchQuoteViaChart(symbol, range = "2d") {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=${range}`;
+    const data = await proxiedFetchJSON(url, CHART_TIMEOUT_MS);
+    const result = data?.chart?.result?.[0];
+    if (!result?.meta?.regularMarketPrice) throw new Error("No price in chart response");
+
+    const price = result.meta.regularMarketPrice;
+    let change = 0;
+
+    const closes = result.indicators?.quote?.[0]?.close;
+    if (closes && closes.length >= 2) {
+      const valid = closes.filter(c => c !== null && c !== undefined);
+      if (valid.length >= 2) {
+        const prevClose = valid[valid.length - 2];
+        const lastClose = valid[valid.length - 1];
+        change = ((lastClose - prevClose) / prevClose) * 100;
+      }
+    } else {
+      const prev = result.meta.chartPreviousClose || result.meta.previousClose;
+      if (prev) change = ((price - prev) / prev) * 100;
+    }
+
+    return { price, change };
+  }
+
+  // Batch via v7 (as a fast path if it works)
+  async function fetchBatchQuotesV7(symbols) {
     const results = new Map();
     if (!symbols.length) return results;
     const csv = symbols.join(",");
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
 
-    const attempts = [
-      async () => {
-        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
-        const res = await fetchWithTimeout(
-          `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-          FETCH_TIMEOUT_MS
-        );
-        const j = await res.json();
-        return JSON.parse(j.contents);
-      },
-      async () => {
-        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}`;
-        const res = await fetchWithTimeout(
-          `https://corsproxy.io/?${encodeURIComponent(url)}`,
-          FETCH_TIMEOUT_MS
-        );
-        return res.json();
-      },
-      async () => {
-        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${csv}&corsDomain=finance.yahoo.com`;
-        const res = await fetchWithTimeout(url, FETCH_TIMEOUT_MS);
-        return res.json();
-      }
-    ];
-
-    for (const attempt of attempts) {
-      try {
-        const data = await attempt();
-        const quotes = data?.quoteResponse?.result;
-        if (!quotes?.length) continue;
-        for (const q of quotes) {
-          if (!q.regularMarketPrice) continue;
-          const price = q.regularMarketPrice;
-          const prev =
-            q.regularMarketPreviousClose ||
-            q.previousClose ||
-            q.regularMarketOpen;
-          let change = q.regularMarketChangePercent;
-          if (
-            (change === null || change === undefined || change === 0) &&
-            prev &&
-            prev !== price
-          ) {
-            change = ((price - prev) / prev) * 100;
-          }
-          change = change ?? 0;
-          results.set(q.symbol, { price, change });
-        }
+    try {
+      const data = await proxiedFetchJSON(url, FETCH_TIMEOUT_MS);
+      const quotes = data?.quoteResponse?.result;
+      if (!quotes?.length) {
+        dbg(`v7 batch returned no results`, "warn");
         return results;
-      } catch {
-        /* try next */
       }
+      for (const q of quotes) {
+        if (!q.regularMarketPrice) continue;
+        const price = q.regularMarketPrice;
+        const prev = q.regularMarketPreviousClose || q.previousClose || q.regularMarketOpen;
+        let change = q.regularMarketChangePercent;
+        if ((change === null || change === undefined || change === 0) && prev && prev !== price) {
+          change = ((price - prev) / prev) * 100;
+        }
+        results.set(q.symbol, { price, change: change ?? 0 });
+      }
+      dbg(`v7 batch: got ${results.size}/${symbols.length} quotes`, "success");
+    } catch (e) {
+      dbg(`v7 batch failed: ${e.message}`, "warn");
     }
-
     return results;
   }
 
-  async function fetchSingleQuote(yTicker, range = "1d") {
-    const base = `https://query1.finance.yahoo.com/v8/finance/chart/${yTicker}?interval=1d&range=${range}`;
-    const urls = [
-      `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
-      `https://corsproxy.io/?${encodeURIComponent(base)}`
-    ];
+  // Fetch all quotes with v7 batch first, then v8 chart fallback for misses
+  async function fetchAllQuotes(symbols) {
+    const results = new Map();
+    if (!symbols.length) return results;
 
-    for (let i = 0; i < urls.length; i++) {
-      try {
-        const res = await fetchWithTimeout(
-          urls[i],
-          CHART_TIMEOUT_MS
-        );
-        const raw = await res.json();
-        const data = i === 0 ? JSON.parse(raw.contents) : raw;
-        const result = data?.chart?.result?.[0];
-        if (!result?.meta) continue;
-
-        const price = result.meta.regularMarketPrice;
-        if (!price) continue;
-
-        let change = 0;
-        const closes = result.indicators?.quote?.[0]?.close;
-        if (closes && closes.length >= 2) {
-          const valid = closes.filter(c => c !== null && c !== undefined);
-          if (valid.length >= 2) {
-            const prevClose = valid[valid.length - 2];
-            const lastClose = valid[valid.length - 1];
-            change = ((lastClose - prevClose) / prevClose) * 100;
-          }
-        } else {
-          const prev =
-            result.meta.chartPreviousClose || result.meta.previousClose;
-          if (prev) change = ((price - prev) / prev) * 100;
-        }
-
-        return { price, change };
-      } catch {
-        /* try next */
-      }
+    // Try v7 batch first (fastest when it works)
+    const batchResults = await fetchBatchQuotesV7(symbols);
+    for (const [sym, data] of batchResults) {
+      results.set(sym, data);
     }
-    return null;
+
+    // Fall back to v8 chart for anything missed
+    const missed = symbols.filter(s => !results.has(s));
+    if (missed.length > 0) {
+      dbg(`v8 chart fallback for ${missed.length} symbols: ${missed.slice(0, 5).join(",")}...`);
+      const fallbackResults = await Promise.allSettled(
+        missed.map(async sym => {
+          try {
+            const quote = await fetchQuoteViaChart(sym, "2d");
+            results.set(sym, quote);
+            dbg(`v8 chart OK: ${sym} = $${quote.price.toFixed(2)}`, "success");
+          } catch (e) {
+            dbg(`v8 chart fail: ${sym}: ${e.message}`, "error");
+          }
+        })
+      );
+    }
+
+    if (results.size === 0 && symbols.length > 0) {
+      showError("All Yahoo Finance price fetches failed. CORS proxies may be down. Check console (DBG) for details.");
+    }
+
+    return results;
   }
 
   function updateORRDisplay(quote) {
@@ -999,20 +953,14 @@
       badge.className = "orr-change-badge flat";
       return;
     }
-    const { price, change } = quote;
-    navEl.textContent = "$" + price.toFixed(2);
-    const sign = change >= 0 ? "+" : "";
-    badge.textContent = `${sign}${change.toFixed(2)}%`;
-    badge.className =
-      "orr-change-badge " +
-      (change > CHANGE_THRESHOLD
-        ? "up"
-        : change < -CHANGE_THRESHOLD
-        ? "down"
-        : "flat");
+    navEl.textContent = "$" + quote.price.toFixed(2);
+    const sign = quote.change >= 0 ? "+" : "";
+    badge.textContent = `${sign}${quote.change.toFixed(2)}%`;
+    badge.className = "orr-change-badge " +
+      (quote.change > CHANGE_THRESHOLD ? "up" : quote.change < -CHANGE_THRESHOLD ? "down" : "flat");
   }
 
-  // ----------------- YTD DATA --------------------------------------------
+  // ===================== YTD DATA =====================
   async function fetchYTDData(symbols) {
     if (!symbols.length) return;
 
@@ -1020,16 +968,13 @@
       if (sessionStorage.getItem("orr-ytd-version") === YTD_CACHE_VERSION) {
         const cached = sessionStorage.getItem("orr-ytd-cache");
         if (cached) {
-          const parsed = JSON.parse(cached);
-          Object.assign(ytdCache, parsed);
+          Object.assign(ytdCache, JSON.parse(cached));
           const missing = symbols.filter(s => !ytdCache[s]);
           if (missing.length === 0) return;
           symbols = missing;
         }
       }
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
 
     const now = new Date();
     const year = now.getFullYear();
@@ -1041,60 +986,34 @@
       await Promise.allSettled(
         batch.map(async sym => {
           const chartUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&period1=${dec20}&period2=${jan3}`;
-          const urls = [
-            `https://api.allorigins.win/get?url=${encodeURIComponent(
-              chartUrl
-            )}`,
-            `https://corsproxy.io/?${encodeURIComponent(chartUrl)}`
-          ];
-          for (let p = 0; p < urls.length; p++) {
-            try {
-              const res = await fetchWithTimeout(
-                urls[p],
-                CHART_TIMEOUT_MS
-              );
-              const raw = await res.json();
-              const data = p === 0 ? JSON.parse(raw.contents) : raw;
-              const result = data?.chart?.result?.[0];
-              if (!result) continue;
-
-              const closes =
-                result.indicators?.quote?.[0]?.close || [];
-              const valid = closes.filter(
-                c => c !== null && c !== undefined
-              );
-              if (!valid.length) continue;
-              const yearEnd = valid[valid.length - 1];
-
-              const current = result.meta?.regularMarketPrice;
-              if (!current || !yearEnd || yearEnd <= 0) continue;
-
-              ytdCache[sym] = {
-                ytdChange: ((current - yearEnd) / yearEnd) * 100
-              };
-              break;
-            } catch {
-              /* try next */
-            }
+          try {
+            const data = await proxiedFetchJSON(chartUrl, CHART_TIMEOUT_MS);
+            const result = data?.chart?.result?.[0];
+            if (!result) return;
+            const closes = result.indicators?.quote?.[0]?.close || [];
+            const valid = closes.filter(c => c !== null && c !== undefined);
+            if (!valid.length) return;
+            const yearEnd = valid[valid.length - 1];
+            const current = result.meta?.regularMarketPrice;
+            if (!current || !yearEnd || yearEnd <= 0) return;
+            ytdCache[sym] = { ytdChange: ((current - yearEnd) / yearEnd) * 100 };
+          } catch (e) {
+            dbg(`YTD fail ${sym}: ${e.message}`, "warn");
           }
         })
       );
-      renderAll(); // incremental update
+      renderAll();
     }
 
     try {
       sessionStorage.setItem("orr-ytd-cache", JSON.stringify(ytdCache));
       sessionStorage.setItem("orr-ytd-version", YTD_CACHE_VERSION);
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
   }
 
-  // ----------------- RENDERING -------------------------------------------
+  // ===================== RENDERING =====================
   function renderRow(holding, isShort) {
-    const cacheKey = holding.isIntl
-      ? holding.ticker
-      : holding.yTicker || holding.ticker;
+    const cacheKey = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
     const cached = priceCache[cacheKey];
     const weight = Math.abs(holding.weight);
     const change = cached?.change ?? null;
@@ -1102,27 +1021,20 @@
     const isStatic = cached?.isStatic ?? false;
     const canFetch = !!holding.yTicker;
 
-    const fundImpact =
-      change !== null ? (isShort ? -change : change) : null;
+    const fundImpact = change !== null ? (isShort ? -change : change) : null;
     const cc = changeClass(fundImpact);
     const bw = barWidth(change);
 
-    const displayTicker = holding.ticker.includes(" ")
-      ? holding.ticker.split(" ")[0]
-      : holding.ticker;
+    const displayTicker = holding.ticker.includes(" ") ? holding.ticker.split(" ")[0] : holding.ticker;
 
-    let priceHtml;
-    let changeHtml;
+    let priceHtml, changeHtml;
     if (price) {
       priceHtml = formatPrice(price);
       if (isStatic && change === null) {
         changeHtml = `<span class="skeleton"></span>`;
       } else if (isStatic) {
         const dispChange = isShort ? -change : change;
-        const sign = dispChange >= 0 ? "+" : "";
-        changeHtml = `<span title="Prior day change">${sign}${dispChange.toFixed(
-          2
-        )}%</span>`;
+        changeHtml = `<span title="Prior day change">${dispChange >= 0 ? "+" : ""}${dispChange.toFixed(2)}%</span>`;
       } else {
         changeHtml = formatChange(isShort && change !== null ? -change : change);
       }
@@ -1139,88 +1051,56 @@
     let ytdHtml;
     if (ytdData) {
       const ytdVal = isShort ? -ytdData.ytdChange : ytdData.ytdChange;
-      const ytdSign = ytdVal >= 0 ? "+" : "";
       const ytdCc = changeClass(ytdVal);
-      ytdHtml = `<div class="ytd ${ytdCc}">${ytdSign}${ytdVal.toFixed(
-        1
-      )}%</div>`;
+      ytdHtml = `<div class="ytd ${ytdCc}">${ytdVal >= 0 ? "+" : ""}${ytdVal.toFixed(1)}%</div>`;
     } else if (canFetch) {
       ytdHtml = `<div class="ytd loading"><span class="skeleton"></span></div>`;
     } else {
       ytdHtml = `<div class="ytd flat">—</div>`;
     }
 
-    const barFillClass =
-      isStatic && change !== null ? cc : "";
-    const barWidthVal =
-      isStatic && change !== null ? bw : 0;
-
     return `
-      <div class="holding-row ${isShort ? "short-row" : "long-row"}" id="${safeId(
-      holding.ticker
-    )}">
-        <div>
-          <div class="ticker" title="${holding.ticker}">${displayTicker}</div>
-        </div>
+      <div class="holding-row ${isShort ? "short-row" : "long-row"}" id="${safeId(holding.ticker)}">
+        <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
         <div>
           <div class="name">${holding.name}</div>
-          <div class="bar-track">
-            <div class="bar-fill ${barFillClass}" style="width:${barWidthVal}%"></div>
-          </div>
+          <div class="bar-track"><div class="bar-fill ${cc}" style="width:${bw}%"></div></div>
         </div>
         <div class="weight">${weight.toFixed(2)}%</div>
         <div class="price ${price ? "" : "loading"}">${priceHtml}</div>
-        <div class="change ${isStatic && change === null ? "loading" : cc} ${
-      price ? "" : "loading"
-    }">${changeHtml}</div>
+        <div class="change ${isStatic && change === null ? "loading" : cc} ${price ? "" : "loading"}">${changeHtml}</div>
         ${ytdHtml}
-      </div>
-    `;
+      </div>`;
   }
 
   function renderPanelRows(container, holdings, isShort) {
     const fragment = document.createDocumentFragment();
-
     if (!isShort) {
       const cashRow = document.createElement("div");
       cashRow.className = "cash-row";
-      cashRow.innerHTML = `
-        <span class="cash-label">CASH &amp; OTHER</span>
-        <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
-      `;
+      cashRow.innerHTML = `<span class="cash-label">CASH &amp; OTHER</span><span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>`;
       fragment.appendChild(cashRow);
     }
-
     holdings.forEach(h => {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = renderRow(h, isShort);
       fragment.appendChild(wrapper.firstElementChild);
     });
-
     container.textContent = "";
     container.appendChild(fragment);
   }
 
   function renderAll() {
-    const longEl = document.getElementById("long-holdings");
-    const shortEl = document.getElementById("short-holdings");
-
-    renderPanelRows(longEl, LONGS, false);
-    renderPanelRows(shortEl, SHORTS, true);
-
+    renderPanelRows(document.getElementById("long-holdings"), LONGS, false);
+    renderPanelRows(document.getElementById("short-holdings"), SHORTS, true);
     updateSummary();
   }
 
   function updateSummary() {
-    let longPnl = 0,
-      longW = 0;
-    let shortPnl = 0,
-      shortW = 0;
-    let winners = 0,
-      losers = 0;
+    let longPnl = 0, longW = 0, shortPnl = 0, shortW = 0, winners = 0, losers = 0;
 
     LONGS.forEach(h => {
-      const key = h.isIntl ? h.ticker : h.yTicker || h.ticker;
+      const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
       const c = priceCache[key]?.change;
       if (c !== null && c !== undefined) {
         longPnl += (h.weight / 100) * c;
@@ -1231,7 +1111,7 @@
     });
 
     SHORTS.forEach(h => {
-      const key = h.isIntl ? h.ticker : h.yTicker || h.ticker;
+      const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
       const c = priceCache[key]?.change;
       const absW = Math.abs(h.weight);
       if (c !== null && c !== undefined) {
@@ -1250,170 +1130,103 @@
     const pending = allFetchable.length - loadedCount;
     const net = longPnl + shortPnl;
 
-    const fmt = (v, digits = 3) => {
-      const sign = v >= 0 ? "+" : "";
-      return `${sign}${(v * 100).toFixed(digits)}bps`;
-    };
+    const fmt = (v) => `${v >= 0 ? "+" : ""}${(v * 100).toFixed(3)}bps`;
 
-    const longPnlEl = document.getElementById("long-pnl");
-    const shortPnlEl = document.getElementById("short-pnl");
-    const netPnlEl = document.getElementById("net-pnl");
-    const winLossEl = document.getElementById("win-loss");
-    const topMoverEl = document.getElementById("top-mover");
-    const netExposureEl = document.getElementById("net-exposure");
+    document.getElementById("long-pnl").textContent = longW ? fmt(longPnl) : "--";
+    document.getElementById("short-pnl").textContent = shortW ? fmt(shortPnl) : "--";
+    document.getElementById("net-pnl").textContent = (longW && shortW) ? fmt(net) : "--";
 
-    longPnlEl.textContent = longW ? fmt(longPnl) : "--";
-    shortPnlEl.textContent = shortW ? fmt(shortPnl) : "--";
-    netPnlEl.textContent = longW && shortW ? fmt(net) : "--";
+    document.getElementById("long-pnl").className = "summary-value " + (longPnl >= 0 ? "long" : "short");
+    document.getElementById("short-pnl").className = "summary-value " + (shortPnl >= 0 ? "long" : "short");
+    document.getElementById("net-pnl").className = "summary-value " + (net >= 0 ? "long" : "short");
 
-    longPnlEl.className =
-      "summary-value " + (longPnl >= 0 ? "long" : "short");
-    shortPnlEl.className =
-      "summary-value " + (shortPnl >= 0 ? "long" : "short");
-    netPnlEl.className =
-      "summary-value " + (net >= 0 ? "long" : "short");
-
-    winLossEl.textContent =
-      pending > 0
-        ? `${winners}W · ${losers}L · ${pending}?`
-        : `${winners}W · ${losers}L`;
+    document.getElementById("win-loss").textContent = pending > 0
+      ? `${winners}W · ${losers}L · ${pending}?`
+      : `${winners}W · ${losers}L`;
 
     // top mover
-    const allHoldings = [...LONGS, ...SHORTS];
-    let topMover = null;
-    let topImpact = 0;
-    allHoldings.forEach(h => {
-      const key = h.isIntl ? h.ticker : h.yTicker || h.ticker;
+    let topMover = null, topImpact = 0;
+    [...LONGS, ...SHORTS].forEach(h => {
+      const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
       const c = priceCache[key]?.change;
       if (c === null || c === undefined) return;
       const isShort = h.weight < 0;
       const fundChg = isShort ? -c : c;
       const impact = Math.abs(fundChg * (Math.abs(h.weight) / 100));
-      if (impact > topImpact) {
-        topImpact = impact;
-        topMover = { h, fundChg };
-      }
+      if (impact > topImpact) { topImpact = impact; topMover = { h, fundChg }; }
     });
 
+    const topMoverEl = document.getElementById("top-mover");
     if (topMover) {
-      const sign = topMover.fundChg >= 0 ? "+" : "";
-      const displayTicker = topMover.h.ticker.includes(" ")
-        ? topMover.h.ticker.split(" ")[0]
-        : topMover.h.ticker;
-      topMoverEl.textContent = `${displayTicker} ${sign}${topMover.fundChg.toFixed(
-        1
-      )}%`;
-      topMoverEl.className =
-        "summary-value " +
-        (topMover.fundChg >= 0 ? "long" : "short");
+      const displayTicker = topMover.h.ticker.includes(" ") ? topMover.h.ticker.split(" ")[0] : topMover.h.ticker;
+      topMoverEl.textContent = `${displayTicker} ${topMover.fundChg >= 0 ? "+" : ""}${topMover.fundChg.toFixed(1)}%`;
+      topMoverEl.className = "summary-value " + (topMover.fundChg >= 0 ? "long" : "short");
     } else {
       topMoverEl.textContent = "--";
       topMoverEl.className = "summary-value neutral";
     }
 
     const grossLong = LONGS.reduce((a, h) => a + h.weight, 0);
-    const grossShort = SHORTS.reduce(
-      (a, h) => a + Math.abs(h.weight),
-      0
-    );
+    const grossShort = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
     const netExposure = grossLong - grossShort;
-    netExposureEl.textContent =
-      (netExposure >= 0 ? "+" : "") + netExposure.toFixed(1) + "%";
-    netExposureEl.className =
-      "summary-value " + (netExposure >= 0 ? "long" : "short");
+    const netExposureEl = document.getElementById("net-exposure");
+    netExposureEl.textContent = (netExposure >= 0 ? "+" : "") + netExposure.toFixed(1) + "%";
+    netExposureEl.className = "summary-value " + (netExposure >= 0 ? "long" : "short");
 
     const now = new Date();
-    const et = new Date(
-      now.toLocaleString("en-US", {
-        timeZone: "America/New_York"
-      })
-    );
+    const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
 
     const longFetchable = LONGS.filter(h => h.yTicker).length;
-    const shortFetchable = SHORTS.filter(h => h.yTicker).length;
+    document.getElementById("long-stats").innerHTML = `${LONGS.length} positions (${longFetchable} quoted) · ${longW.toFixed(0)}% AUM`;
+    document.getElementById("short-stats").innerHTML = `${SHORTS.length} positions · ${SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0).toFixed(0)}% gross short`;
 
-    document.getElementById(
-      "long-stats"
-    ).innerHTML = `${LONGS.length} positions (${longFetchable} quoted) · ${longW.toFixed(
-      0
-    )}% AUM`;
-    document.getElementById(
-      "short-stats"
-    ).innerHTML = `${SHORTS.length} positions · ${SHORTS.reduce(
-      (a, h) => a + Math.abs(h.weight),
-      0
-    ).toFixed(0)}% gross short`;
-
-    document.getElementById("last-update").textContent =
-      "Updated " +
-      et.toLocaleTimeString("en-US", {
-        timeZone: "America/New_York",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }) +
-      " ET";
+    document.getElementById("last-update").textContent = "Updated " +
+      et.toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", second: "2-digit" }) + " ET";
   }
 
-  // ----------------- FETCH ALL -------------------------------------------
+  // ===================== FETCH ALL =====================
   async function fetchAll() {
     const pulse = document.getElementById("pulse-dot");
     const liveLabel = document.getElementById("live-label");
-    pulse.classList.remove("paused");
+    pulse.classList.remove("paused", "error");
     liveLabel.textContent = "FETCHING";
 
     const allHoldings = [...LONGS, ...SHORTS];
-    const usTickers = allHoldings
-      .filter(h => h.yTicker && !h.isIntl)
-      .map(h => h.yTicker);
-    const intlHoldings = allHoldings.filter(
-      h => h.yTicker && h.isIntl
-    );
-    const batchSymbols = [...new Set(["ORR", ...usTickers])];
+    const usTickers = allHoldings.filter(h => h.yTicker && !h.isIntl).map(h => h.yTicker);
+    const intlHoldings = allHoldings.filter(h => h.yTicker && h.isIntl);
+    const allSymbols = [...new Set(["ORR", ...usTickers])];
 
-    liveLabel.textContent = `0/${batchSymbols.length + intlHoldings.length}`;
+    dbg(`Fetching ${allSymbols.length} US + ${intlHoldings.length} intl quotes`);
+    liveLabel.textContent = `0/${allSymbols.length + intlHoldings.length}`;
 
-    const [batchResults] = await Promise.all([
-      fetchBatchQuotes(batchSymbols),
+    // Fetch US quotes + intl quotes in parallel
+    const [usResults] = await Promise.all([
+      fetchAllQuotes(allSymbols),
       Promise.allSettled(
         intlHoldings.map(async h => {
-          const result = await fetchSingleQuote(h.yTicker, "5d");
-          if (result) {
-            priceCache[h.ticker] = {
-              price: result.price,
-              change: result.change,
-              isStatic: true
-            };
+          try {
+            const result = await fetchQuoteViaChart(h.yTicker, "5d");
+            priceCache[h.ticker] = { price: result.price, change: result.change, isStatic: true };
+          } catch (e) {
+            dbg(`Intl fail ${h.yTicker}: ${e.message}`, "warn");
           }
         })
       )
     ]);
 
-    const allYtdSymbols = [
-      ...usTickers,
-      ...intlHoldings.map(h => h.yTicker)
-    ].filter(Boolean);
-    if (Object.keys(ytdCache).length < allYtdSymbols.length) {
-      fetchYTDData(allYtdSymbols).then(() => renderAll());
-    }
+    // Update ORR display
+    updateORRDisplay(usResults.get("ORR") || null);
 
-    updateORRDisplay(batchResults.get("ORR") || null);
-
-    for (const h of allHoldings.filter(
-      h => h.yTicker && !h.isIntl
-    )) {
-      const quote = batchResults.get(h.yTicker);
+    // Update price cache with flash animations
+    for (const h of allHoldings.filter(h => h.yTicker && !h.isIntl)) {
+      const quote = usResults.get(h.yTicker);
       if (!quote) continue;
       const prevCached = priceCache[h.yTicker];
       priceCache[h.yTicker] = quote;
       const row = document.getElementById(safeId(h.ticker));
       if (row && prevCached) {
-        const dir =
-          quote.price > prevCached.price
-            ? "flash-up"
-            : quote.price < prevCached.price
-            ? "flash-down"
-            : "";
+        const dir = quote.price > prevCached.price ? "flash-up"
+                  : quote.price < prevCached.price ? "flash-down" : "";
         if (dir) {
           row.classList.add(dir);
           setTimeout(() => row.classList.remove(dir), 600);
@@ -1421,47 +1234,60 @@
       }
     }
 
-    const missed = usTickers.filter(s => !batchResults.has(s));
-    if (missed.length > 0) {
-      liveLabel.textContent = `FALLBACK ${missed.length}`;
-      await Promise.allSettled(
-        missed.map(async sym => {
-          const result = await fetchSingleQuote(sym, "1d");
-          if (result) priceCache[sym] = result;
-        })
-      );
+    // YTD data (background)
+    const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
+    if (Object.keys(ytdCache).length < allYtdSymbols.length) {
+      fetchYTDData(allYtdSymbols).then(() => renderAll());
     }
 
-    liveLabel.textContent = "LIVE";
+    const totalFetched = usResults.size + intlHoldings.filter(h => priceCache[h.ticker]?.price).length;
+    const totalExpected = allSymbols.length + intlHoldings.length;
+    dbg(`Fetch complete: ${totalFetched}/${totalExpected} quotes loaded`, totalFetched > 0 ? "success" : "error");
+
+    if (totalFetched === 0) {
+      pulse.classList.add("error");
+      liveLabel.textContent = "ERROR";
+      if (!WORKER_URL) {
+        showError("No prices loaded. Set WORKER_URL in the script to your Cloudflare Worker. Free CORS proxies are all down.");
+      } else {
+        showError("No prices loaded. Worker may be down — check DBG log.");
+      }
+    } else {
+      liveLabel.textContent = "LIVE";
+    }
+
     renderAll();
 
+    // Schedule next refresh
     clearTimeout(refreshTimer);
-    const et = new Date(
-      new Date().toLocaleString("en-US", {
-        timeZone: "America/New_York"
-      })
-    );
+    const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
     const mins = et.getHours() * 60 + et.getMinutes();
     const d = et.getDay();
     const isOpen = d >= 1 && d <= 5 && mins >= 570 && mins < 960;
     refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
   }
 
-  // ----------------- INIT -----------------------------------------------
+  // ===================== INIT =====================
   async function init() {
-    const longHoldingsEl = document.getElementById("long-holdings");
-    const shortHoldingsEl = document.getElementById("short-holdings");
-    longHoldingsEl.innerHTML =
-      '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
-    shortHoldingsEl.innerHTML =
-      '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
+    const longEl = document.getElementById("long-holdings");
+    const shortEl = document.getElementById("short-holdings");
+    const loadingHtml = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
+    longEl.innerHTML = loadingHtml;
+    shortEl.innerHTML = loadingHtml;
+
+    dbg("Dashboard init starting...");
+
+    if (!WORKER_URL) {
+      dbg("⚠ WORKER_URL not set — will use free CORS proxies (unreliable). Deploy the Cloudflare Worker and set the URL.", "warn");
+    }
 
     const ok = await fetchHoldings();
     if (!ok && LONGS.length === 0 && SHORTS.length === 0) {
-      const errorHtml =
-        '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
-      longHoldingsEl.innerHTML = errorHtml;
-      shortHoldingsEl.innerHTML = errorHtml;
+      const errorHtml = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+      longEl.innerHTML = errorHtml;
+      shortEl.innerHTML = errorHtml;
+      document.getElementById("pulse-dot").classList.add("error");
+      document.getElementById("live-label").textContent = "ERROR";
       return;
     }
 
@@ -1469,9 +1295,10 @@
     fetchAll();
   }
 
-  document
-    .getElementById("refresh-btn")
-    .addEventListener("click", () => fetchAll());
+  document.getElementById("refresh-btn").addEventListener("click", () => {
+    dbg("Manual refresh triggered");
+    fetchAll();
+  });
 
   init();
 </script>
