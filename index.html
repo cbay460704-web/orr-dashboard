@@ -502,7 +502,7 @@ background: var(--surface);
 </div>
 
 <footer>
-  <span>DATA · Yahoo Finance (15-min delay) · Auto-refresh every 60s during market hours</span>
+  <span id="footer-status">DATA · Yahoo Finance (15-min delay) · Auto-refresh every 60s during market hours</span>
   <span class="notice">For informational purposes only. Not investment advice.</span>
 </footer>
 
@@ -515,6 +515,37 @@ let holdingsDate = '';
 const priceCache = {};
 const ytdCache   = {}; // symbol → { ytdChange: number }
 let refreshTimer = null;
+let renderQueued = false;
+const rowEls = new Map();
+const pendingRowFlashes = new Map();
+
+const DOM = {
+  pulseDot: document.getElementById('pulse-dot'),
+  liveLabel: document.getElementById('live-label'),
+  orrNav: document.getElementById('orr-nav'),
+  orrChangeBadge: document.getElementById('orr-change-badge'),
+  longHoldings: document.getElementById('long-holdings'),
+  shortHoldings: document.getElementById('short-holdings'),
+  longPnl: document.getElementById('long-pnl'),
+  shortPnl: document.getElementById('short-pnl'),
+  netPnl: document.getElementById('net-pnl'),
+  winLoss: document.getElementById('win-loss'),
+  topMover: document.getElementById('top-mover'),
+  netExposure: document.getElementById('net-exposure'),
+  longStats: document.getElementById('long-stats'),
+  shortStats: document.getElementById('short-stats'),
+  lastUpdate: document.getElementById('last-update'),
+  footerStatus: document.getElementById('footer-status'),
+};
+
+function scheduleRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    renderQueued = false;
+    renderAll();
+  });
+}
 
 // Pre-load YTD cache from sessionStorage (instant, no network)
 const YTD_CACHE_VERSION = 'v3';
@@ -629,7 +660,7 @@ function parseHoldingsHTML(html) {
 }
 
 async function fetchHoldings() {
-  document.getElementById('live-label').textContent = 'LOADING HOLDINGS';
+  DOM.liveLabel.textContent = 'LOADING HOLDINGS';
 
   const html = await fetchHoldingsHTML();
   let result = html ? parseHoldingsHTML(html) : null;
@@ -649,14 +680,14 @@ async function fetchHoldings() {
         const ageStr = age < 3600000 ? `${Math.round(age/60000)}m ago` :
                        age < 86400000 ? `${Math.round(age/3600000)}h ago` :
                        `${Math.round(age/86400000)}d ago`;
-        document.querySelector('footer span').textContent =
+        DOM.footerStatus.textContent =
           `⚠ CACHED DATA (site unreachable · cached ${ageStr}) · Prices: Yahoo Finance · Auto-refresh 60s`;
       }
     } catch { /* no cache available */ }
   }
 
   if (!result || result.holdings.length === 0) {
-    document.querySelector('footer span').textContent =
+    DOM.footerStatus.textContent =
       '⚠ Could not load holdings from militiaetf.com — please try refreshing';
     return false;
   }
@@ -674,7 +705,7 @@ async function fetchHoldings() {
   SHORTS = result.holdings.filter(h => h.weight < 0).sort((a, b) => a.weight - b.weight);
 
   if (holdingsDate) {
-    document.querySelector('footer span').textContent =
+    DOM.footerStatus.textContent =
       `HOLDINGS · militiaetf.com · As of ${holdingsDate} · Prices: Yahoo Finance (15-min delay) · Auto-refresh 60s`;
   }
 
@@ -781,14 +812,14 @@ async function fetchSingleQuote(yTicker, range = '1d') {
 // ── ORR ETF price display ─────────────────────────────────────────────────────
 function updateORRDisplay(quote) {
   if (!quote) {
-    document.getElementById('orr-nav').textContent = 'N/A';
-    document.getElementById('orr-change-badge').textContent = '—';
-    document.getElementById('orr-change-badge').className = 'orr-change-badge flat';
+    DOM.orrNav.textContent = 'N/A';
+    DOM.orrChangeBadge.textContent = '—';
+    DOM.orrChangeBadge.className = 'orr-change-badge flat';
     return;
   }
   const { price, change } = quote;
-  document.getElementById('orr-nav').textContent = '$' + price.toFixed(2);
-  const badge = document.getElementById('orr-change-badge');
+  DOM.orrNav.textContent = '$' + price.toFixed(2);
+  const badge = DOM.orrChangeBadge;
   const sign  = change >= 0 ? '+' : '';
   badge.textContent = `${sign}${change.toFixed(2)}%`;
   badge.className   = 'orr-change-badge ' + (change > 0.02 ? 'up' : change < -0.02 ? 'down' : 'flat');
@@ -850,7 +881,7 @@ async function fetchYTDData(symbols) {
         } catch { /* try next proxy */ }
       }
     }));
-    renderAll();
+    scheduleRender();
   }
 
   try {
@@ -884,7 +915,27 @@ function formatPrice(p) {
 }
 
 function safeId(ticker) {
-  return 'row-' + ticker.replace(/[^a-zA-Z0-9]/g, '_');
+  return 'row-' + Array.from(ticker, char => char.codePointAt(0).toString(36)).join('-');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[char]));
+}
+
+function applyPendingRowFlashes() {
+  pendingRowFlashes.forEach((dir, ticker) => {
+    const row = rowEls.get(ticker);
+    if (!row || !dir) return;
+    row.classList.add(dir);
+    setTimeout(() => row.classList.remove(dir), 600);
+  });
+  pendingRowFlashes.clear();
 }
 
 function renderRow(holding, isShort) {
@@ -903,6 +954,9 @@ function renderRow(holding, isShort) {
   const displayTicker = holding.ticker.includes(' ')
     ? holding.ticker.split(' ')[0]
     : holding.ticker;
+  const tickerText = escapeHtml(displayTicker);
+  const tickerTitle = escapeHtml(holding.ticker);
+  const nameText = escapeHtml(holding.name);
 
   let priceHtml, changeHtml;
   if (price) {
@@ -940,9 +994,9 @@ function renderRow(holding, isShort) {
 
   return `
     <div class="holding-row ${isShort ? 'short-row' : 'long-row'}" id="${safeId(holding.ticker)}">
-      <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
+      <div><div class="ticker" title="${tickerTitle}">${tickerText}</div></div>
       <div>
-        <div class="name">${holding.name}</div>
+        <div class="name">${nameText}</div>
         <div class="bar-track"><div class="bar-fill ${isStatic && change !== null ? cc : ''}" style="width:${isStatic && change !== null ? bw : 0}%"></div></div>
       </div>
       <div class="weight">${weight.toFixed(2)}%</div>
@@ -953,17 +1007,20 @@ function renderRow(holding, isShort) {
 }
 
 function renderAll() {
-  const longEl  = document.getElementById('long-holdings');
-  const shortEl = document.getElementById('short-holdings');
+  rowEls.clear();
 
-  longEl.innerHTML = `
+  DOM.longHoldings.innerHTML = `
     <div class="cash-row">
       <span class="cash-label">CASH &amp; OTHER</span>
       <span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>
-    </div>`;
+    </div>${LONGS.map(h => renderRow(h, false)).join('')}`;
 
-  LONGS.forEach(h  => { longEl.innerHTML  += renderRow(h, false); });
-  shortEl.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
+  DOM.shortHoldings.innerHTML = SHORTS.map(h => renderRow(h, true)).join('');
+
+  for (const h of [...LONGS, ...SHORTS]) {
+    rowEls.set(h.ticker, document.getElementById(safeId(h.ticker)));
+  }
+  applyPendingRowFlashes();
 
   updateSummary();
 }
@@ -1007,15 +1064,15 @@ function updateSummary() {
     return `${sign}${(v * 100).toFixed(digits)}bps`;
   };
 
-  document.getElementById('long-pnl').textContent  = longW  ? fmt(longPnl)  : '--';
-  document.getElementById('short-pnl').textContent = shortW ? fmt(shortPnl) : '--';
-  document.getElementById('net-pnl').textContent   = (longW && shortW) ? fmt(net) : '--';
+  DOM.longPnl.textContent  = longW  ? fmt(longPnl)  : '--';
+  DOM.shortPnl.textContent = shortW ? fmt(shortPnl) : '--';
+  DOM.netPnl.textContent   = (longW && shortW) ? fmt(net) : '--';
 
-  document.getElementById('long-pnl').className  = `summary-value ${longPnl  >= 0 ? 'long' : 'short'}`;
-  document.getElementById('short-pnl').className = `summary-value ${shortPnl >= 0 ? 'long' : 'short'}`;
-  document.getElementById('net-pnl').className   = `summary-value ${net      >= 0 ? 'long' : 'short'}`;
+  DOM.longPnl.className  = `summary-value ${longPnl  >= 0 ? 'long' : 'short'}`;
+  DOM.shortPnl.className = `summary-value ${shortPnl >= 0 ? 'long' : 'short'}`;
+  DOM.netPnl.className   = `summary-value ${net      >= 0 ? 'long' : 'short'}`;
 
-  document.getElementById('win-loss').textContent = pending > 0
+  DOM.winLoss.textContent = pending > 0
     ? `${winners}W · ${losers}L · ${pending}?`
     : `${winners}W · ${losers}L`;
 
@@ -1030,7 +1087,7 @@ function updateSummary() {
     const impact = Math.abs(fundChg * (Math.abs(h.weight) / 100));
     if (impact > topImpact) { topImpact = impact; topMover = { h, fundChg }; }
   });
-  const topEl = document.getElementById('top-mover');
+  const topEl = DOM.topMover;
   if (topMover) {
     const sign = topMover.fundChg >= 0 ? '+' : '';
     const displayTicker = topMover.h.ticker.includes(' ') ? topMover.h.ticker.split(' ')[0] : topMover.h.ticker;
@@ -1044,7 +1101,7 @@ function updateSummary() {
   const grossLong  = LONGS.reduce((a, h) => a + h.weight, 0);
   const grossShort = SHORTS.reduce((a, h) => a + Math.abs(h.weight), 0);
   const netExposure = grossLong - grossShort;
-  const netEl = document.getElementById('net-exposure');
+  const netEl = DOM.netExposure;
   netEl.textContent = (netExposure >= 0 ? '+' : '') + netExposure.toFixed(1) + '%';
   netEl.className = `summary-value ${netExposure >= 0 ? 'long' : 'short'}`;
 
@@ -1053,10 +1110,10 @@ function updateSummary() {
 
   const longFetchable = LONGS.filter(h => h.yTicker).length;
   const shortFetchable = SHORTS.filter(h => h.yTicker).length;
-  document.getElementById('long-stats').innerHTML  = `${LONGS.length} positions (${longFetchable} quoted) · ${longW.toFixed(0)}% AUM`;
-  document.getElementById('short-stats').innerHTML = `${SHORTS.length} positions · ${SHORTS.reduce((a,h)=>a+Math.abs(h.weight),0).toFixed(0)}% gross short`;
+  DOM.longStats.textContent  = `${LONGS.length} positions (${longFetchable} quoted) · ${longW.toFixed(0)}% AUM`;
+  DOM.shortStats.textContent = `${SHORTS.length} positions · ${SHORTS.reduce((a,h)=>a+Math.abs(h.weight),0).toFixed(0)}% gross short`;
 
-  document.getElementById('last-update').textContent =
+  DOM.lastUpdate.textContent =
     'Updated ' + et.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' ET';
 }
 
@@ -1076,8 +1133,8 @@ async function fetchAll() {
   clearTimeout(refreshTimer);
 
   try {
-    document.getElementById('pulse-dot').classList.remove('paused');
-    document.getElementById('live-label').textContent = 'FETCHING';
+    DOM.pulseDot.classList.remove('paused');
+    DOM.liveLabel.textContent = 'FETCHING';
 
     const allHoldings = [...LONGS, ...SHORTS];
 
@@ -1085,7 +1142,7 @@ async function fetchAll() {
     const intlHoldings = allHoldings.filter(h => h.yTicker && h.isIntl);
     const batchSymbols = [...new Set(['ORR', ...usTickers])];
 
-    document.getElementById('live-label').textContent = `0/${batchSymbols.length + intlHoldings.length}`;
+    DOM.liveLabel.textContent = `0/${batchSymbols.length + intlHoldings.length}`;
 
     // ── US batch + intl chart calls in parallel ──
     const [batchResults] = await Promise.all([
@@ -1107,7 +1164,7 @@ async function fetchAll() {
     // ── Fire YTD in background (non-blocking) ──
     const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
     if (Object.keys(ytdCache).length < allYtdSymbols.length) {
-      fetchYTDData(allYtdSymbols).then(() => renderAll()).catch(() => {});
+      fetchYTDData(allYtdSymbols).then(() => scheduleRender()).catch(() => {});
     }
 
     // ── Update ORR display ──
@@ -1119,17 +1176,16 @@ async function fetchAll() {
       if (!quote) continue;
       const prevCached = priceCache[h.yTicker];
       priceCache[h.yTicker] = quote;
-      const row = document.getElementById(safeId(h.ticker));
-      if (row && prevCached) {
+      if (prevCached) {
         const dir = quote.price > prevCached.price ? 'flash-up' : quote.price < prevCached.price ? 'flash-down' : '';
-        if (dir) { row.classList.add(dir); setTimeout(() => row.classList.remove(dir), 600); }
+        if (dir) pendingRowFlashes.set(h.ticker, dir);
       }
     }
 
     // ── Fallback: any US symbols the batch missed ──
     const missed = usTickers.filter(s => !batchResults.has(s));
     if (missed.length > 0) {
-      document.getElementById('live-label').textContent = `FALLBACK ${missed.length}`;
+      DOM.liveLabel.textContent = `FALLBACK ${missed.length}`;
       await Promise.allSettled(missed.map(async sym => {
         try {
           const result = await fetchSingleQuote(sym, '1d');
@@ -1138,16 +1194,16 @@ async function fetchAll() {
       }));
     }
 
-    document.getElementById('live-label').textContent = 'LIVE';
-    renderAll();
+    DOM.liveLabel.textContent = 'LIVE';
+    scheduleRender();
 
   } catch (err) {
     // Catch-all: log the error but never let it kill the refresh loop
     console.error('[ORR] fetchAll error:', err);
-    document.getElementById('live-label').textContent = 'RETRY';
-    document.getElementById('pulse-dot').classList.add('paused');
+    DOM.liveLabel.textContent = 'RETRY';
+    DOM.pulseDot.classList.add('paused');
     // Still render whatever we have cached
-    try { renderAll(); } catch { /* render failed too, nothing to do */ }
+    try { scheduleRender(); } catch { /* render failed too, nothing to do */ }
   } finally {
     // ALWAYS schedule next refresh — this is the critical fix
     scheduleNextRefresh();
@@ -1156,15 +1212,15 @@ async function fetchAll() {
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 (async () => {
-  document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
-  document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
+  DOM.longHoldings.innerHTML  = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
+  DOM.shortHoldings.innerHTML = '<div style="padding:24px 22px;color:var(--muted);font-size:11px;letter-spacing:1px">FETCHING HOLDINGS FROM MILITIAETF.COM...</div>';
 
   try {
     const ok = await fetchHoldings();
     if (!ok) {
       if (LONGS.length === 0 && SHORTS.length === 0) {
-        document.getElementById('long-holdings').innerHTML  = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
-        document.getElementById('short-holdings').innerHTML = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+        DOM.longHoldings.innerHTML  = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
+        DOM.shortHoldings.innerHTML = '<div style="padding:24px 22px;color:var(--short);font-size:12px">Could not load holdings. <a href="#" onclick="location.reload()" style="color:var(--accent)">Try again</a></div>';
         // Even on holdings failure, retry after 60s in case site comes back
         scheduleNextRefresh();
         return;
