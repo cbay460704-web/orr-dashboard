@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ORR · Militia L/S Dashboard (Refactored)</title>
+<title>ORR · Militia L/S Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link
   href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
@@ -30,6 +30,72 @@
     --cash-bg: #fff3cd;
     --header-bg: #1a1d23;
     --header-text: #f8f9fa;
+    --flash-up: #c3f0d8;
+    --flash-down: #fad5d1;
+    --warn-bg: #fff3cd;
+    --warn-border: #e0c36a;
+    --warn-text: #856404;
+    --header-h: 57px;
+    --panel-header-h: 41px;
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1115;
+    --surface: #161920;
+    --surface2: #1c2028;
+    --border: #2a2f3a;
+    --long: #3ccf8e;
+    --long-bg: #12302a;
+    --long-dim: rgba(60, 207, 142, 0.08);
+    --short: #f06b5d;
+    --short-bg: #3a1c1c;
+    --short-dim: rgba(240, 107, 93, 0.08);
+    --neutral: #5c6370;
+    --text: #e6e8eb;
+    --text2: #b0b6bf;
+    --muted: #7d8590;
+    --accent: #7b93ff;
+    --cash: #e8a838;
+    --cash-bg: #2e2410;
+    --header-bg: #0b0d11;
+    --header-text: #f8f9fa;
+    --flash-up: #1e4d38;
+    --flash-down: #4d2222;
+    --warn-bg: #3a2f0f;
+    --warn-border: #6b5416;
+    --warn-text: #f0c75e;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+    color-scheme: dark;
+      --bg: #0f1115;
+      --surface: #161920;
+      --surface2: #1c2028;
+      --border: #2a2f3a;
+      --long: #3ccf8e;
+      --long-bg: #12302a;
+      --long-dim: rgba(60, 207, 142, 0.08);
+      --short: #f06b5d;
+      --short-bg: #3a1c1c;
+      --short-dim: rgba(240, 107, 93, 0.08);
+      --neutral: #5c6370;
+      --text: #e6e8eb;
+      --text2: #b0b6bf;
+      --muted: #7d8590;
+      --accent: #7b93ff;
+      --cash: #e8a838;
+      --cash-bg: #2e2410;
+      --header-bg: #0b0d11;
+      --header-text: #f8f9fa;
+      --flash-up: #1e4d38;
+      --flash-down: #4d2222;
+      --warn-bg: #3a2f0f;
+      --warn-border: #6b5416;
+      --warn-text: #f0c75e;
+    }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +113,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 28px;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 14px 28px;
     background: var(--header-bg);
     position: sticky;
     top: 0;
@@ -78,8 +146,43 @@
   .header-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 12px 16px;
   }
+
+  .orr-ytd {
+    font-size: 11px;
+    font-weight: 500;
+    color: #868e96;
+    padding-left: 10px;
+    border-left: 1px solid #343a40;
+    white-space: nowrap;
+  }
+  .orr-ytd.up { color: #2f9e6e; }
+  .orr-ytd.down { color: #f06b5d; }
+
+  .mkt-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .mkt-badge.open { color: #2f9e6e; background: #1a3d2e; }
+  .mkt-badge.closed { color: #868e96; background: #2c2f33; }
+  .mkt-badge.pre, .mkt-badge.after { color: #e8a838; background: #3d2f12; }
+
+  .next-refresh {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    color: #868e96;
+    min-width: 58px;
+    white-space: nowrap;
+  }
+
+  .icon-btn { padding: 6px 9px; font-size: 12px; line-height: 1; }
+  .icon-btn.active { background: #343a40; color: #f8f9fa; }
 
   .orr-price {
     display: flex;
@@ -163,10 +266,10 @@
   .error-banner {
     display: none;
     padding: 10px 28px;
-    background: #fff3cd;
-    border-bottom: 1px solid #e0c36a;
+    background: var(--warn-bg);
+    border-bottom: 1px solid var(--warn-border);
     font-size: 12px;
-    color: #856404;
+    color: var(--warn-text);
     align-items: center;
     gap: 8px;
   }
@@ -175,7 +278,7 @@
     margin-left: auto;
     cursor: pointer;
     font-weight: 600;
-    color: #856404;
+    color: var(--warn-text);
     background: none;
     border: none;
     font-size: 14px;
@@ -269,10 +372,63 @@
     padding: 12px 22px;
     border-bottom: 1px solid var(--border);
     position: sticky;
-    top: 57px;
+    top: var(--header-h);
     background: var(--bg);
     z-index: 50;
   }
+
+  /* Toolbar (filter) */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 8px 22px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .filter-wrap { position: relative; flex: 1 1 220px; max-width: 360px; }
+  .filter-input {
+    width: 100%;
+    padding: 7px 28px 7px 10px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .filter-input::placeholder { color: var(--muted); }
+  .filter-input:focus { border-color: var(--accent); }
+  .filter-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 4px;
+  }
+  .filter-wrap.has-value .filter-clear { display: block; }
+  .filter-count { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .toolbar-hint { font-size: 10px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+  .toolbar-hint kbd {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0 5px;
+    background: var(--surface2);
+    color: var(--text2);
+  }
+  .empty-note { padding: 18px 22px; color: var(--muted); font-size: 11px; letter-spacing: 0.5px; }
 
   .panel-title {
     font-family: "IBM Plex Mono", monospace;
@@ -305,8 +461,8 @@
   .holding-row.long-row:hover { background: var(--long-dim); }
   .holding-row.short-row:hover { background: var(--short-dim); }
 
-  @keyframes flashUp { 0% { background: #c3f0d8; } 100% { background: transparent; } }
-  @keyframes flashDown { 0% { background: #fad5d1; } 100% { background: transparent; } }
+  @keyframes flashUp { 0% { background: var(--flash-up); } 100% { background: transparent; } }
+  @keyframes flashDown { 0% { background: var(--flash-down); } 100% { background: transparent; } }
 
   .holding-row.flash-up { animation: flashUp 0.6s ease-out; }
   .holding-row.flash-down { animation: flashDown 0.6s ease-out; }
@@ -317,6 +473,8 @@
     color: var(--text);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .ticker a { color: inherit; text-decoration: none; }
+  .ticker a:hover { color: var(--accent); text-decoration: underline; }
 
   .name {
     font-size: 12px; font-weight: 400;
@@ -386,6 +544,10 @@
   }
 
   .col-header span:not(:first-child) { text-align: right; }
+  .col-header { position: sticky; top: calc(var(--header-h) + var(--panel-header-h)); z-index: 40; }
+  .col-header span { cursor: pointer; user-select: none; white-space: nowrap; }
+  .col-header span:hover { color: var(--text); }
+  .col-header span.active { color: var(--accent); }
 
   .cash-row {
     padding: 9px 22px;
@@ -431,9 +593,43 @@
 
   .notice { font-style: italic; }
 
+  .footer-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 14px;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .footer-btn:hover { border-color: var(--accent); color: var(--accent); }
+
   @media (max-width: 900px) {
     .main-content { grid-template-columns: 1fr; }
     .panel { border-right: none; border-bottom: 1px solid var(--border); }
+    header, .toolbar, footer { padding-left: 16px; padding-right: 16px; }
+    footer { flex-wrap: wrap; gap: 8px; }
+    .toolbar-hint { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    /* Two-line rows: ticker + metrics on line one, name + bar on line two */
+    .holding-row, .col-header {
+      grid-template-columns: 1fr 54px 64px 58px 58px;
+      gap: 2px 6px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .holding-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+    .col-header span:nth-child(2) { display: none; }
+    .panel-header, .cash-row, .toolbar, .empty-note { padding-left: 12px; padding-right: 12px; }
+    .logo-tag { display: none; }
+    #last-update { display: none; }
+    .summary-card { padding: 10px 14px; }
+    .summary-value { font-size: 16px; }
   }
 </style>
 </head>
@@ -448,14 +644,19 @@
       <span class="orr-label">ORR</span>
       <span class="orr-nav" id="orr-nav">--</span>
       <span class="orr-change-badge" id="orr-change-badge">--</span>
+      <span class="orr-ytd" id="orr-ytd" title="ORR year-to-date change">YTD --</span>
     </div>
+    <span class="mkt-badge closed" id="market-status">--</span>
     <div class="live-indicator">
       <div class="pulse" id="pulse-dot"></div>
       <span id="live-label">LIVE</span>
     </div>
     <span id="last-update">--</span>
+    <span class="next-refresh" id="next-refresh" title="Time until next auto-refresh">--</span>
+    <button class="refresh-btn icon-btn" id="pause-btn" title="Pause auto-refresh">⏸</button>
+    <button class="refresh-btn icon-btn" id="theme-btn" title="Toggle dark mode">◐</button>
     <button class="debug-toggle" id="debug-toggle">DBG</button>
-    <button class="refresh-btn" id="refresh-btn">↻ REFRESH</button>
+    <button class="refresh-btn" id="refresh-btn" title="Refresh now (R)">↻ REFRESH</button>
   </div>
 </header>
 
@@ -491,6 +692,19 @@
     <span class="summary-label">Net Long Exposure</span>
     <span class="summary-value neutral" id="net-exposure">--</span>
   </div>
+  <div class="summary-card">
+    <span class="summary-label">Gross Exposure</span>
+    <span class="summary-value neutral" id="gross-exposure">--</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="filter-wrap" id="filter-wrap">
+    <input class="filter-input" id="filter-input" type="search" placeholder="Filter by ticker or name…" autocomplete="off" spellcheck="false" />
+    <button class="filter-clear" id="filter-clear" title="Clear filter">✕</button>
+  </div>
+  <span class="filter-count" id="filter-count"></span>
+  <span class="toolbar-hint"><kbd>/</kbd> filter · <kbd>R</kbd> refresh · <kbd>Esc</kbd> clear · click a column to sort</span>
 </div>
 
 <div class="main-content">
@@ -499,9 +713,7 @@
       <span class="panel-title long">▲ LONG BOOK</span>
       <div class="panel-stats" id="long-stats">Loading...</div>
     </div>
-    <div class="col-header">
-      <span>Ticker</span><span>Name</span><span>Weight</span><span>Price</span><span>Chg%</span><span>YTD%</span>
-    </div>
+    <div class="col-header" data-side="long"></div>
     <div id="long-holdings"></div>
   </div>
 
@@ -510,9 +722,7 @@
       <span class="panel-title short">▼ SHORT BOOK</span>
       <div class="panel-stats" id="short-stats">Loading...</div>
     </div>
-    <div class="col-header">
-      <span>Ticker</span><span>Name</span><span>Weight</span><span>Price</span><span>Chg%</span><span>YTD%</span>
-    </div>
+    <div class="col-header" data-side="short"></div>
     <div id="short-holdings"></div>
   </div>
 </div>
@@ -521,7 +731,7 @@
   <span id="footer-msg">
     DATA · Yahoo Finance (15-min delay) · Auto-refresh every 60s during market hours
   </span>
-  <button class="refresh-btn" id="download-btn" style="background:#f8f9fa;border:1px solid var(--border);color:var(--text);padding:5px 14px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;">↓ DOWNLOAD CSV</button>
+  <button class="footer-btn" id="download-btn">↓ DOWNLOAD CSV</button>
   <span class="notice">For informational purposes only. Not investment advice.</span>
 </footer>
 
@@ -682,6 +892,20 @@
   const priceCache = {};
   const ytdCache = {};
   let refreshTimer = null;
+  let nextRefreshAt = null;
+  let autoRefreshPaused = false;
+  let filterText = "";
+  let sortKey = "weight";
+  let sortDir = -1; // -1 = descending, 1 = ascending
+
+  const SORT_COLUMNS = [
+    { key: "ticker", label: "Ticker", defaultDir: 1 },
+    { key: "name", label: "Name", defaultDir: 1 },
+    { key: "weight", label: "Weight", defaultDir: -1 },
+    { key: "price", label: "Price", defaultDir: -1 },
+    { key: "change", label: "Chg%", defaultDir: -1 },
+    { key: "ytd", label: "YTD%", defaultDir: -1 }
+  ];
 
   try {
     const ver = sessionStorage.getItem("orr-ytd-version");
@@ -708,6 +932,63 @@
 
   function safeId(ticker) {
     return "row-" + ticker.replace(/[^a-zA-Z0-9]/g, "_");
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function priceKey(h) {
+    return h.isIntl ? h.ticker : (h.yTicker || h.ticker);
+  }
+
+  // Per-row metrics from the fund's perspective (shorts are sign-flipped)
+  function rowMetrics(h, isShort) {
+    const cached = priceCache[priceKey(h)];
+    const rawChange = cached?.change ?? null;
+    const change = rawChange === null ? null : (isShort ? -rawChange : rawChange);
+    const ytdRaw = h.yTicker ? ytdCache[h.yTicker]?.ytdChange ?? null : null;
+    const ytd = ytdRaw === null ? null : (isShort ? -ytdRaw : ytdRaw);
+    const weight = Math.abs(h.weight);
+    const contributionBps = change === null ? null : change * weight; // (chg% * weight%) / 100 * 100
+    return { price: cached?.price ?? null, rawChange, change, ytd, weight, contributionBps };
+  }
+
+  function marketStatus() {
+    const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+    const mins = et.getHours() * 60 + et.getMinutes();
+    const d = et.getDay();
+    if (d === 0 || d === 6) return { key: "closed", label: "CLOSED · WEEKEND", interval: 300000 };
+    if (mins >= 570 && mins < 960) return { key: "open", label: "MARKET OPEN", interval: 60000 };
+    if (mins >= 240 && mins < 570) return { key: "pre", label: "PRE-MARKET", interval: 120000 };
+    if (mins >= 960 && mins < 1200) return { key: "after", label: "AFTER HOURS", interval: 120000 };
+    return { key: "closed", label: "CLOSED", interval: 300000 };
+  }
+
+  function updateMarketBadge() {
+    const st = marketStatus();
+    const el = document.getElementById("market-status");
+    el.textContent = st.label;
+    el.className = "mkt-badge " + st.key;
+  }
+
+  function updateCountdown() {
+    const el = document.getElementById("next-refresh");
+    if (autoRefreshPaused) { el.textContent = "paused"; return; }
+    if (!nextRefreshAt) { el.textContent = "--"; return; }
+    const secs = Math.max(0, Math.round((nextRefreshAt - Date.now()) / 1000));
+    el.textContent = secs >= 60 ? `next ${Math.floor(secs / 60)}m${String(secs % 60).padStart(2, "0")}s` : `next ${secs}s`;
+  }
+
+  function scheduleNextRefresh() {
+    clearTimeout(refreshTimer);
+    if (autoRefreshPaused) { nextRefreshAt = null; updateCountdown(); return; }
+    const delay = marketStatus().interval;
+    nextRefreshAt = Date.now() + delay;
+    refreshTimer = setTimeout(fetchAll, delay);
+    updateCountdown();
   }
 
   function formatChange(c) {
@@ -1014,19 +1295,24 @@
 
   // ===================== RENDERING =====================
   function renderRow(holding, isShort) {
-    const cacheKey = holding.isIntl ? holding.ticker : (holding.yTicker || holding.ticker);
-    const cached = priceCache[cacheKey];
-    const weight = Math.abs(holding.weight);
-    const change = cached?.change ?? null;
-    const price = cached?.price ?? null;
+    const cached = priceCache[priceKey(holding)];
+    const m = rowMetrics(holding, isShort);
+    const weight = m.weight;
+    const change = m.rawChange;
+    const price = m.price;
     const isStatic = cached?.isStatic ?? false;
     const canFetch = !!holding.yTicker;
 
-    const fundImpact = change !== null ? (isShort ? -change : change) : null;
+    const fundImpact = m.change;
     const cc = changeClass(fundImpact);
     const bw = barWidth(change);
 
     const displayTicker = holding.ticker.includes(" ") ? holding.ticker.split(" ")[0] : holding.ticker;
+    const tickerInner = holding.yTicker
+      ? `<a href="https://finance.yahoo.com/quote/${encodeURIComponent(holding.yTicker)}" target="_blank" rel="noopener" title="${escapeHtml(holding.ticker)} · open on Yahoo Finance">${escapeHtml(displayTicker)}</a>`
+      : escapeHtml(displayTicker);
+    const contribTitle = m.contributionBps === null ? ""
+      : ` title="Contribution to fund: ${m.contributionBps >= 0 ? "+" : ""}${m.contributionBps.toFixed(2)} bps"`;
 
     let priceHtml, changeHtml;
     if (price) {
@@ -1062,16 +1348,60 @@
 
     return `
       <div class="holding-row ${isShort ? "short-row" : "long-row"}" id="${safeId(holding.ticker)}">
-        <div><div class="ticker" title="${holding.ticker}">${displayTicker}</div></div>
+        <div><div class="ticker" title="${escapeHtml(holding.ticker)}">${tickerInner}</div></div>
         <div>
-          <div class="name">${holding.name}</div>
+          <div class="name" title="${escapeHtml(holding.name)}">${escapeHtml(holding.name)}</div>
           <div class="bar-track"><div class="bar-fill ${cc}" style="width:${bw}%"></div></div>
         </div>
         <div class="weight">${weight.toFixed(2)}%</div>
         <div class="price ${price ? "" : "loading"}">${priceHtml}</div>
-        <div class="change ${isStatic && change === null ? "loading" : cc} ${price ? "" : "loading"}">${changeHtml}</div>
+        <div class="change ${isStatic && change === null ? "loading" : cc} ${price ? "" : "loading"}"${contribTitle}>${changeHtml}</div>
         ${ytdHtml}
       </div>`;
+  }
+
+  function sortHoldings(list, isShort) {
+    const col = SORT_COLUMNS.find(c => c.key === sortKey) || SORT_COLUMNS[2];
+    const val = h => {
+      if (col.key === "ticker") return h.ticker.toUpperCase();
+      if (col.key === "name") return h.name.toUpperCase();
+      return rowMetrics(h, isShort)[col.key];
+    };
+    return [...list].sort((a, b) => {
+      const va = val(a), vb = val(b);
+      const aNull = va === null || va === undefined, bNull = vb === null || vb === undefined;
+      if (aNull && bNull) return 0;
+      if (aNull) return 1;           // nulls always last
+      if (bNull) return -1;
+      if (typeof va === "string") return va.localeCompare(vb) * sortDir;
+      return (va - vb) * sortDir;
+    });
+  }
+
+  function matchesFilter(h) {
+    if (!filterText) return true;
+    const q = filterText.toUpperCase();
+    return h.ticker.toUpperCase().includes(q) || h.name.toUpperCase().includes(q);
+  }
+
+  function renderColHeaders() {
+    document.querySelectorAll(".col-header").forEach(hdr => {
+      hdr.textContent = "";
+      SORT_COLUMNS.forEach(col => {
+        const span = document.createElement("span");
+        const active = col.key === sortKey;
+        span.className = active ? "active" : "";
+        span.textContent = active ? `${col.label} ${sortDir === -1 ? "▼" : "▲"}` : col.label;
+        span.title = `Sort by ${col.label}`;
+        span.addEventListener("click", () => {
+          if (sortKey === col.key) sortDir = -sortDir;
+          else { sortKey = col.key; sortDir = col.defaultDir; }
+          try { localStorage.setItem("orr-sort", JSON.stringify({ key: sortKey, dir: sortDir })); } catch { /* ignore */ }
+          renderAll();
+        });
+        hdr.appendChild(span);
+      });
+    });
   }
 
   function renderPanelRows(container, holdings, isShort) {
@@ -1082,18 +1412,40 @@
       cashRow.innerHTML = `<span class="cash-label">CASH &amp; OTHER</span><span class="cash-weight">${CASH_WEIGHT.toFixed(2)}%</span>`;
       fragment.appendChild(cashRow);
     }
-    holdings.forEach(h => {
+    const visible = sortHoldings(holdings.filter(matchesFilter), isShort);
+    visible.forEach(h => {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = renderRow(h, isShort);
       fragment.appendChild(wrapper.firstElementChild);
     });
+    if (visible.length === 0 && holdings.length > 0) {
+      const note = document.createElement("div");
+      note.className = "empty-note";
+      note.textContent = `NO ${isShort ? "SHORT" : "LONG"} POSITIONS MATCH "${filterText.toUpperCase()}"`;
+      fragment.appendChild(note);
+    }
     container.textContent = "";
     container.appendChild(fragment);
+    return visible.length;
+  }
+
+  function updateORRYtd() {
+    const el = document.getElementById("orr-ytd");
+    const ytd = ytdCache["ORR"]?.ytdChange;
+    if (ytd === null || ytd === undefined) { el.textContent = "YTD --"; el.className = "orr-ytd"; return; }
+    el.textContent = `YTD ${ytd >= 0 ? "+" : ""}${ytd.toFixed(2)}%`;
+    el.className = "orr-ytd " + changeClass(ytd);
   }
 
   function renderAll() {
-    renderPanelRows(document.getElementById("long-holdings"), LONGS, false);
-    renderPanelRows(document.getElementById("short-holdings"), SHORTS, true);
+    renderColHeaders();
+    const nLong = renderPanelRows(document.getElementById("long-holdings"), LONGS, false);
+    const nShort = renderPanelRows(document.getElementById("short-holdings"), SHORTS, true);
+    const countEl = document.getElementById("filter-count");
+    countEl.textContent = filterText
+      ? `${nLong + nShort} of ${LONGS.length + SHORTS.length} positions (${nLong} long · ${nShort} short)`
+      : "";
+    updateORRYtd();
     updateSummary();
   }
 
@@ -1173,6 +1525,14 @@
     const netExposureEl = document.getElementById("net-exposure");
     netExposureEl.textContent = (netExposure >= 0 ? "+" : "") + netExposure.toFixed(1) + "%";
     netExposureEl.className = "summary-value " + (netExposure >= 0 ? "long" : "short");
+    netExposureEl.title = `Long ${grossLong.toFixed(1)}% − Short ${grossShort.toFixed(1)}%`;
+
+    const grossEl = document.getElementById("gross-exposure");
+    const grossExposure = grossLong + grossShort;
+    grossEl.textContent = grossExposure.toFixed(1) + "%";
+    grossEl.title = `Long ${grossLong.toFixed(1)}% + Short ${grossShort.toFixed(1)}% · L/S ratio ${grossShort > 0 ? (grossLong / grossShort).toFixed(2) + "x" : "n/a"}`;
+
+    updateMarketBadge();
 
     const now = new Date();
     const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
@@ -1236,8 +1596,8 @@
     }
 
     // YTD data (background)
-    const allYtdSymbols = [...usTickers, ...intlHoldings.map(h => h.yTicker)].filter(Boolean);
-    if (Object.keys(ytdCache).length < allYtdSymbols.length) {
+    const allYtdSymbols = [...new Set(["ORR", ...usTickers, ...intlHoldings.map(h => h.yTicker)])].filter(Boolean);
+    if (allYtdSymbols.some(s => !ytdCache[s])) {
       fetchYTDData(allYtdSymbols).then(() => renderAll());
     }
 
@@ -1253,19 +1613,15 @@
       } else {
         showError("No prices loaded. Worker may be down — check DBG log.");
       }
+    } else if (autoRefreshPaused) {
+      pulse.classList.add("paused");
+      liveLabel.textContent = "PAUSED";
     } else {
       liveLabel.textContent = "LIVE";
     }
 
     renderAll();
-
-    // Schedule next refresh
-    clearTimeout(refreshTimer);
-    const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
-    const mins = et.getHours() * 60 + et.getMinutes();
-    const d = et.getDay();
-    const isOpen = d >= 1 && d <= 5 && mins >= 570 && mins < 960;
-    refreshTimer = setTimeout(fetchAll, isOpen ? 60000 : 300000);
+    scheduleNextRefresh();
   }
 
   // ===================== INIT =====================
@@ -1301,41 +1657,138 @@
     fetchAll();
   });
 
+  // ---- Pause / resume auto-refresh ----
+  const pauseBtn = document.getElementById("pause-btn");
+  function setPaused(paused) {
+    autoRefreshPaused = paused;
+    pauseBtn.textContent = paused ? "▶" : "⏸";
+    pauseBtn.title = paused ? "Resume auto-refresh" : "Pause auto-refresh";
+    pauseBtn.classList.toggle("active", paused);
+    const pulse = document.getElementById("pulse-dot");
+    const liveLabel = document.getElementById("live-label");
+    if (paused) {
+      clearTimeout(refreshTimer);
+      nextRefreshAt = null;
+      pulse.classList.add("paused");
+      liveLabel.textContent = "PAUSED";
+      dbg("Auto-refresh paused", "warn");
+    } else {
+      pulse.classList.remove("paused");
+      dbg("Auto-refresh resumed");
+      fetchAll();
+    }
+    updateCountdown();
+  }
+  pauseBtn.addEventListener("click", () => setPaused(!autoRefreshPaused));
+  setInterval(updateCountdown, 1000);
+  setInterval(updateMarketBadge, 30000);
+
+  // ---- Theme toggle (system default, override persisted) ----
+  const themeBtn = document.getElementById("theme-btn");
+  function currentTheme() {
+    const forced = document.documentElement.getAttribute("data-theme");
+    if (forced) return forced;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    themeBtn.textContent = theme === "dark" ? "☀" : "☾";
+    themeBtn.title = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+    try { localStorage.setItem("orr-theme", theme); } catch { /* ignore */ }
+  }
+  try {
+    const saved = localStorage.getItem("orr-theme");
+    if (saved === "dark" || saved === "light") applyTheme(saved);
+    else themeBtn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  } catch { /* ignore */ }
+  themeBtn.addEventListener("click", () => applyTheme(currentTheme() === "dark" ? "light" : "dark"));
+
+  // ---- Filter ----
+  const filterInput = document.getElementById("filter-input");
+  const filterWrap = document.getElementById("filter-wrap");
+  function setFilter(text) {
+    filterText = text.trim();
+    filterWrap.classList.toggle("has-value", filterText.length > 0);
+    if (LONGS.length || SHORTS.length) renderAll();
+  }
+  filterInput.addEventListener("input", () => setFilter(filterInput.value));
+  document.getElementById("filter-clear").addEventListener("click", () => {
+    filterInput.value = "";
+    setFilter("");
+    filterInput.focus();
+  });
+
+  // ---- Keyboard shortcuts ----
+  document.addEventListener("keydown", e => {
+    const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+    if (e.key === "Escape" && typing && e.target === filterInput) {
+      filterInput.value = "";
+      setFilter("");
+      filterInput.blur();
+      return;
+    }
+    if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === "/") { e.preventDefault(); filterInput.focus(); filterInput.select(); }
+    else if (e.key === "r" || e.key === "R") { dbg("Manual refresh (keyboard)"); fetchAll(); }
+  });
+
+  // ---- Restore sort preference ----
+  try {
+    const saved = JSON.parse(localStorage.getItem("orr-sort") || "null");
+    if (saved && SORT_COLUMNS.some(c => c.key === saved.key) && (saved.dir === 1 || saved.dir === -1)) {
+      sortKey = saved.key; sortDir = saved.dir;
+    }
+  } catch { /* ignore */ }
+
+  // ---- Keep sticky offsets correct when the header wraps on narrow screens ----
+  function syncStickyOffsets() {
+    const header = document.querySelector("header");
+    const panelHeader = document.querySelector(".panel-header");
+    document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+    if (panelHeader) document.documentElement.style.setProperty("--panel-header-h", panelHeader.offsetHeight + "px");
+  }
+  new ResizeObserver(syncStickyOffsets).observe(document.querySelector("header"));
+  syncStickyOffsets();
+
   document.getElementById("download-btn").addEventListener("click", () => {
-    const rows = [["Side","Ticker","Yahoo Ticker","Name","Weight%","Price","Chg%","YTD%"]];
-    const fmt = v => (v === null || v === undefined) ? "" : v.toFixed(4);
+    const rows = [["Side","Ticker","Yahoo Ticker","Name","Weight%","Price","Chg%","YTD%","Contribution bps"]];
+    const csvName = n => `"${String(n).replace(/"/g, '""')}"`;
 
     for (const h of LONGS) {
       const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
       const c = priceCache[key];
       const ytd = h.yTicker ? ytdCache[h.yTicker] : null;
+      const m = rowMetrics(h, false);
       rows.push([
         "LONG",
         h.ticker,
         h.yTicker || "",
-        `"${h.name}"`,
+        csvName(h.name),
         h.weight.toFixed(4),
         c?.price ? c.price.toFixed(4) : "",
         c?.change != null ? c.change.toFixed(4) : "",
-        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : ""
+        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : "",
+        m.contributionBps != null ? m.contributionBps.toFixed(3) : ""
       ]);
     }
 
-    rows.push(["CASH","Cash&Other","","Cash & Other",CASH_WEIGHT.toFixed(4),"","",""]);
+    rows.push(["CASH","Cash&Other","","Cash & Other",CASH_WEIGHT.toFixed(4),"","","",""]);
 
     for (const h of SHORTS) {
       const key = h.isIntl ? h.ticker : (h.yTicker || h.ticker);
       const c = priceCache[key];
       const ytd = h.yTicker ? ytdCache[h.yTicker] : null;
+      const m = rowMetrics(h, true);
       rows.push([
         "SHORT",
         h.ticker,
         h.yTicker || "",
-        `"${h.name}"`,
+        csvName(h.name),
         h.weight.toFixed(4),
         c?.price ? c.price.toFixed(4) : "",
         c?.change != null ? c.change.toFixed(4) : "",
-        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : ""
+        ytd?.ytdChange != null ? ytd.ytdChange.toFixed(2) : "",
+        m.contributionBps != null ? m.contributionBps.toFixed(3) : ""
       ]);
     }
 
